@@ -8,6 +8,7 @@ void createDatabase()
     FILE *file;
     file = fopen ("database", "w");
     fclose(file);
+    printf("%s", "database created\n");
 }
 void save(Patient p)
 {
