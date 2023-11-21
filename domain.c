@@ -8,71 +8,100 @@ void createDatabase()
     FILE *file;
     file = fopen ("database", "w");
     fclose(file);
-    printf("%s", "database created\n");
+    printf("database created\n");
 }
-void save(Patient p)
+void save()
 {
     FILE *file;
-    file = fopen ("database", "w");
-    fprintf(file, "%d %20s %20s\n", &p.age, &p.name, &p.diagnosis);
+    file = fopen ("database", "a");
+    Patient p;
+    printf("%s", "enter age\n");
+    scanf("%d", &p.age);
+    printf("%s", "enter name\n");
+    scanf("%s", &p.name);
+    printf("%s", "enter diagnosis\n");
+    scanf("%s", &p.diagnosis);
+    fprintf(file, "%d %s %s\n", p.age, p.name, p.diagnosis);
     fclose(file);
-    printf("%s", "data saved\n");
+    printf("data saved\n");
 }
-void search(SearchType searchType, int age, char name[20], char diagnosis[20])
+void search()
 {
     FILE *file;
     file = fopen ("database", "r");
     int count = 0;
     Patient p;
-    while (fscanf(file, " %d %20s %20s\n", &p.age, &p.name, &p.diagnosis) == 5) {
+    while (fscanf(file, " %d %s %s ", &p.age, p.name, p.diagnosis) == 3) {
         count++;
     }
-    Patient *patients = malloc(sizeof(Patient) * count);
+    fclose(file);
+    file = fopen ("database", "r");
+    Patient *patients = (Patient*) malloc(sizeof(Patient) * count);
     for (int i = 0; i < count; i++)
     {
-        fscanf(file, "%d %20s %20s\n", 
-         &patients[i * sizeof(Patient)].age,
-         &patients[i * sizeof(Patient)].name, 
-         &patients[i * sizeof(Patient)].diagnosis);
+        int a;
+        char n[20];
+        char d[20];
+        fscanf(file, "%d %s %s\n", &a, n, d);
+        patients[i * sizeof(Patient)].age = a;
+        strcpy(patients[i * sizeof(Patient)].name, n);
+        strcpy(patients[i * sizeof(Patient)].diagnosis ,d);
     }
-    switch (searchType)
-    {
-    case AGE:
-        for (int i = 0; i < count; i++)
+    printf("Select search type\n");
+        printf("1 - by name\n");
+        printf("2 - by age\n");
+        printf("3 - by diagnosis\n");
+        int type;
+        scanf("%d", &type);
+        switch (type)
         {
-            if(patients[i * sizeof(Patient)].age == age)
+        case 1:
+            char name[20];
+            printf("Enter name\n");
+            scanf("%s", &name);
+            for (int i = 0; i < count; i++)
             {
-                printf("%d\n", patients[i * sizeof(Patient)].age);
-                printf("%s\n", patients[i * sizeof(Patient)].name);
-                printf("%s\n\n", patients[i * sizeof(Patient)].diagnosis);
+                if(strcmp(patients[i * sizeof(Patient)].name, name) == 0)
+                {
+                    printf("name: %s\n", patients[i * sizeof(Patient)].name);
+                    printf("age: %d\n", patients[i * sizeof(Patient)].age);
+                    printf("diagnosis: %s\n\n", patients[i * sizeof(Patient)].diagnosis);
+                }
             }
-        }
-        break;
-    case NAME:
-        for (int i = 0; i < count; i++)
-        {
-            if(strcmp(patients[i * sizeof(Patient)].name, name) == 0)
+            break;
+        case 2:
+            int age;
+            printf("Enter age\n");
+            scanf("%d", &age);
+            for (int i = 0; i < count; i++)
             {
-                printf("%d\n", patients[i * sizeof(Patient)].age);
-                printf("%s\n", patients[i * sizeof(Patient)].name);
-                printf("%s\n\n", patients[i * sizeof(Patient)].diagnosis);
+                if(patients[i * sizeof(Patient)].age == age)
+                {
+                    printf("name: %s\n", patients[i * sizeof(Patient)].name);
+                    printf("age: %d\n", patients[i * sizeof(Patient)].age);
+                    printf("diagnosis: %s\n\n", patients[i * sizeof(Patient)].diagnosis);
+                }
             }
-        }
-        break;
-    case DIAGNISIS:
-        for (int i = 0; i < count; i++)
-        {
-            if(strcmp(patients[i * sizeof(Patient)].diagnosis, diagnosis) == 0)
+            break;
+        case 3:
+            char diagnosis[20];
+            printf("Enter diagnosis\n");
+            scanf("%s", &diagnosis);
+            for (int i = 0; i < count; i++)
             {
-                printf("%d\n", patients[i * sizeof(Patient)].age);
-                printf("%s\n", patients[i * sizeof(Patient)].name);
-                printf("%s\n\n", patients[i * sizeof(Patient)].diagnosis);
+                if(strcmp(patients[i * sizeof(Patient)].diagnosis, diagnosis) == 0)
+                {
+                    printf("name: %s\n", patients[i * sizeof(Patient)].name);
+                    printf("age: %d\n", patients[i * sizeof(Patient)].age);
+                    printf("diagnosis: %s\n\n", patients[i * sizeof(Patient)].diagnosis);
+                }
             }
+            break;
+        default:
+            printf("type %d not found\n", type);
+            break;
         }
-        break;
-    default:
-        break;
-    }
+    fclose(file);
     free(patients);
 }
 
@@ -81,23 +110,29 @@ void getAll(){
     file = fopen ("database", "r");
     int count = 0;
     Patient p;
-    while (fscanf(file, " %d %20s %20s\n", &p.age, &p.name, &p.diagnosis) == 5) {
+    while (fscanf(file, " %d %s %s\n", &p.age, p.name, p.diagnosis) == 3) {
         count++;
     }
-    Patient *patients = malloc(sizeof(Patient) * count);
+    fclose(file);
+    file = fopen ("database", "r");
+    Patient *patients = (Patient*) malloc(sizeof(Patient) * count);
     for (int i = 0; i < count; i++)
     {
-        fscanf(file, "%d %20s %20s\n", 
-         &patients[i * sizeof(Patient)].age,
-         &patients[i * sizeof(Patient)].name, 
-         &patients[i * sizeof(Patient)].diagnosis);
+        int a;
+        char n[20];
+        char d[20];
+        fscanf(file, "%d %s %s\n", &a, n, d);
+        patients[i * sizeof(Patient)].age = a;
+        strcpy(patients[i * sizeof(Patient)].name, n);
+        strcpy(patients[i * sizeof(Patient)].diagnosis ,d);
     }
     for (int i = 0; i < count; i++)
     {
-        printf("%d\n", patients[i * sizeof(Patient)].age);
-        printf("%s\n", patients[i * sizeof(Patient)].name);
-        printf("%s\n\n", patients[i * sizeof(Patient)].diagnosis);
+        printf("name: %s\n", patients[i * sizeof(Patient)].name);
+        printf("age: %d\n", patients[i * sizeof(Patient)].age);
+        printf("diagnosis: %s\n\n", patients[i * sizeof(Patient)].diagnosis);
     }
+    fclose(file);
     free(patients);
 }
 
