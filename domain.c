@@ -18,9 +18,9 @@ void save()
     printf("%s", "enter age\n");
     scanf("%d", &p.age);
     printf("%s", "enter name\n");
-    scanf("%s", &p.name);
+    scanf("%s", p.name);
     printf("%s", "enter diagnosis\n");
-    scanf("%s", &p.diagnosis);
+    scanf("%s", p.diagnosis);
     fprintf(file, "%d %s %s\n", p.age, p.name, p.diagnosis);
     fclose(file);
     printf("data saved\n");
@@ -55,7 +55,7 @@ void search()
         scanf("%d", &type);
         switch (type)
         {
-        case 1:
+        case 1:{
             char name[20];
             printf("Enter name\n");
             scanf("%s", &name);
@@ -63,13 +63,13 @@ void search()
             {
                 if(strcmp(patients[i * sizeof(Patient)].name, name) == 0)
                 {
-                    printf("name: %s\n", patients[i * sizeof(Patient)].name);
-                    printf("age: %d\n", patients[i * sizeof(Patient)].age);
-                    printf("diagnosis: %s\n\n", patients[i * sizeof(Patient)].diagnosis);
+                    printf("name: %s\n", patients[i].name);
+                    printf("age: %d\n", patients[i].age);
+                    printf("diagnosis: %s\n\n", patients[i].diagnosis);
                 }
             }
-            break;
-        case 2:
+            break;}
+        case 2:{
             int age;
             printf("Enter age\n");
             scanf("%d", &age);
@@ -77,13 +77,13 @@ void search()
             {
                 if(patients[i * sizeof(Patient)].age == age)
                 {
-                    printf("name: %s\n", patients[i * sizeof(Patient)].name);
-                    printf("age: %d\n", patients[i * sizeof(Patient)].age);
-                    printf("diagnosis: %s\n\n", patients[i * sizeof(Patient)].diagnosis);
+                    printf("name: %s\n", patients[i].name);
+                    printf("age: %d\n", patients[i].age);
+                    printf("diagnosis: %s\n\n", patients[i].diagnosis);
                 }
             }
-            break;
-        case 3:
+            break;}
+        case 3:{
             char diagnosis[20];
             printf("Enter diagnosis\n");
             scanf("%s", &diagnosis);
@@ -91,15 +91,15 @@ void search()
             {
                 if(strcmp(patients[i * sizeof(Patient)].diagnosis, diagnosis) == 0)
                 {
-                    printf("name: %s\n", patients[i * sizeof(Patient)].name);
-                    printf("age: %d\n", patients[i * sizeof(Patient)].age);
-                    printf("diagnosis: %s\n\n", patients[i * sizeof(Patient)].diagnosis);
+                    printf("name: %s\n", patients[i].name);
+                    printf("age: %d\n", patients[i].age);
+                    printf("diagnosis: %s\n\n", patients[i].diagnosis);
                 }
             }
-            break;
-        default:
+            break;}
+        default:{
             printf("type %d not found\n", type);
-            break;
+            break;}
         }
     fclose(file);
     free(patients);
@@ -122,9 +122,9 @@ void getAll(){
         char n[20];
         char d[20];
         fscanf(file, "%d %s %s\n", &a, n, d);
-        patients[i * sizeof(Patient)].age = a;
-        strcpy(patients[i * sizeof(Patient)].name, n);
-        strcpy(patients[i * sizeof(Patient)].diagnosis ,d);
+        patients[i].age = a;
+        strcpy(patients[i].name, n);
+        strcpy(patients[i].diagnosis ,d);
     }
     for (int i = 0; i < count; i++)
     {
