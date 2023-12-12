@@ -44,8 +44,8 @@ void search()
         char d[20];
         fscanf(file, "%d %s %s\n", &a, n, d);
         patients[i * sizeof(Patient)].age = a;
-        strcpy(patients[i * sizeof(Patient)].name, n);
-        strcpy(patients[i * sizeof(Patient)].diagnosis ,d);
+        strcpy(patients[i].name, n);
+        strcpy(patients[i].diagnosis ,d);
     }
     printf("Select search type\n");
         printf("1 - by name\n");
@@ -61,7 +61,7 @@ void search()
             scanf("%s", &name);
             for (int i = 0; i < count; i++)
             {
-                if(strcmp(patients[i * sizeof(Patient)].name, name) == 0)
+                if(strcmp(patients[i].name, name) == 0)
                 {
                     printf("name: %s\n", patients[i].name);
                     printf("age: %d\n", patients[i].age);
@@ -75,7 +75,7 @@ void search()
             scanf("%d", &age);
             for (int i = 0; i < count; i++)
             {
-                if(patients[i * sizeof(Patient)].age == age)
+                if(patients[i].age == age)
                 {
                     printf("name: %s\n", patients[i].name);
                     printf("age: %d\n", patients[i].age);
@@ -89,7 +89,7 @@ void search()
             scanf("%s", &diagnosis);
             for (int i = 0; i < count; i++)
             {
-                if(strcmp(patients[i * sizeof(Patient)].diagnosis, diagnosis) == 0)
+                if(strcmp(patients[i].diagnosis, diagnosis) == 0)
                 {
                     printf("name: %s\n", patients[i].name);
                     printf("age: %d\n", patients[i].age);
@@ -128,9 +128,9 @@ void getAll(){
     }
     for (int i = 0; i < count; i++)
     {
-        printf("name: %s\n", patients[i * sizeof(Patient)].name);
-        printf("age: %d\n", patients[i * sizeof(Patient)].age);
-        printf("diagnosis: %s\n\n", patients[i * sizeof(Patient)].diagnosis);
+        printf("name: %s\n", patients[i].name);
+        printf("age: %d\n", patients[i].age);
+        printf("diagnosis: %s\n\n", patients[i].diagnosis);
     }
     fclose(file);
     free(patients);
