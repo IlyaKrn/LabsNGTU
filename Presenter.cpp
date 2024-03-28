@@ -149,6 +149,7 @@ void Presenter::searchPatient(){
 			cout << "search field \'" << action << "\' not found" << endl;
 			break;
 		}
+		delete[] p;
 	} catch (string s) {
 		cout << s << endl;
 	}
@@ -167,6 +168,7 @@ void Presenter::getAllPatients(){
 			cout << " age: " << p[i].getAge();
 			cout << " diagnosis: " << p[i].getDiagnosis() << endl;
 		}
+		delete[] p;
 	} catch (string s) {
 		cout << s << endl;
 	}

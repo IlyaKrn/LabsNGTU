@@ -133,6 +133,7 @@ Patient PatientRepository::getPatientById(int id)
 			return p[i];
 	}
 	throw string("cant find patient");
+	delete[] p;
 }
 
 //метод удаления элемента
