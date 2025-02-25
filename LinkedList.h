@@ -20,6 +20,7 @@ struct item {
  * Класс LinkedList - связанный список
  * first - ссылка на первый элемент или nullptr
  * pushBack - метод для вставки элемента в конец списка
+ * clear - очистка списка
  * print - метод для вывода элементов списка в консоль
  * cyclicShiftLeft - метод для циклического сдвига влево на заданное количество элементов
  */
@@ -33,6 +34,7 @@ public:
     LinkedList();
     ~LinkedList();
     void pushBack(T data);
+    void clear();
     void print(void (*printer)(T item));
     void cyclicShiftLeft(int n);
 };
@@ -96,6 +98,26 @@ void LinkedList<T>::pushBack(T data) {
         cur = cur-> next;
     }
     cur->next = new item<T>(data, nullptr);
+}
+
+/*
+ * метод clear
+ * функция ничего не принимает
+ * функция ничего не возвращает
+ */
+template<typename T>
+void LinkedList<T>::clear() {
+    //если список пустой
+    if (first == nullptr) {
+        return;
+    }
+    //если список не пустой, проходим по всем элементам и освобождаем память
+    item<T>* cur = first;
+    while (cur != nullptr){
+        item<T>* next = cur->next;
+        delete cur;
+        cur = next;
+    }
 }
 
 /*
