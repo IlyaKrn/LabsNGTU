@@ -17,10 +17,11 @@ struct item {
 
 
 /*
- * Класс LinkedList - список
+ * Класс LinkedList - связанный список
  * first - ссылка на первый элемент или nullptr
  * pushBack - метод для вставки элемента в конец списка
  * print - метод для вывода элементов списка в консоль
+ * cyclicShiftLeft - метод для циклического сдвига влево на заданное количество элементов
  */
 template<typename T>
 class LinkedList {
@@ -33,6 +34,7 @@ public:
     ~LinkedList();
     void pushBack(T data);
     void print(void (*printer)(T item));
+    void cyclicShiftLeft(int n);
 };
 
 /*
@@ -47,7 +49,7 @@ item<T>::item(T d, item *n) {
 }
 
 /*
- * Конструктор item
+ * Конструктор LinkedList
  * не принимает параметры
  */
 template<typename T>
@@ -57,7 +59,7 @@ LinkedList<T>::LinkedList() {
 }
 
 /*
- * Деструктор item
+ * Деструктор LinkedList
  * не принимает параметры
  */
 template<typename T>
@@ -79,6 +81,7 @@ LinkedList<T>::~LinkedList() {
 /*
  * метод pushBack
  * data - данные для добавления в конец списка
+ * функция ничего не возвращает
  */
 template<typename T>
 void LinkedList<T>::pushBack(T data) {
@@ -98,6 +101,7 @@ void LinkedList<T>::pushBack(T data) {
 /*
  * метод print
  * printer - функция вывода типа T в консоль
+ * функция ничего не возвращает
  */
 template<typename T>
 void LinkedList<T>::print(void (*printer)(T)) {
@@ -107,7 +111,6 @@ void LinkedList<T>::print(void (*printer)(T)) {
         return;
     }
     //выводим список
-    std::cout << "list:" << std::endl;
     item<T>* cur = first;
     while (cur != nullptr){
         //вывод элемента типа T
@@ -115,4 +118,36 @@ void LinkedList<T>::print(void (*printer)(T)) {
         std::cout << std::endl;
         cur = cur->next;
     }
+}
+
+/*
+ * метод cyclicShiftLeft
+ * n - количество элементов, на которое произойдет сдвиг
+ * функция ничего не возвращает
+ */
+template<typename T>
+void LinkedList<T>::cyclicShiftLeft(int n) {
+    //если список пустой или нет сдвига
+    if (first == nullptr || n == 0)
+        return;
+    //доходим до конца списка и считаем размер по
+    //количеству ссылок на следующий элемент + первый
+    item<T>* last = first;
+    int size = 1;
+    while (last->next != nullptr){
+        last = last->next;
+        size++;
+    }
+    //связываем первый и последний элементы
+    last->next = first;
+
+    //переход к новому последнему элементу
+    item<T>* newLast = first;
+    for (int i = 0; i < n - 1; ++i) {
+        newLast = newLast->next;
+    }
+
+    //сдвигаем первый элемент и убираем ссылку из предпоследнего
+    first = newLast->next;
+    newLast->next = nullptr;
 }

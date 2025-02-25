@@ -5,24 +5,76 @@
 
 using namespace std;
 
+/* Функция чтения списка из консоли
+ * listPtr - указатель на список, в который нужно произвести запись
+ * shiftPtr - указатель на сдвиг, который нужно записать
+ * функция ничего не возвращает
+*/
+void getListFromConsole(LinkedList<int>* listPtr, int* shiftPtr){
+
+    //заполнение списка из консоли
+    cout << "enter integer elements (to separate press ENTER, to stop enter STOP):" << endl;
+    string input;
+    while (true){
+        int newElement;
+        cin >> input;
+
+        //проверка завершения чтения
+        if(input == "STOP")
+            break;
+
+        // проверка корректности
+        try{
+            newElement = stoi(input);
+        } catch (...){
+            cout << "wrong input, try again" << endl;
+            continue;
+        }
+        listPtr->pushBack(newElement);
+    }
+
+    cout << "enter shift (positive integer):" << endl;
+    while (true){
+        int shift;
+        cin >> input;
+
+        // проверка корректности
+        try{
+            shift = stoi(input);
+        } catch (...){
+            cout << "wrong input, try again" << endl;
+            continue;
+        }
+        if(shift < 0){
+            cout << "wrong input, try again" << endl;
+            continue;
+        }
+        *shiftPtr = shift;
+        break;
+    }
+}
 
 
 int main() {
 
+    //чтение списка и сдвига
     LinkedList<int> linkedList = LinkedList<int>();
+    int shift;
+    getListFromConsole(&linkedList, &shift);
 
-    linkedList.print([](int item){
+    // функция вывода элемента списка в консоль
+    auto printer = [](int item){
         cout << item;
-    });
+    };
 
-    linkedList.pushBack(1);
-    linkedList.pushBack(2);
-    linkedList.pushBack(3);
-    linkedList.pushBack(4);
-    linkedList.pushBack(5);
+    // циклический сдвиг на заданную величину с выводом списка в консоль
+    cout << "pre:" << endl;
+    linkedList.print(printer);
 
-    linkedList.print([](int item){
-        cout << item;
-    });
+    linkedList.cyclicShiftLeft(shift);
 
+    cout << "post:" << endl;
+    linkedList.print(printer);
+
+    return 0;
 }
