@@ -11,8 +11,9 @@
 template<typename T>
 struct item {
     T data;
-    item* next;
-    item(T d, item* n);
+    item *next;
+
+    item(T d, item *n);
 };
 
 
@@ -28,14 +29,19 @@ template<typename T>
 class LinkedList {
 
 private:
-    item<T>* first;
+    item<T> *first;
 
 public:
     LinkedList();
+
     ~LinkedList();
+
     void pushBack(T data);
+
     void clear();
+
     void print(void (*printer)(T item));
+
     void cyclicShiftLeft(int n);
 };
 
@@ -72,9 +78,9 @@ LinkedList<T>::~LinkedList() {
         return;
     }
     //если список не пустой, проходим по всем элементам и освобождаем память
-    item<T>* cur = first;
-    while (cur != nullptr){
-        item<T>* next = cur->next;
+    item<T> *cur = first;
+    while (cur != nullptr) {
+        item<T> *next = cur->next;
         delete cur;
         cur = next;
     }
@@ -93,9 +99,9 @@ void LinkedList<T>::pushBack(T data) {
         return;
     }
     //если список не пустой, доходим до последнего элемента и добавляем новый
-    item<T>* cur = first;
-    while (cur->next != nullptr){
-        cur = cur-> next;
+    item<T> *cur = first;
+    while (cur->next != nullptr) {
+        cur = cur->next;
     }
     cur->next = new item<T>(data, nullptr);
 }
@@ -112,9 +118,9 @@ void LinkedList<T>::clear() {
         return;
     }
     //если список не пустой, проходим по всем элементам и освобождаем память
-    item<T>* cur = first;
-    while (cur != nullptr){
-        item<T>* next = cur->next;
+    item<T> *cur = first;
+    while (cur != nullptr) {
+        item<T> *next = cur->next;
         delete cur;
         cur = next;
     }
@@ -133,8 +139,8 @@ void LinkedList<T>::print(void (*printer)(T)) {
         return;
     }
     //выводим список
-    item<T>* cur = first;
-    while (cur != nullptr){
+    item<T> *cur = first;
+    while (cur != nullptr) {
         //вывод элемента типа T
         printer(cur->data);
         std::cout << std::endl;
@@ -154,9 +160,9 @@ void LinkedList<T>::cyclicShiftLeft(int n) {
         return;
     //доходим до конца списка и считаем размер по
     //количеству ссылок на следующий элемент + первый
-    item<T>* last = first;
+    item<T> *last = first;
     int size = 1;
-    while (last->next != nullptr){
+    while (last->next != nullptr) {
         last = last->next;
         size++;
     }
@@ -164,7 +170,7 @@ void LinkedList<T>::cyclicShiftLeft(int n) {
     last->next = first;
 
     //переход к новому последнему элементу
-    item<T>* newLast = first;
+    item<T> *newLast = first;
     for (int i = 0; i < n - 1; ++i) {
         newLast = newLast->next;
     }
