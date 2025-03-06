@@ -91,7 +91,7 @@ LinkedList<T>::~LinkedList() {
     item<T> *cur = first;
     while (cur != nullptr) {
         item<T> *next = cur->next;
-        delete cur;
+//        delete cur;
         cur = next;
     }
 }
