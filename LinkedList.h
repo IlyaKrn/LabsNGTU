@@ -20,17 +20,20 @@ struct item {
 /*
  * Класс LinkedList - связанный список
  * first - ссылка на первый элемент или nullptr
+ * size - размер списка
  * pushBack - метод для вставки элемента в конец списка
  * pushBack - метод для получения ссылки на элемент по индексу
  * clear - очистка списка
  * print - метод для вывода элементов списка в консоль
  * iterate - метод для получения всех элементов списка и их индексов
+ * getSize - метод получения размера списка
  */
 template<typename T>
 class LinkedList {
 
 private:
     item<T> *first;
+    int size;
 
 public:
     LinkedList();
@@ -46,6 +49,8 @@ public:
     void print(void (*printer)(T item));
 
     void iterate(void (*handler)(int index, T item));
+
+    int getSize();
 
 };
 
@@ -68,6 +73,7 @@ template<typename T>
 LinkedList<T>::LinkedList() {
     // при создании список пустой
     first = nullptr;
+    size = 0;
 }
 
 /*
@@ -93,13 +99,14 @@ LinkedList<T>::~LinkedList() {
 /*
  * метод pushBack
  * data - данные для добавления в конец списка
- * функция ничего не возвращает
+ * метод ничего не возвращает
  */
 template<typename T>
 void LinkedList<T>::pushBack(T data) {
     //если список пустой, записываем первый элемент
     if (first == nullptr) {
         first = new item<T>(data, nullptr);
+        size++;
         return;
     }
     //если список не пустой, доходим до последнего элемента и добавляем новый
@@ -108,12 +115,13 @@ void LinkedList<T>::pushBack(T data) {
         cur = cur->next;
     }
     cur->next = new item<T>(data, nullptr);
+    size++;
 }
 
 /*
- * метод clear
- * функция ничего не принимает
- * функция ничего не возвращает
+ * Метод clear
+ * метод ничего не принимает
+ * метод ничего не возвращает
  */
 template<typename T>
 void LinkedList<T>::clear() {
@@ -128,12 +136,13 @@ void LinkedList<T>::clear() {
         delete cur;
         cur = next;
     }
+    size = 0;
 }
 
 /*
- * метод print
+ * Метод print
  * printer - функция вывода типа T в консоль
- * функция ничего не возвращает
+ * метод ничего не возвращает
  */
 template<typename T>
 void LinkedList<T>::print(void (*printer)(T)) {
@@ -153,9 +162,9 @@ void LinkedList<T>::print(void (*printer)(T)) {
 }
 
 /*
- * метод iterate
+ * Метод iterate
  * handler - функция-обработчик для элементов списка
- * функция ничего не возвращает
+ * метод ничего не возвращает
  */
 template<typename T>
 void LinkedList<T>::iterate(void (*handler)(int, T)) {
@@ -175,9 +184,9 @@ void LinkedList<T>::iterate(void (*handler)(int, T)) {
 }
 
 /*
- * Функция getItemPtr
+ * Метод getItemPtr
  * index - индекс элемента, ссылку на который нужно получить
- * функция возвращает ссылку на нужный элемент или nullptr, если такого индекса нет
+ * метод возвращает ссылку на нужный элемент или nullptr, если такого индекса нет
  */
 template<typename T>
 T *LinkedList<T>::getItemPtr(int index) {
@@ -193,4 +202,14 @@ T *LinkedList<T>::getItemPtr(int index) {
         cur = cur->next;
     }
     return &cur->data;
+}
+
+/*
+ * Метод getSize
+ * index - индекс элемента, ссылку на который нужно получить
+ * метод возвращает ссылку на нужный элемент или nullptr, если такого индекса нет
+ */
+template<typename T>
+int LinkedList<T>::getSize() {
+    return size;
 }
