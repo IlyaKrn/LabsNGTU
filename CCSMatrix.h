@@ -62,6 +62,7 @@ void CCSMatrix<T>::clear() {
 
 template<typename T>
 void CCSMatrix<T>::printAsCCS(void (*printer)(T)) {
+    std::cout << "Ccs: " << std::endl;
     std::cout << "values: " << std::endl;
     values.print(printer);
     auto printerInt = [](int i){

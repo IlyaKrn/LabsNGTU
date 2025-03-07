@@ -156,9 +156,9 @@ void LinkedList<T>::print(void (*printer)(T)) {
     while (cur != nullptr) {
         //вывод элемента типа T
         printer(cur->data);
-        std::cout << std::endl;
         cur = cur->next;
     }
+    std::cout << std::endl;
 }
 
 /*
