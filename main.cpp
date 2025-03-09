@@ -81,7 +81,6 @@ CCSMatrix<int> getMatrixFromFile() {
 int main() {
     try{
         CCSMatrix<int> matrix = getMatrixFromFile();
-        cout << "ccs: " << endl;
         auto printer = [](int item){
             cout << item << " ";
         };
