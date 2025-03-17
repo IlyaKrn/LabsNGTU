@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <math.h>
 #include "LinkedList.h"
 
 // Дано бинарное дерево. Найти ветви с мах числом ветвлений.
@@ -15,6 +16,7 @@ private:
 
 public:
     BinaryTree(T data);
+
     BinaryTree() = default;
 
     ~BinaryTree();
@@ -28,7 +30,8 @@ public:
     BinaryTree *getLeftPtr();
 
     void print(void (*printer)(T));
-//    void printBranchesWithMaxChilds(void (*printer)(T));
+
+//    void printBranchesWithMaxChildren(void (*printer)(T));
 
 };
 
@@ -78,12 +81,17 @@ void BinaryTree<T>::print(void (*printer)(T)) {
     queue.pushBack(*this);
     int queueIndex = 0;
 
+    int cellsForElement = pow(2, 6);//2 ^ deep of tree
     while (queue.getSize() - queueIndex != 0) {
         int levelSize = queue.getSize() - queueIndex;
         for (int i = 0; i < levelSize; ++i) {
             BinaryTree* item = queue.getItemPtr(queueIndex);
             queueIndex++;
             printer(item->_data);
+
+            for (int j = 0; j < cellsForElement - 1; ++j) {
+                std::cout << " ";
+            }
 
             if (item->_left != nullptr) {
                 queue.pushBack(*(item->_left));
@@ -92,9 +100,14 @@ void BinaryTree<T>::print(void (*printer)(T)) {
                 queue.pushBack(*(item->_right));
             }
         }
+        cellsForElement /= 2;
         std::cout << std::endl;
     }
 }
 
+
+//глубина дерева при выводе в консоль
+//реализация алгоритма задачи
+//ввод дерева с консоли
 
 
