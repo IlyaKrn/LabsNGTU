@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "LinkedList.h"
 
 // Дано бинарное дерево. Найти ветви с мах числом ветвлений.
 
@@ -14,6 +15,7 @@ private:
 
 public:
     BinaryTree(T data);
+    BinaryTree() = default;
 
     ~BinaryTree();
 
@@ -24,7 +26,8 @@ public:
     BinaryTree *getRightPtr();
 
     BinaryTree *getLeftPtr();
-//    void print(void (*printer)(T));
+
+    void print(void (*printer)(T));
 //    void printBranchesWithMaxChilds(void (*printer)(T));
 
 };
@@ -38,8 +41,8 @@ BinaryTree<T>::BinaryTree(T data) {
 
 template<typename T>
 BinaryTree<T>::~BinaryTree() {
-    delete _right;
-    delete _left;
+//    delete _right;
+//    delete _left;
 }
 
 template<typename T>
@@ -66,6 +69,31 @@ BinaryTree<T> *BinaryTree<T>::getLeftPtr() {
 template<typename T>
 BinaryTree<T> *BinaryTree<T>::getRightPtr() {
     return _right;
+}
+
+template<typename T>
+void BinaryTree<T>::print(void (*printer)(T)) {
+    LinkedList<BinaryTree<T>> queue = LinkedList<BinaryTree<T>>();
+
+    queue.pushBack(*this);
+    int queueIndex = 0;
+
+    while (queue.getSize() - queueIndex != 0) {
+        int levelSize = queue.getSize() - queueIndex;
+        for (int i = 0; i < levelSize; ++i) {
+            BinaryTree* item = queue.getItemPtr(queueIndex);
+            queueIndex++;
+            printer(item->_data);
+
+            if (item->_left != nullptr) {
+                queue.pushBack(*(item->_left));
+            }
+            if (item->_right != nullptr) {
+                queue.pushBack(*(item->_right));
+            }
+        }
+        std::cout << std::endl;
+    }
 }
 
 
