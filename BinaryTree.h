@@ -14,6 +14,8 @@ private:
     BinaryTree *_right;
     BinaryTree *_left;
 
+    int getDeep(int curDeep);
+
 public:
     BinaryTree(T data);
 
@@ -44,8 +46,14 @@ BinaryTree<T>::BinaryTree(T data) {
 
 template<typename T>
 BinaryTree<T>::~BinaryTree() {
-//    delete _right;
-//    delete _left;
+    try{
+        _left = nullptr;
+        delete _left;
+    }catch(...) {}
+    try{
+        _right = nullptr;
+        delete _right;
+    }catch(...) {}
 }
 
 template<typename T>
@@ -75,13 +83,31 @@ BinaryTree<T> *BinaryTree<T>::getRightPtr() {
 }
 
 template<typename T>
+int BinaryTree<T>::getDeep(int curDeep) {
+    if(_left == nullptr && _right == nullptr){
+        return curDeep + 1;
+    }
+
+    int leftDeep = 0;
+    int rightDeep = 0;
+    if(_left != nullptr){
+        leftDeep = _left->getDeep(curDeep + 1);
+    }
+    if(_left != nullptr){
+        rightDeep = _right->getDeep(curDeep + 1);
+    }
+
+    return (leftDeep > rightDeep ? leftDeep : rightDeep);
+}
+
+template<typename T>
 void BinaryTree<T>::print(void (*printer)(T)) {
     LinkedList<BinaryTree<T>> queue = LinkedList<BinaryTree<T>>();
 
     queue.pushBack(*this);
     int queueIndex = 0;
 
-    int cellsForElement = pow(2, 6);//2 ^ deep of tree
+    int cellsForElement = pow(2, getDeep(0));
     while (queue.getSize() - queueIndex != 0) {
         int levelSize = queue.getSize() - queueIndex;
         for (int i = 0; i < levelSize; ++i) {
@@ -96,8 +122,14 @@ void BinaryTree<T>::print(void (*printer)(T)) {
             if (item->_left != nullptr) {
                 queue.pushBack(*(item->_left));
             }
+            else{
+//                queue.pushBack(*(_data), true);
+            }
             if (item->_right != nullptr) {
                 queue.pushBack(*(item->_right));
+            }
+            else{
+//                queue.pushBack(*(_data), true);
             }
         }
         cellsForElement /= 2;
@@ -106,7 +138,6 @@ void BinaryTree<T>::print(void (*printer)(T)) {
 }
 
 
-//глубина дерева при выводе в консоль
 //реализация алгоритма задачи
 //ввод дерева с консоли
 
