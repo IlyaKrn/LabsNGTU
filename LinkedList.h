@@ -51,7 +51,7 @@ public:
 
     void clear();
 
-    void print(void (*printer)(T item));
+    void print(void (*printer)(T item, bool isEmpty));
 
     void iterate(void (*handler)(int index, T item));
 
@@ -162,7 +162,7 @@ void LinkedList<T>::clear() {
  * метод ничего не возвращает
  */
 template<typename T>
-void LinkedList<T>::print(void (*printer)(T)) {
+void LinkedList<T>::print(void (*printer)(T, bool)) {
     //если список пустой, выводим сообщение
     if (first == nullptr) {
         std::cout << "list is empty" << std::endl;
@@ -172,7 +172,7 @@ void LinkedList<T>::print(void (*printer)(T)) {
     item<T> *cur = first;
     while (cur != nullptr) {
         //вывод элемента типа T
-        printer(cur->data);
+        printer(cur->data, cur->isEmpty);
         cur = cur->next;
     }
     std::cout << std::endl;

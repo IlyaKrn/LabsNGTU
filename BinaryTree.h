@@ -16,6 +16,8 @@ private:
 
     int getDeep(int curDeep);
 
+    int getBranches(LinkedList<BinaryTree> currentStack, LinkedList<LinkedList<T>> *allBranches);
+
 public:
     BinaryTree(T data);
 
@@ -33,7 +35,7 @@ public:
 
     void print(void (*printer)(T, bool));
 
-//    void printBranchesWithMaxChildren(void (*printer)(T));
+    void printBranchesWithMaxChildren(void (*printer)(T, bool));
 
 };
 
@@ -139,8 +141,54 @@ void BinaryTree<T>::print(void (*printer)(T, bool)) {
     }
 }
 
+template<typename T>
+int BinaryTree<T>::getBranches(LinkedList<BinaryTree> currentStack, LinkedList<LinkedList<T>> *allBranches) {
+    BinaryTree<T> cur = *(currentStack.getItemPtr(currentStack.getSize() - 1));
+    if(cur._left == nullptr && cur._right == nullptr){
+        LinkedList<T> newBranch = LinkedList<T>();
+        for (int i = 0; i < currentStack.getSize(); ++i) {
+            newBranch.pushBack(currentStack.getItemPtr(i)->_data, false);
+        }
+        allBranches->pushBack(newBranch, false);
+        return 0;
+    }
+    if(cur._left != nullptr){
+        LinkedList<BinaryTree> nextStack = LinkedList<BinaryTree>();
+        for (int i = 0; i < currentStack.getSize(); ++i) {
+            nextStack.pushBack(*(currentStack.getItemPtr(i)), false);
+        }
+        nextStack.pushBack(*cur._left, false);
+        getBranches(nextStack, allBranches);
+    }
+    if(cur._right != nullptr){
+        LinkedList<BinaryTree> nextStack = LinkedList<BinaryTree>();
+        for (int i = 0; i < currentStack.getSize(); ++i) {
+            nextStack.pushBack(*(currentStack.getItemPtr(i)), false);
+        }
+        nextStack.pushBack(*cur._right, false);
+        getBranches(nextStack, allBranches);
+    }
+    return 0;
+}
 
-//реализация алгоритма задачи
+template<typename T>
+void BinaryTree<T>::printBranchesWithMaxChildren(void (*printer)(T, bool)) {
+
+    LinkedList<LinkedList<T>> all = LinkedList<LinkedList<T>>();
+    LinkedList<BinaryTree> current = LinkedList<BinaryTree>();
+
+    current.pushBack(*this, false);
+
+    getBranches(current, &all);
+    int maxCount = 0;
+    for (int i = 0; i < all.getSize(); ++i) {
+        all.getItemPtr(i)->print(printer);
+    }
+
+}
+
+
 //ввод дерева с консоли
+//комментарии
 
 
