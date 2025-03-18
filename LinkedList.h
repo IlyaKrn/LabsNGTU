@@ -7,13 +7,15 @@
  * Структура item - ячейка списка
  * data - данные элемента списка
  * next - ссылка на следующий элемент или nullptr
+ * isEmpty - нужно ли считать ячейку пустой
  */
 template<typename T>
 struct item {
     T data;
+    bool isEmpty;
     item *next;
 
-    item(T d, item *n);
+    item(T d, item *n, bool empty);
 };
 
 
@@ -22,7 +24,8 @@ struct item {
  * first - ссылка на первый элемент или nullptr
  * size - размер списка
  * pushBack - метод для вставки элемента в конец списка
- * pushBack - метод для получения ссылки на элемент по индексу
+ * getItemPtr - метод для получения ссылки на элемент по индексу
+ * isEmpty - метод проверки элемента на необходимость считать его пустым
  * clear - очистка списка
  * print - метод для вывода элементов списка в консоль
  * iterate - метод для получения всех элементов списка и их индексов
@@ -40,9 +43,11 @@ public:
 
     ~LinkedList();
 
-    void pushBack(T data);
+    void pushBack(T data, bool empty);
 
     T *getItemPtr(int index);
+
+    bool isEmpty(int index);
 
     void clear();
 
@@ -58,11 +63,13 @@ public:
  * Конструктор item
  * d - данные элемента списка
  * n - ссылка на следующий элемент или nullptr
+ * empty - считать ли элемент пустым
  */
 template<typename T>
-item<T>::item(T d, item *n) {
+item<T>::item(T d, item *n, bool empty) {
     data = d;
     next = n;
+    isEmpty = empty;
 }
 
 /*
@@ -108,13 +115,14 @@ LinkedList<T>::~LinkedList() {
 /*
  * метод pushBack
  * data - данные для добавления в конец списка
+ * empty - считать ли элемент пустым
  * метод ничего не возвращает
  */
 template<typename T>
-void LinkedList<T>::pushBack(T data) {
+void LinkedList<T>::pushBack(T data, bool empty) {
     //если список пустой, записываем первый элемент
     if (first == nullptr) {
-        first = new item<T>(data, nullptr);
+        first = new item<T>(data, nullptr, empty);
         size++;
         return;
     }
@@ -123,7 +131,7 @@ void LinkedList<T>::pushBack(T data) {
     while (cur->next != nullptr) {
         cur = cur->next;
     }
-    cur->next = new item<T>(data, nullptr);
+    cur->next = new item<T>(data, nullptr, empty);
     size++;
 }
 
@@ -211,6 +219,27 @@ T *LinkedList<T>::getItemPtr(int index) {
         cur = cur->next;
     }
     return &cur->data;
+}
+
+/*
+ * Метод isEmpty
+ * index - индекс элемента, который нужно проверить
+ * метод возвращает isEmpty элемента
+ */
+template<typename T>
+bool LinkedList<T>::isEmpty(int index) {
+    //если некорректный индекс
+    if (index < 0)
+        throw std::string("incorrect index");
+    //переходим к нужному элементу
+    item<T> *cur = first;
+    for (int i = 0; i < index; ++i) {
+        //если список закончился
+        if (cur == nullptr)
+            throw std::string("incorrect index");
+        cur = cur->next;
+    }
+    return cur->isEmpty;
 }
 
 /*

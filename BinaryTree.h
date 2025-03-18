@@ -31,7 +31,7 @@ public:
 
     BinaryTree *getLeftPtr();
 
-    void print(void (*printer)(T));
+    void print(void (*printer)(T, bool));
 
 //    void printBranchesWithMaxChildren(void (*printer)(T));
 
@@ -101,35 +101,37 @@ int BinaryTree<T>::getDeep(int curDeep) {
 }
 
 template<typename T>
-void BinaryTree<T>::print(void (*printer)(T)) {
+void BinaryTree<T>::print(void (*printer)(T, bool)) {
     LinkedList<BinaryTree<T>> queue = LinkedList<BinaryTree<T>>();
 
-    queue.pushBack(*this);
+    queue.pushBack(*this, false);
     int queueIndex = 0;
-
-    int cellsForElement = pow(2, getDeep(0));
-    while (queue.getSize() - queueIndex != 0) {
+    int levelCount = 0;
+    int deep = getDeep(0);
+    int cellsForElement = pow(2, deep);
+    while (levelCount < deep) {
         int levelSize = queue.getSize() - queueIndex;
+        levelCount ++;
         for (int i = 0; i < levelSize; ++i) {
             BinaryTree* item = queue.getItemPtr(queueIndex);
             queueIndex++;
-            printer(item->_data);
+            printer(item->_data, queue.isEmpty(queueIndex - 1));
 
             for (int j = 0; j < cellsForElement - 1; ++j) {
                 std::cout << " ";
             }
 
             if (item->_left != nullptr) {
-                queue.pushBack(*(item->_left));
+                queue.pushBack(*(item->_left), false);
             }
             else{
-//                queue.pushBack(*(_data), true);
+                queue.pushBack(_data, true);
             }
             if (item->_right != nullptr) {
-                queue.pushBack(*(item->_right));
+                queue.pushBack(*(item->_right), false);
             }
             else{
-//                queue.pushBack(*(_data), true);
+                queue.pushBack(_data, true);
             }
         }
         cellsForElement /= 2;
