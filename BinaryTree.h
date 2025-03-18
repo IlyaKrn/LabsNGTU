@@ -7,6 +7,16 @@
 // Дано бинарное дерево. Найти ветви с мах числом ветвлений.
 
 template<typename T>
+struct branchingItem{
+    T _data;
+    bool isBranching;
+
+    branchingItem(T data, bool branching);
+    branchingItem();
+};
+
+
+template<typename T>
 class BinaryTree {
 
 private:
@@ -16,7 +26,7 @@ private:
 
     int getDeep(int curDeep);
 
-    int getBranches(LinkedList<BinaryTree> currentStack, LinkedList<LinkedList<T>> *allBranches);
+    void getBranches(LinkedList<BinaryTree> currentStack, LinkedList<LinkedList<branchingItem<T>>> *allBranches);
 
 public:
     BinaryTree(T data);
@@ -38,6 +48,17 @@ public:
     void printBranchesWithMaxChildren(void (*printer)(T, bool));
 
 };
+
+template<typename T>
+branchingItem<T>::branchingItem(T data, bool branching) {
+    _data = data;
+    isBranching = branching;
+}
+
+template<typename T>
+branchingItem<T>::branchingItem() {
+    isBranching = false;
+}
 
 template<typename T>
 BinaryTree<T>::BinaryTree(T data) {
@@ -142,15 +163,17 @@ void BinaryTree<T>::print(void (*printer)(T, bool)) {
 }
 
 template<typename T>
-int BinaryTree<T>::getBranches(LinkedList<BinaryTree> currentStack, LinkedList<LinkedList<T>> *allBranches) {
+void BinaryTree<T>::getBranches(LinkedList<BinaryTree> currentStack, LinkedList<LinkedList<branchingItem<T>>> *allBranches) {
     BinaryTree<T> cur = *(currentStack.getItemPtr(currentStack.getSize() - 1));
     if(cur._left == nullptr && cur._right == nullptr){
-        LinkedList<T> newBranch = LinkedList<T>();
+        LinkedList<branchingItem<T>> newBranch = LinkedList<branchingItem<T>>();
         for (int i = 0; i < currentStack.getSize(); ++i) {
-            newBranch.pushBack(currentStack.getItemPtr(i)->_data, false);
+            BinaryTree<T> currentItem = *(currentStack.getItemPtr(i));
+            branchingItem<T> it = branchingItem<T>(currentItem._data, (currentItem._left != nullptr && currentItem._right != nullptr));
+            newBranch.pushBack(it, false);
         }
         allBranches->pushBack(newBranch, false);
-        return 0;
+        return;
     }
     if(cur._left != nullptr){
         LinkedList<BinaryTree> nextStack = LinkedList<BinaryTree>();
@@ -168,13 +191,12 @@ int BinaryTree<T>::getBranches(LinkedList<BinaryTree> currentStack, LinkedList<L
         nextStack.pushBack(*cur._right, false);
         getBranches(nextStack, allBranches);
     }
-    return 0;
 }
 
 template<typename T>
 void BinaryTree<T>::printBranchesWithMaxChildren(void (*printer)(T, bool)) {
 
-    LinkedList<LinkedList<T>> all = LinkedList<LinkedList<T>>();
+    LinkedList<LinkedList<branchingItem<T>>> all = LinkedList<LinkedList<branchingItem<T>>>();
     LinkedList<BinaryTree> current = LinkedList<BinaryTree>();
 
     current.pushBack(*this, false);
@@ -182,7 +204,31 @@ void BinaryTree<T>::printBranchesWithMaxChildren(void (*printer)(T, bool)) {
     getBranches(current, &all);
     int maxCount = 0;
     for (int i = 0; i < all.getSize(); ++i) {
-        all.getItemPtr(i)->print(printer);
+        int branching = 0;
+        for (int j = 1; j < all.getItemPtr(i)->getSize() - 2; ++j) {
+            if(all.getItemPtr(i)->getItemPtr(j)->isBranching){
+                branching++;
+            }
+        }
+        if(maxCount < branching){
+            maxCount = branching;
+        }
+    }
+    for (int i = 0; i < all.getSize(); ++i) {
+        int branching = 0;
+        for (int j = 1; j < all.getItemPtr(i)->getSize() - 2; ++j) {
+            if(all.getItemPtr(i)->getItemPtr(j)->isBranching){
+                branching++;
+            }
+        }
+        if(branching == maxCount){
+            std::cout << branching << ": ";
+            for (int j = 0; j < all.getItemPtr(i)->getSize(); ++j) {
+                printer(all.getItemPtr(i)->getItemPtr(j)->_data, false);
+                std::cout << (j != all.getItemPtr(i)->getSize() - 1 ? "-" : "");
+            }
+            std::cout << std::endl;
+        }
     }
 
 }
