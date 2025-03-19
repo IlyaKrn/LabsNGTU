@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>BikeStore | Авторизация</title>
+    <link rel="stylesheet" href="../css/auth.css">
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <script src="../js/auth.js"></script>
+
+</head>
+
+<body>
+    <iframe class="header-container" scrolling="no" frameBorder="0" width="100%" src="header.html"></iframe>
+
+    <div class="auth-background">
+        <div class="auth-window" id="loginWindow">
+            <div class="auth-title">Вход</div>
+            <form>
+                <label for="loginEmail" class="input-label">Введите логин</label>
+                <input class="auth-input" id="loginEmail" required>
+                <label for="loginPassword" class="input-label">Введите пароль</label>
+                <input class="auth-input" id="loginPassword" required>
+                <div class="auth-submit" id="submitLogin">Войти</div>
+                <div class="auth-switch" id="toRegister">Зарегистрироваться</div>
+            </form>
+        </div>
+
+        <div class="auth-window" id="registerWindow" hidden>
+            <div class="auth-title">Регистрация</div>
+            <form>
+                <label for="registerEmail" class="input-label">Введите логин</label>
+                <input class="auth-input" id="registerEmail" required>
+                <label for="registerPassword" class="input-label">Введите пароль</label>
+                <input class="auth-input" id="registerPassword" required>
+                <label for="registerPasswordRepeat" class="input-label">Повторите пароль</label>
+                <input class="auth-input" id="registerPasswordRepeat" required>
+                <div class="auth-submit" id="submitRegister">Зарегистрироваться</div>
+                <div class="auth-switch" id="toLogin">Войти</div>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>

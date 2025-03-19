@@ -1,0 +1,257 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    display: flex;
+    height: 64px;
+    width: 100%;
+    background-color: #4D2728;
+}
+
+.header .left-side {
+    display: flex;
+    width: 100%;
+    justify-content: left;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.header .right-side {
+    display: flex;
+    width: 100%;
+    justify-content: right;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.header .main-title {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 16px;
+    font-size: 40pt;
+    color: #D9D9D9;
+}
+
+.header .search {
+    display: flex;
+    background-color: #987B7B;
+    width: 256;
+    border-radius: 4px;
+    height: 40px;
+    font-size: 18pt;
+    color: #D9D9D9;
+    margin-right: 12px;
+    justify-content: end;
+
+
+}
+
+.header .search input,
+input:hover,
+input:focus,
+input:active {
+    background: none;
+    border: none;
+    outline: none;
+    min-width: 256px;
+    width: 100%;
+    margin-left: 12px;
+    font-size: 14pt;
+    color: #D9D9D9;
+}
+
+.header .search button {
+    width: 40px;
+    background: none;
+    border: none;
+    margin-right: 6px;
+}
+
+.header .login-button {
+    background-color: #541111;
+    border-radius: 8px;
+    height: 40px;
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 18pt;
+    text-align: center;
+    align-content: center;
+    margin-right: 12px;
+    cursor: pointer;
+
+}
+
+.header .login-button a {
+    color: #D9D9D9;
+    text-decoration: none;
+}
+
+.header .register-button {
+    border-radius: 8px;
+    height: 40px;
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 18pt;
+    text-align: center;
+    color: #D9D9D9;
+    align-content: center;
+    margin-right: 12px;
+    cursor: pointer;
+
+
+}
+
+header .register-button a {
+    color: #D9D9D9;
+    text-decoration: none;
+}
+
+.header .profile-button {
+    background-color: #541111;
+    border-radius: 8px;
+    height: 40px;
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 18pt;
+    text-align: center;
+    align-content: center;
+    margin-right: 12px;
+    cursor: pointer;
+
+}
+
+.header .profile-button a {
+    color: #D9D9D9;
+    text-decoration: none;
+}
+
+.header .right-side .auth-block-normal {
+    display: flex;
+}
+
+.header .right-side .auth-block {
+    display: none;
+}
+
+
+@media only screen and (max-width: 1000px) {
+
+
+    .header {
+        display: flex;
+        height: 128px;
+        width: 100%;
+        background-color: #4D2728;
+    }
+
+    .header .main-title {
+        margin-top: auto;
+        margin-bottom: auto;
+        margin-left: 16px;
+        font-size: 56pt;
+        color: #D9D9D9;
+    }
+
+    .header .search {
+        display: flex;
+        background-color: #987B7B;
+        width: 70%;
+        border-radius: 4px;
+        height: 69px;
+        font-size: 18pt;
+        color: #D9D9D9;
+        margin-right: 12px;
+        justify-content: end;
+
+
+    }
+
+    .header .search input,
+    input:hover,
+    input:focus,
+    input:active {
+        background: none;
+        border: none;
+        outline: none;
+        width: 100%;
+        margin-left: 12px;
+        font-size: 14pt;
+        color: #D9D9D9;
+    }
+
+    .header .search button {
+        width: 80px;
+        background: none;
+        border: none;
+        margin-right: 6px;
+        transform: scale(1.5);
+    }
+
+    .header .login-button {
+        background-color: #541111;
+        border-radius: 8px;
+        height: 40px;
+        padding-left: 12px;
+        padding-right: 12px;
+        font-size: 18pt;
+        text-align: center;
+        align-content: center;
+        margin-right: 12px;
+        cursor: pointer;
+
+    }
+
+    .header .login-button a {
+        color: #D9D9D9;
+        text-decoration: none;
+    }
+
+    .header .register-button {
+        border-radius: 8px;
+        height: 40px;
+        padding-left: 12px;
+        padding-right: 12px;
+        font-size: 18pt;
+        text-align: center;
+        color: #D9D9D9;
+        align-content: center;
+        margin-right: 12px;
+        cursor: pointer;
+
+
+    }
+
+    header .register-button a {
+        color: #D9D9D9;
+        text-decoration: none;
+    }
+
+    .header .profile-button {
+        display: none;
+    }
+
+    .header .right-side .auth-block-normal {
+        display: none;
+    }
+
+    .header .right-side .auth-block {
+        position: relative;
+        display: inline-block;
+        width: 80px;
+        background: none;
+        border: none;
+        margin-right: 6px;
+    }
+
+    .header .right-side .auth-block .icon {
+        position: relative;
+        display: inline-block;
+        width: 80px;
+        background: none;
+        border: none;
+        margin-right: 6px;
+        transform: scale(0.75);
+    }
+}

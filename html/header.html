@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="../css/header.css">
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <script src="../js/header.js"></script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="left-side">
+            <div class="main-title">BikeStore</div>
+        </div>
+        <div class="right-side">
+            <form class="search" action="catalog.html" target="_parent" method="get">
+                <input type="text" name="name">
+                <button type="submit">
+                    <img src="../resources/search.svg"></img>
+                </button>
+            </form>
+            <div class="auth-block-normal">
+                <div class="register-button not-logined">
+                    <a href="auth.html?action=register" target="_parent">Зарегистрироваться</a>
+                </div>
+                <div class="login-button not-logined">
+                    <a href="auth.html?action=login" target="_parent">Войти</a>
+                </div>
+                <div class="profile-button logined">
+                    <a href="profile.html" target="_parent">Профиль</a>
+                </div>
+            </div>
+            <div class="auth-block not-logined">
+                <a href="auth.html?action=login" target="_parent"><img class="icon" src="../resources/profile.svg"></img></a>
+            </div>
+
+            <div class="auth-block logined">
+                <a href="profile.html" target="_parent"><img class="icon" src="../resources/profile.svg"></img></a>
+            </div>
+    </header>
+</body>
+
+</html>
