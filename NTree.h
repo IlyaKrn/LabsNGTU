@@ -96,7 +96,7 @@ void NTree<T>::print(void (*printer)(T, bool)) {
     //глубина дерева
     int deep = getDeep(0);
     //число символов гна элемент
-    int cellsForElement = pow(_n, deep);
+    int cellsForElement = pow(_n, deep - 1);
     //проходим по очереди пока не дойдем до последнего уровня
     while (levelCount < deep) {
         //количество элементов в слое
@@ -107,6 +107,9 @@ void NTree<T>::print(void (*printer)(T, bool)) {
             //выводим текущий элемент либо пробел, если он пустой
             NTree* item = queue.getItemPtr(queueIndex);
             queueIndex++;
+            for (int j = 0; j < cellsForElement; ++j) {
+                std::cout << " ";
+            }
             printer(item->_data, queue.isEmpty(queueIndex - 1));
 
             //вывод пробелов для красивого отображения слоя
@@ -125,20 +128,6 @@ void NTree<T>::print(void (*printer)(T, bool)) {
             for (int j = 0; j < _n - item->_children.getSize(); ++j) {
                 queue.pushBack(*this, true);
             }
-
-//            //добавляем дочерние узлы или пустые узлы в очередь, если текущий узел пустой
-//            if (item->_left != nullptr) {
-//                queue.pushBack(*(item->_left), false);
-//            }
-//            else{
-//                queue.pushBack(_data, true);
-//            }
-//            if (item->_right != nullptr) {
-//                queue.pushBack(*(item->_right), false);
-//            }
-//            else{
-//                queue.pushBack(_data, true);
-//            }
         }
         //уменьшаем количество символов для элементов следующего слоя
         cellsForElement /= _n;
