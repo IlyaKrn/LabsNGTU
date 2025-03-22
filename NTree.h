@@ -16,6 +16,8 @@ private:
     int _n;
     LinkedList<NTree<T>*> _children;
 
+    int getDeep(int curDeep);
+
 public:
     NTree(T data, int n);
 
@@ -41,16 +43,11 @@ NTree<T>::NTree(T data, int n) {
 
 template<typename T>
 NTree<T>::~NTree() {
-    cout << this << endl;
     for (int i = _children.getSize() - 1; i >= 0; --i) {
         try{
             _children.getItemPtr(i) == nullptr;
-            cout << _children.getItemPtr(i);
-            delete _children.getItemPtr(i);
-            cout << "+" << endl;
-        }catch(...) {
-            cout << "-" << endl;
-        }
+//            delete _children.getItemPtr(i);
+        }catch(...) {}
     }
 }
 
@@ -68,36 +65,67 @@ LinkedList<NTree<T> *> NTree<T>::getChildren() {
     return _children;
 }
 
-//template<typename T>
-//void NTree<T>::print(void (*printer)(T, bool)) {
-//    // добавляем в очередь корень
-//    LinkedList<NTree<T>> queue = LinkedList<NTree<T>>();
-//
-//    queue.pushBack(*this, false);
-//    //костыль для работы со списком как с очередью (push = pushBack, pop = queueIndex++)
-//    int queueIndex = 0;
-//    int levelCount = 0;
-//    //глубина дерева
-//    int deep = getDeep(0);
-//    //число символов гна элемент
-//    int cellsForElement = pow(2, deep);
-//    //проходим по очереди не дойдем до последнего уровня
-//    while (levelCount < deep) {
-//        //количество элементов в слое
-//        int levelSize = queue.getSize() - queueIndex;
-//        levelCount ++;
-//        //проходим по слою
-//        for (int i = 0; i < levelSize; ++i) {
-//            //выводим текущий элемент либо пробел, если он пустой
-//            BinaryTree* item = queue.getItemPtr(queueIndex);
-//            queueIndex++;
-//            printer(item->_data, queue.isEmpty(queueIndex - 1));
-//
-//            //вывод пробелов для красивого отображения слоя
-//            for (int j = 0; j < cellsForElement - 1; ++j) {
-//                std::cout << " ";
-//            }
-//
+template<typename T>
+int NTree<T>::getDeep(int curDeep) {
+    //выход из рекурсии на листе
+    if(_children.getSize() == 0){
+        return curDeep + 1;
+    }
+
+    //возвращаем самое большое значение функции от дочерних узлов
+    int maxDeep = 0;
+    for (int i = 0; i < _children.getSize(); ++i) {
+        auto a = *_children.getItemPtr(i);
+        int tmpDeep = a->getDeep(curDeep + 1);
+        if(tmpDeep > maxDeep){
+            maxDeep = tmpDeep;
+        }
+    }
+    return maxDeep;
+}
+
+template<typename T>
+void NTree<T>::print(void (*printer)(T, bool)) {
+    // добавляем в очередь корень
+    LinkedList<NTree<T>> queue = LinkedList<NTree<T>>();
+
+    queue.pushBack(*this, false);
+    //костыль для работы со списком как с очередью (push = pushBack, pop = queueIndex++)
+    int queueIndex = 0;
+    int levelCount = 0;
+    //глубина дерева
+    int deep = getDeep(0);
+    //число символов гна элемент
+    int cellsForElement = pow(_n, deep);
+    //проходим по очереди пока не дойдем до последнего уровня
+    while (levelCount < deep) {
+        //количество элементов в слое
+        int levelSize = queue.getSize() - queueIndex;
+        levelCount ++;
+        //проходим по слою
+        for (int i = 0; i < levelSize; ++i) {
+            //выводим текущий элемент либо пробел, если он пустой
+            NTree* item = queue.getItemPtr(queueIndex);
+            queueIndex++;
+            printer(item->_data, queue.isEmpty(queueIndex - 1));
+
+            //вывод пробелов для красивого отображения слоя
+            for (int j = 0; j < cellsForElement - 1; ++j) {
+                std::cout << " ";
+            }
+
+            for (int j = 0; j < item->_children.getSize(); ++j) {
+                if (*(item->_children.getItemPtr(j)) != nullptr && !queue.isEmpty(queueIndex - 1) ) {
+                    queue.pushBack(*(*(item->_children.getItemPtr(j))), false);
+                }
+                else{
+                    queue.pushBack(*this, true);
+                }
+            }
+            for (int j = 0; j < _n - item->_children.getSize(); ++j) {
+                queue.pushBack(*this, true);
+            }
+
 //            //добавляем дочерние узлы или пустые узлы в очередь, если текущий узел пустой
 //            if (item->_left != nullptr) {
 //                queue.pushBack(*(item->_left), false);
@@ -111,8 +139,9 @@ LinkedList<NTree<T> *> NTree<T>::getChildren() {
 //            else{
 //                queue.pushBack(_data, true);
 //            }
-//        }
-//        //уменьшаем количество символов для элементов следующего слоя
-//        cellsForElement /= 2;
-//        std::cout << std::endl;
-//}
+        }
+        //уменьшаем количество символов для элементов следующего слоя
+        cellsForElement /= _n;
+        std::cout << std::endl;
+    }
+}
