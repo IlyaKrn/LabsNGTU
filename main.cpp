@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void getTreeFromFile(NTree<int> *tree) {
+void getTreeFromFile(NTree<int> *tree, int *min, int *max) {
     bool repeat = false;
     do{
         // открытие файла
@@ -33,6 +33,10 @@ void getTreeFromFile(NTree<int> *tree) {
                 deep = stoi(input);
                 getline(file, input);
                 n = stoi(input);
+                getline(file, input);
+                *min = stoi(input);
+                getline(file, input);
+                *max = stoi(input);
                 getline(file, input);
                 int rootVal = stoi(input);
                 *(tree) = NTree<int>(rootVal, n);
@@ -129,14 +133,16 @@ int main() {
 
     //получение дерева
     NTree<int> root = NTree<int>();
-    getTreeFromFile(&root);
+    int min = 0;
+    int max = 0;
+    getTreeFromFile(&root, &min, &max);
 
 
     //вывод результата в консоль
     cout << "=================================" << endl;
     root.print(printer);
     cout << "=================================" << endl;
-//    root.printSubTreesInRange(printer, 0, 1);
+    root.printSubTreesInRange(printer, min, max);
     cout << "=================================" << endl;
 
 

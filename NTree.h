@@ -17,6 +17,7 @@ private:
     LinkedList<NTree<T>*> _children;
 
     int getDeep(int curDeep);
+    int getMinDeep(int curDeep);
 
 public:
     NTree(T data, int n);
@@ -68,7 +69,13 @@ LinkedList<NTree<T> *> NTree<T>::getChildren() {
 template<typename T>
 int NTree<T>::getDeep(int curDeep) {
     //выход из рекурсии на листе
-    if(_children.getSize() == 0){
+    bool fl = true;
+    for (int i = 0; i < _children.getSize(); ++i) {
+        if(!_children.isEmpty(i)){
+            fl = false;
+        }
+    }
+    if(fl){
         return curDeep + 1;
     }
 
@@ -133,5 +140,53 @@ void NTree<T>::print(void (*printer)(T, bool)) {
         //уменьшаем количество символов для элементов следующего слоя
         cellsForElement /= _n;
         std::cout << std::endl;
+    }
+}
+
+template<typename T>
+int NTree<T>::getMinDeep(int curDeep) {
+    //выход из рекурсии на листе
+    bool fl = true;
+    for (int i = 0; i < _children.getSize(); ++i) {
+        if(!_children.isEmpty(i)){
+            fl = false;
+        }
+    }
+    if(fl){
+        return curDeep + 1;
+    }
+
+    //возвращаем самое большое значение функции от дочерних узлов
+    int minDeep = getDeep(curDeep);
+    for (int i = 0; i < _children.getSize(); ++i) {
+        NTree<T>* child = *_children.getItemPtr(i);
+        if(!_children.isEmpty(i)) {
+            int tmpDeep = child->getMinDeep(curDeep + 1);
+            if (tmpDeep < minDeep) {
+                minDeep = tmpDeep;
+            }
+        }
+    }
+    return minDeep;
+}
+
+template<typename T>
+void NTree<T>::printSubTreesInRange(void (*printer)(T, bool), int minLevel, int maxLevel) {
+    int min = getMinDeep(0);
+    int max = getDeep(0);
+    bool fl = false;
+    for (int i = 0; i < _children.getSize(); ++i) {
+        if(!_children.isEmpty(i)){
+            fl = true;
+        }
+    }
+    if(min >= minLevel && max <= maxLevel && fl){
+        print(printer);
+    }
+
+    for (int i = 0; i < _children.getSize(); ++i) {
+        if(!_children.isEmpty(i)){
+            (*_children.getItemPtr(i))->printSubTreesInRange(printer, minLevel - 1, maxLevel - 1);
+        }
     }
 }
