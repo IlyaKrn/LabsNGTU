@@ -25,7 +25,7 @@ public:
 
     ~NTree();
 
-    void addChild(T child);
+    void addChild(T child, bool empty);
 
     LinkedList<NTree<T>*> getChildren();
 
@@ -52,12 +52,12 @@ NTree<T>::~NTree() {
 }
 
 template<typename T>
-void NTree<T>::addChild(T child) {
+void NTree<T>::addChild(T child, bool empty) {
     if(_children.getSize() >= _n){
         throw string ("can not add child");
     }
     NTree<T>* newChild = new NTree<T>(child, _n);
-    _children.pushBack(newChild, false);
+    _children.pushBack(newChild, empty);
 }
 
 template<typename T>
@@ -106,11 +106,12 @@ void NTree<T>::print(void (*printer)(T, bool)) {
         for (int i = 0; i < levelSize; ++i) {
             //выводим текущий элемент либо пробел, если он пустой
             NTree* item = queue.getItemPtr(queueIndex);
+            bool itemEpmty = queue.isEmpty(queueIndex);
             queueIndex++;
             for (int j = 0; j < cellsForElement; ++j) {
                 std::cout << " ";
             }
-            printer(item->_data, queue.isEmpty(queueIndex - 1));
+            printer(item->_data, itemEpmty);
 
             //вывод пробелов для красивого отображения слоя
             for (int j = 0; j < cellsForElement - 1; ++j) {
@@ -118,8 +119,8 @@ void NTree<T>::print(void (*printer)(T, bool)) {
             }
 
             for (int j = 0; j < item->_children.getSize(); ++j) {
-                if (*(item->_children.getItemPtr(j)) != nullptr && !queue.isEmpty(queueIndex - 1) ) {
-                    queue.pushBack(*(*(item->_children.getItemPtr(j))), false);
+                if (*(item->_children.getItemPtr(j)) != nullptr && !itemEpmty) {
+                    queue.pushBack(*(*(item->_children.getItemPtr(j))), item->_children.isEmpty(j));
                 }
                 else{
                     queue.pushBack(*this, true);

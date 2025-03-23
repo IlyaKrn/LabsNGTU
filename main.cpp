@@ -1,12 +1,12 @@
 #include <iostream>
 #include <fstream>
 
-#include "BinaryTree.h"
+#include "NTree.h"
 
 
 using namespace std;
 
-void getTreeFromFile(BinaryTree<int> *tree) {
+void getTreeFromFile(NTree<int> *tree) {
     bool repeat = false;
     do{
         // открытие файла
@@ -20,6 +20,7 @@ void getTreeFromFile(BinaryTree<int> *tree) {
         if (file.is_open()){
             string input;
             int deep;
+            int n;
 
             //проверка файла
             if(file.eof()) {
@@ -27,15 +28,17 @@ void getTreeFromFile(BinaryTree<int> *tree) {
                 cout << "can not parse file" << endl;
             }
             try{
-                //получение глубины и корня дерева
+                //получение глубины, n и корня дерева
                 getline(file, input);
                 deep = stoi(input);
                 getline(file, input);
+                n = stoi(input);
+                getline(file, input);
                 int rootVal = stoi(input);
-                *(tree) = BinaryTree<int>(rootVal);
+                *(tree) = NTree<int>(rootVal, n);
 
                 //очередь для текущего слоя, в который записывать дочерние элементы (добавляем корень)
-                LinkedList<BinaryTree<int>*> queue = LinkedList<BinaryTree<int>*>();
+                LinkedList<NTree<int>*> queue = LinkedList<NTree<int>*>();
                 int queueIndex = 0;
                 queue.pushBack(tree, false);
 
@@ -74,35 +77,28 @@ void getTreeFromFile(BinaryTree<int> *tree) {
 //                            cout << d;
 //                        }
 //                    });
-//                    cout << endl;
 
                     //добавление в дерево
-                    for (int j = 0; j < row.getSize(); j += 2) {
-                        //текущее значение
-                        int curLeft = *(row.getItemPtr(j));
-                        int curRight = *(row.getItemPtr(j + 1));
-                        bool isLeft = !row.isEmpty(j);
-                        bool isRight = !row.isEmpty(j + 1);
-
+                    for (int j = 0; j < row.getSize(); j += n) {
                         //текущий узел
-                        BinaryTree<int> *curRoot = *(queue.getItemPtr(queueIndex));
+                        NTree<int> *curRoot = *(queue.getItemPtr(queueIndex));
                         queueIndex++;
 
-                        //добавляем дочерние узлы в дерево и очередь, если пустые,
-                        //то в очереди помечием пустыми
-                        if(isLeft){
-                            curRoot->setLeftValue(curLeft);
-                            queue.pushBack(curRoot->getLeftPtr(), false);
-                        }
-                        else{
-                            queue.pushBack(nullptr, true);
-                        }
-                        if(isRight){
-                            curRoot->setRightValue(curRight);
-                            queue.pushBack(curRoot->getRightPtr(), false);
-                        }
-                        else{
-                            queue.pushBack(nullptr, true);
+
+                        //текущее значение
+                        for (int k = 0; k < n; ++k) {
+                            int curChild = *(row.getItemPtr(j + k));
+                            bool isNotEmpty = !row.isEmpty(j + k);
+
+                            if(isNotEmpty){
+                                curRoot->addChild(curChild, false);
+                                queue.pushBack(*(curRoot->getChildren().getItemPtr(k)), false);
+                            }
+                            else{
+                                if(curRoot->getChildren().getSize() < n)
+                                    curRoot->addChild(-1, true);
+                                queue.pushBack(curRoot, true);
+                            }
                         }
                     }
                 }
@@ -132,7 +128,7 @@ int main() {
     };
 
     //получение дерева
-    BinaryTree<int> root = BinaryTree<int>(0);
+    NTree<int> root = NTree<int>();
     getTreeFromFile(&root);
 
 
@@ -140,7 +136,7 @@ int main() {
     cout << "=================================" << endl;
     root.print(printer);
     cout << "=================================" << endl;
-    root.printBranchesWithMaxChildren(printer);
+//    root.printSubTreesInRange(printer, 0, 1);
     cout << "=================================" << endl;
 
 
