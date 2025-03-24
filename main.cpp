@@ -6,6 +6,13 @@
 
 using namespace std;
 
+/*
+ * Функция чтения дерева из файла
+ * tree - дерево
+ * min - нижняя граница
+ * max - верхняя граница
+ * функция ничего не возвращает
+ */
 void getTreeFromFile(NTree<int> *tree, int *min, int *max) {
     bool repeat = false;
     do{
@@ -28,7 +35,7 @@ void getTreeFromFile(NTree<int> *tree, int *min, int *max) {
                 cout << "can not parse file" << endl;
             }
             try{
-                //получение глубины, n и корня дерева
+                //получение глубины, нижней и верхней границы n и корня дерева
                 getline(file, input);
                 deep = stoi(input);
                 getline(file, input);
@@ -39,6 +46,7 @@ void getTreeFromFile(NTree<int> *tree, int *min, int *max) {
                 *max = stoi(input);
                 getline(file, input);
                 int rootVal = stoi(input);
+                //перезаписываем дерево
                 *(tree) = NTree<int>(rootVal, n);
 
                 //очередь для текущего слоя, в который записывать дочерние элементы (добавляем корень)
@@ -89,7 +97,7 @@ void getTreeFromFile(NTree<int> *tree, int *min, int *max) {
                         queueIndex++;
 
 
-                        //текущее значение
+                        // записываем дочерние элементы слоя в очередь
                         for (int k = 0; k < n; ++k) {
                             int curChild = *(row.getItemPtr(j + k));
                             bool isNotEmpty = !row.isEmpty(j + k);
@@ -131,7 +139,7 @@ int main() {
         cout << (isEmpty ? "-" : to_string(item));
     };
 
-    //получение дерева
+    //получение дерева и диапазона
     NTree<int> root = NTree<int>();
     int min = 0;
     int max = 0;

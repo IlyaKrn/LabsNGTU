@@ -8,6 +8,18 @@ using namespace std;
 
 //Дано N-дерево. Найти все поддеревья, листья которых находятся в заданном диапазоне высот от корня поддерева.
 
+/*
+ * NTree - n-дерево
+ * _data - значение узла
+ * _n - количество потомков
+ * _children - список потомков
+ * getDeep - метод получения глубины дерева
+ * getMinDeep - метод получения минимального уровня листа
+ * addChild - метод добавления потомка
+ * getChildren - метод получения списка потомков
+ * print - метод вывода дерева в консоль
+ * printSubTreesInRange - метод вывода поддеревьев, с дочерними узлами в нужном диапазоне
+ */
 template<typename T>
 class NTree {
 
@@ -36,22 +48,38 @@ public:
 
 };
 
+/*
+ * Конструктор NTree
+ * data - значение узла
+ * n - количество потомков
+ */
 template<typename T>
 NTree<T>::NTree(T data, int n) {
     _data = data;
     _n = n;
 }
 
+/*
+ * Деструктор NTree
+ *
+ */
 template<typename T>
 NTree<T>::~NTree() {
     for (int i = _children.getSize() - 1; i >= 0; --i) {
         try{
-            _children.getItemPtr(i) == nullptr;
-//            delete _children.getItemPtr(i);
+            auto temp = _children.getItemPtr(i);
+            temp = nullptr;
+            delete temp;
         }catch(...) {}
     }
 }
 
+/*
+ * Метод addChild
+ * child - значение нового узла
+ * empty - считать ли новый узел пустым
+ * метод ничего не возвращает
+ */
 template<typename T>
 void NTree<T>::addChild(T child, bool empty) {
     if(_children.getSize() >= _n){
@@ -61,11 +89,21 @@ void NTree<T>::addChild(T child, bool empty) {
     _children.pushBack(newChild, empty);
 }
 
+/*
+ * Метод getChildren
+ * метод ничего не принимает
+ * возвращает список указателей на дочерние узлы
+ */
 template<typename T>
 LinkedList<NTree<T> *> NTree<T>::getChildren() {
     return _children;
 }
 
+/*
+ * Метод getDeep
+ * curDeep - текущая глубина
+ * возвращает глубину дерева + текущая глубина
+ */
 template<typename T>
 int NTree<T>::getDeep(int curDeep) {
     //выход из рекурсии на листе
@@ -91,6 +129,11 @@ int NTree<T>::getDeep(int curDeep) {
     return maxDeep;
 }
 
+/*
+ * Метод print
+ * printer - функция вывода типа T в консоль
+ * метод ничего не возвращает
+ */
 template<typename T>
 void NTree<T>::print(void (*printer)(T, bool)) {
     // добавляем в очередь корень
@@ -143,6 +186,11 @@ void NTree<T>::print(void (*printer)(T, bool)) {
     }
 }
 
+/*
+ * Метод getMinDeep
+ * curDeep - текущая глубина
+ * возвращает минимальный уровень, на котором есть лист + текущая глубина
+ */
 template<typename T>
 int NTree<T>::getMinDeep(int curDeep) {
     //выход из рекурсии на листе
@@ -170,8 +218,17 @@ int NTree<T>::getMinDeep(int curDeep) {
     return minDeep;
 }
 
+/*
+ * Метод printSubTreesInRange
+ * printer - функция вывода типа T в консоль
+ * minLevel - нижняя граница диапазона
+ * maxLevel - верхняя граница диапазона
+ * метод ничего не возвращает
+ */
 template<typename T>
 void NTree<T>::printSubTreesInRange(void (*printer)(T, bool), int minLevel, int maxLevel) {
+    //получаем диапазон листьев текущего дерева
+    //и выводим, если он не выходит за пределы нужного диапазона
     int min = getMinDeep(0);
     int max = getDeep(0);
     bool fl = false;
@@ -183,6 +240,7 @@ void NTree<T>::printSubTreesInRange(void (*printer)(T, bool), int minLevel, int 
     if(min >= minLevel && max <= maxLevel && fl){
         print(printer);
     }
+    //рекурсивно применяем метод к дочерним узлам, корректируя диапазон
 
     for (int i = 0; i < _children.getSize(); ++i) {
         if(!_children.isEmpty(i)){
