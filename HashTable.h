@@ -15,6 +15,8 @@
 //4. функция удаления элементов
 //5. функция поиска по заданному ключу
 
+//////////////////////////////////////////////////////////////////
+
 //адрес=h(x)+ci+di2 - квадр опроб
 
 struct Key {
@@ -38,8 +40,8 @@ private:
     Item<T>* array;
 
 
-    int getHash(Key fio);
-    int solveCollision(Key fio, int attempt);
+    int getNewHash(Key fio); // возвращает новый хэш без коллизий
+    int getExistingHash(Key fio); // Возвращает хэш элемента по ключу (для получений элемента. Фикс ошибок коллизий)
     void rehashTable(int newSize);
 
 
@@ -83,13 +85,7 @@ void HashTable<T>::add(Key key, T value) {
     if (currentFilling > (currentSize * 0.7)){
         rehashTable(currentSize * 2);
     }
-    ////////////////////////////////////////
-    // из-за коллизий возможно неоднозначное отображение ключей в хэши
-    int itemHash = getHash(key);
-    if(array[itemHash].isEmpty == false){
-
-    }
-    /////////////////////////////////////////
+    int itemHash = getNewHash(key);
     array[itemHash].key = key;
     array[itemHash].value = value;
     array[itemHash].isEmpty = false;
@@ -98,20 +94,14 @@ void HashTable<T>::add(Key key, T value) {
 
 template<typename T>
 void HashTable<T>::remove(Key key) {
-    ////////////////////////////////////////
-    // из-за коллизий возможно неоднозначное отображение ключей в хэши
-    int itemHash = getHash(key);
-    /////////////////////////////////////////
+    int itemHash = getExistingHash(key);
     array[itemHash].isEmpty = true;
     currentSize--;
 }
 
 template<typename T>
 T *HashTable<T>::find(Key key) {
-    ////////////////////////////////////////
-    // из-за коллизий возможно неоднозначное отображение ключей в хэши
-    int itemHash = getHash(key);
-    /////////////////////////////////////////
+    int itemHash = getExistingHash(key);
     return array[itemHash];
 }
 
