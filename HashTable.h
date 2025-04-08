@@ -1,5 +1,8 @@
 #pragma once
 #include <string>
+#include <math.h>
+#include <bitset>
+#include <set>
 
 // Реализовать алгоритмы поиска, вставки, удаления элементов таблицы и распечатки таблицы
 // и метод ре-хэширования таблицы при увеличении размера данных.
@@ -23,6 +26,11 @@ struct Key {
     std::string firstName;
     std::string lastName;
     std::string middleName;
+
+    Key() {}
+
+    Key(std::string firstName, std::string lastName, std::string middleName) :
+    firstName(firstName), lastName(lastName), middleName(middleName) {}
 };
 
 template<typename T>
@@ -30,6 +38,8 @@ struct Item {
     Key key;
     T value;
     bool isEmpty;
+
+    Item() {}
 };
 
 template<typename T>
@@ -64,13 +74,13 @@ HashTable<T>::HashTable() {
 
 template<typename T>
 HashTable<T>::~HashTable() {
-    delete array;
+//    delete array;
 }
 
 template<typename T>
 void HashTable<T>::init(Key key, T value) {
     if(currentSize == -1){
-        currentSize = 64;
+        currentSize = 4;
         currentFilling = 0;
         array = new Item<T>[currentSize];
         for (int i = 0; i < currentSize; ++i) {
@@ -114,8 +124,62 @@ void HashTable<T>::print(void (*printer)(Key, T, bool)) {
 
 template<typename T>
 int HashTable<T>::getNewHash(Key fio) {
-    std::string k = fio.lastName + "$" + fio.firstName + "$" + fio.middleName;
+    std::string keyString = fio.lastName + "$" + fio.firstName + "$" + fio.middleName;
+    int keyNum = 0;
+    for (int i = 0; i < keyString.size(); ++i) {
+        keyNum += (keyString.at(i) * keyString.at(i));
+    }
+    keyNum = abs(keyNum);
+    int bitsToSize = 0;
+    int temp = 2;
+    while (temp <= currentSize){
+        bitsToSize++;
+        temp *= 2;
+    }
+    int offset = (32 - bitsToSize) / 2;
+    int tempHash = keyNum * keyNum;
 
+    std::string hashString = std::bitset<32>(tempHash).to_string();
+    hashString = hashString.substr(offset);
+    hashString = hashString.substr(0, bitsToSize);
+    tempHash = std::stoi(hashString, nullptr, 2);
+    tempHash %= currentSize;
+
+    int attempt = 1;
+    int hash = tempHash;
+    while (!array[hash].isEmpty){
+        hash = (tempHash + 3 * attempt + 2 * attempt * attempt) % currentSize;
+        attempt++;
+    }
+
+    std::cout << hash << std::endl;
+
+    return hash;
+}
+
+template<typename T>
+void HashTable<T>::rehashTable(int newSize) {
+    Item<T>* oldArray = array;
+    array = new Item<T>[newSize];
+    for (int i = 0; i < newSize; ++i) {
+        array[i].isEmpty = true;
+    }
+    for (int i = 0; i < currentSize; ++i) {
+        Item<T> item = oldArray[i];
+        if(!item.isEmpty) {
+            int newHash = getNewHash(item.key);
+            array[newHash].key = item.key;
+            array[newHash].value = item.value;
+            array[newHash].isEmpty = false;
+        }
+    }
+    currentSize = newSize;
+//    delete oldArray;
+
+}
+
+template<typename T>
+int HashTable<T>::getExistingHash(Key fio) {
     return 0;
 }
 
