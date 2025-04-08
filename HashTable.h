@@ -89,14 +89,14 @@ void HashTable<T>::add(Key key, T value) {
     array[itemHash].key = key;
     array[itemHash].value = value;
     array[itemHash].isEmpty = false;
-    currentSize++;
+    currentFilling++;
 }
 
 template<typename T>
 void HashTable<T>::remove(Key key) {
     int itemHash = getExistingHash(key);
     array[itemHash].isEmpty = true;
-    currentSize--;
+    currentFilling--;
 }
 
 template<typename T>
@@ -110,6 +110,13 @@ void HashTable<T>::print(void (*printer)(Key, T, bool)) {
     for (int i = 0; i < currentSize; ++i) {
         printer(array[i].key, array[i].value, array[i].isEmpty);
     }
+}
+
+template<typename T>
+int HashTable<T>::getNewHash(Key fio) {
+    std::string k = fio.lastName + "$" + fio.firstName + "$" + fio.middleName;
+
+    return 0;
 }
 
 
