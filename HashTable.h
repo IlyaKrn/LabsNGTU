@@ -4,23 +4,12 @@
 #include <bitset>
 #include <set>
 
-// Реализовать алгоритмы поиска, вставки, удаления элементов таблицы и распечатки таблицы
-// и метод ре-хэширования таблицы при увеличении размера данных.
-
-//Фамилия Имя Отчество - Ключ
-//функция «середины квадрата» - Хэш-функция
-//Квадратичное опробование - Метод разрешения коллизий
-
 //В 5 лабе обязательно меню, в котором прописаны все действия
 //1. записать информацию в пустую хеш таблицу (вызывается один раз)
 //2. показ на экран хэш таблицы
 //3. добавление в хеш таблицу
 //4. функция удаления элементов
 //5. функция поиска по заданному ключу
-
-//////////////////////////////////////////////////////////////////
-
-//адрес=h(x)+ci+di2 - квадр опроб
 
 struct Key {
     std::string firstName;
@@ -74,7 +63,7 @@ HashTable<T>::HashTable() {
 
 template<typename T>
 HashTable<T>::~HashTable() {
-//    delete array;
+    delete[] array;
 }
 
 template<typename T>
@@ -172,7 +161,7 @@ void HashTable<T>::rehashTable(int newSize) {
         }
     }
     currentSize = newSize;
-//    delete oldArray;
+    delete[] oldArray;
 
 }
 
@@ -208,6 +197,10 @@ int HashTable<T>::getExistingHash(Key fio) {
     ){
         hash = (tempHash + 3 * attempt + 2 * attempt * attempt) % currentSize;
         attempt++;
+        if(attempt == currentSize){
+            hash = -1;
+            break;
+        }
     }
 
     return hash;
