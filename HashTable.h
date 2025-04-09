@@ -60,7 +60,7 @@ public:
     ~HashTable();
     void init(Key key, T value);
     void add(Key key, T value);
-    T* find(Key key);
+    T find(Key key);
     void remove(Key key);
     void print(void (*printer)(Key, T, bool));
 
@@ -110,9 +110,9 @@ void HashTable<T>::remove(Key key) {
 }
 
 template<typename T>
-T *HashTable<T>::find(Key key) {
+T HashTable<T>::find(Key key) {
     int itemHash = getExistingHash(key);
-    return array[itemHash];
+    return array[itemHash].value;
 }
 
 template<typename T>
@@ -152,8 +152,6 @@ int HashTable<T>::getNewHash(Key fio) {
         attempt++;
     }
 
-    std::cout << hash << std::endl;
-
     return hash;
 }
 
@@ -180,7 +178,39 @@ void HashTable<T>::rehashTable(int newSize) {
 
 template<typename T>
 int HashTable<T>::getExistingHash(Key fio) {
-    return 0;
+    std::string keyString = fio.lastName + "$" + fio.firstName + "$" + fio.middleName;
+    int keyNum = 0;
+    for (int i = 0; i < keyString.size(); ++i) {
+        keyNum += (keyString.at(i) * keyString.at(i));
+    }
+    keyNum = abs(keyNum);
+    int bitsToSize = 0;
+    int temp = 2;
+    while (temp <= currentSize){
+        bitsToSize++;
+        temp *= 2;
+    }
+    int offset = (32 - bitsToSize) / 2;
+    int tempHash = keyNum * keyNum;
+
+    std::string hashString = std::bitset<32>(tempHash).to_string();
+    hashString = hashString.substr(offset);
+    hashString = hashString.substr(0, bitsToSize);
+    tempHash = std::stoi(hashString, nullptr, 2);
+    tempHash %= currentSize;
+
+    int attempt = 1;
+    int hash = tempHash;
+    while (array[hash].isEmpty ||
+           array[hash].key.firstName != fio.firstName ||
+           array[hash].key.lastName != fio.lastName ||
+           array[hash].key.middleName != fio.middleName
+    ){
+        hash = (tempHash + 3 * attempt + 2 * attempt * attempt) % currentSize;
+        attempt++;
+    }
+
+    return hash;
 }
 
 
