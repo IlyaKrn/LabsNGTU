@@ -4,13 +4,14 @@
 #include <bitset>
 #include <set>
 
-//В 5 лабе обязательно меню, в котором прописаны все действия
-//1. записать информацию в пустую хеш таблицу (вызывается один раз)
-//2. показ на экран хэш таблицы
-//3. добавление в хеш таблицу
-//4. функция удаления элементов
-//5. функция поиска по заданному ключу
 
+/*
+ * Структура Key - ключ в таблице
+ * firstName - имя
+ * lastName - фамилия
+ * middleName - отчество
+ * Key - конструктор (пустой и со всеми полями)
+ */
 struct Key {
     std::string firstName;
     std::string lastName;
@@ -22,6 +23,13 @@ struct Key {
     firstName(firstName), lastName(lastName), middleName(middleName) {}
 };
 
+/*
+ * Структура Item - элемент таблицы
+ * key - ключ
+ * value - значение
+ * isEmpty - удален элемент или нет
+ * Item - конструктор
+ */
 template<typename T>
 struct Item {
     Key key;
@@ -31,6 +39,20 @@ struct Item {
     Item() {}
 };
 
+/*
+ * Класс HashTable - хэш таблица
+ * currentSize - текущий размер
+ * currentFilling - текущая заполненность
+ * array - список с элементами
+ * getNewHash - метод получения нового хэша
+ * getExistingHash - метод получения хэша существующего элемента
+ * rehashTable - метод рехэширования
+ * init - метод для записи первого значения
+ * add - метод для записи следующих значений
+ * find - метод для поиска
+ * remove - метод для удаления
+ * print - метод вывода таблицы в консоль
+ */
 template<typename T>
 class HashTable {
 private:
@@ -39,8 +61,8 @@ private:
     Item<T>* array;
 
 
-    int getNewHash(Key fio); // возвращает новый хэш без коллизий
-    int getExistingHash(Key fio); // Возвращает хэш элемента по ключу (для получений элемента. Фикс ошибок коллизий)
+    int getNewHash(Key fio);
+    int getExistingHash(Key fio);
     void rehashTable(int newSize);
 
 
@@ -66,9 +88,17 @@ HashTable<T>::~HashTable() {
     delete[] array;
 }
 
+/*
+ * метод init
+ * key - ключ для добавления
+ * value - значение для добавления
+ * метод ничего не возвращает
+ */
 template<typename T>
 void HashTable<T>::init(Key key, T value) {
+    // проверяем инициализированность
     if(currentSize == -1){
+        // инициализируем
         currentSize = 4;
         currentFilling = 0;
         array = new Item<T>[currentSize];
@@ -79,11 +109,19 @@ void HashTable<T>::init(Key key, T value) {
     add(key, value);
 }
 
+/*
+ * метод add
+ * key - ключ для добавления
+ * value - значение для добавления
+ * метод ничего не возвращает
+ */
 template<typename T>
 void HashTable<T>::add(Key key, T value) {
+    //проверяем нужно ли рехэшировать
     if (currentFilling > (currentSize * 0.7)){
         rehashTable(currentSize * 2);
     }
+    //добавляем по новому хэшу
     int itemHash = getNewHash(key);
     array[itemHash].key = key;
     array[itemHash].value = value;
@@ -91,21 +129,39 @@ void HashTable<T>::add(Key key, T value) {
     currentFilling++;
 }
 
+/*
+ * метод remove
+ * key - ключ для удаления
+ * метод ничего не возвращает
+ */
 template<typename T>
 void HashTable<T>::remove(Key key) {
+    //удаляем по хэшу
     int itemHash = getExistingHash(key);
     array[itemHash].isEmpty = true;
     currentFilling--;
 }
 
+/*
+ * метод find
+ * key - ключ для поиска
+ * метод возвращает значение для ключа или пустую структуру
+ */
 template<typename T>
 T HashTable<T>::find(Key key) {
+    //находим по хэшу
     int itemHash = getExistingHash(key);
     return array[itemHash].value;
 }
 
+/*
+ * метод print
+ * printer - функция вывода элемента в консоль
+ * метод ничего не возвращает
+ */
 template<typename T>
 void HashTable<T>::print(void (*printer)(Key, T, bool)) {
+    //выводим все элементы
     for (int i = 0; i < currentSize; ++i) {
         printer(array[i].key, array[i].value, array[i].isEmpty);
     }
@@ -113,18 +169,21 @@ void HashTable<T>::print(void (*printer)(Key, T, bool)) {
 
 template<typename T>
 int HashTable<T>::getNewHash(Key fio) {
+    //преобразуем ключ в число
     std::string keyString = fio.lastName + "$" + fio.firstName + "$" + fio.middleName;
     int keyNum = 0;
     for (int i = 0; i < keyString.size(); ++i) {
         keyNum += (keyString.at(i) * keyString.at(i));
     }
     keyNum = abs(keyNum);
+    //получаем минимальное количество бит для хэша
     int bitsToSize = 0;
     int temp = 2;
     while (temp <= currentSize){
         bitsToSize++;
         temp *= 2;
     }
+    //генерируем хэш
     int offset = (32 - bitsToSize) / 2;
     int tempHash = keyNum * keyNum;
 
@@ -134,6 +193,7 @@ int HashTable<T>::getNewHash(Key fio) {
     tempHash = std::stoi(hashString, nullptr, 2);
     tempHash %= currentSize;
 
+    //решаем коллизию
     int attempt = 1;
     int hash = tempHash;
     while (!array[hash].isEmpty){
@@ -144,13 +204,19 @@ int HashTable<T>::getNewHash(Key fio) {
     return hash;
 }
 
+/*
+ * метод rehashTable
+ * newSize - новый размер таблицы
+ */
 template<typename T>
 void HashTable<T>::rehashTable(int newSize) {
+    //создаем новый массив и заполняем его пустыми элементами
     Item<T>* oldArray = array;
     array = new Item<T>[newSize];
     for (int i = 0; i < newSize; ++i) {
         array[i].isEmpty = true;
     }
+    //копируем элементы из старого массива в новый с новыми хэшами
     for (int i = 0; i < currentSize; ++i) {
         Item<T> item = oldArray[i];
         if(!item.isEmpty) {
@@ -161,18 +227,26 @@ void HashTable<T>::rehashTable(int newSize) {
         }
     }
     currentSize = newSize;
+    //удаляем старый массив
     delete[] oldArray;
 
 }
 
+/*
+ * метод getExistingHash
+ * fio - ключ для поиска
+ * метод ничего не возвращает
+ */
 template<typename T>
 int HashTable<T>::getExistingHash(Key fio) {
+    //преобразуем ключ в число
     std::string keyString = fio.lastName + "$" + fio.firstName + "$" + fio.middleName;
     int keyNum = 0;
     for (int i = 0; i < keyString.size(); ++i) {
         keyNum += (keyString.at(i) * keyString.at(i));
     }
     keyNum = abs(keyNum);
+    //получаем минимальное количество бит для хэша
     int bitsToSize = 0;
     int temp = 2;
     while (temp <= currentSize){
@@ -188,6 +262,7 @@ int HashTable<T>::getExistingHash(Key fio) {
     tempHash = std::stoi(hashString, nullptr, 2);
     tempHash %= currentSize;
 
+    //при коллизии решаем ее до тех пор, пока не найдем элемент или не переберем весь массив
     int attempt = 1;
     int hash = tempHash;
     while (array[hash].isEmpty ||
@@ -202,6 +277,7 @@ int HashTable<T>::getExistingHash(Key fio) {
             break;
         }
     }
+    // возвращаем найденный хэш или -1
 
     return hash;
 }

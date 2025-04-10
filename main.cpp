@@ -10,12 +10,14 @@ int main() {
     bool isInited = false;
     while (true){
         try{
+            //вывод меню
             cout << "Действия:" << endl;
             cout << "1. записать информацию в пустую хеш таблицу" << endl;
             cout << "2. показ на экран хэш таблицы" << endl;
             cout << "3. добавление в хеш таблицу" << endl;
             cout << "4. функция удаления элементов" << endl;
             cout << "5. функция поиска по заданному ключу" << endl;
+            //получение действия
             int action;
             string temp;
             cin >> temp;
@@ -31,6 +33,7 @@ int main() {
                     cout << k.lastName << "\t\t\t" << k.firstName << "\t\t\t" << k.middleName << "\t\t\t" << i << endl;
                 }
             };
+            //вызов соответствующей функциии
             switch (action) {
                 case 1:
                     if(!isInited){
