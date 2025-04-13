@@ -17,15 +17,18 @@
 
 using namespace std;
 
+//проверяем, можно ли составить цепочку
 bool formChain(LinkedList<string> *list) {
     if (list->getSize() == 0) return false;
 
+    //пытаемся составить цепочку
     list->sort([](string s1, string s2) {
         if (s1[s1.size() - 1] == s2[0])
             return -1;
         return 1;
     });
 
+    //проверяем цепочку на правильность
     string prev = list->getItemPtr(list->getSize() - 1)->data;
     for (int i = 0; i < list->getSize(); i++) {
         if (list->getItemPtr(i)->data[0] != prev[prev.size() - 1])
@@ -46,6 +49,7 @@ int main() {
     }
     string line;
     while (getline(file, line)) {
+        //проверяем слово на соответствие критериям задачи
         if (line.length() < 1 || line.length() > 8){
             cout << "word length must be in 1-8 chars" << endl;
             return 1;

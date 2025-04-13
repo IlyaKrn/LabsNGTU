@@ -91,15 +91,7 @@ LinkedList<T>::~LinkedList() {
     item<T> *cur = first;
     while (cur != nullptr) {
         item<T> *next = cur->next;
-        //проверка, нужно ли освобождать память
-        //у вложенного списка.
-        //если память доступна, то удаляем
-        //если ошибка доступа, то нет
-        try{
-            cur = nullptr;
-        }catch(...) {
-            continue;
-        }
+        // освобождаем память
         delete cur;
         cur = next;
     }
@@ -179,8 +171,8 @@ void LinkedList<T>::print(void (*printer)(T)) {
 }
 
 /*
- * Метод iterate
- * handler - функция-обработчик для элементов списка
+ * Метод sort
+ * sorter - функция для сравнения элементов
  * метод ничего не возвращает
  */
 template<typename T>
