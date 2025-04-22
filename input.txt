@@ -1,9 +1,0 @@
-cc
-ab
-bc
-ef
-ee
-fa
-cd
-de
-f

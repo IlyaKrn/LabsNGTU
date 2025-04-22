@@ -1,0 +1,207 @@
+#include <iostream>
+#include <limits>
+#include <string>
+#include <fstream>
+
+using namespace std;
+
+struct Node {
+    int data;
+    Node* prev;
+    Node* next;
+    Node(int value) : data(value), prev(nullptr), next(nullptr) {}
+};
+
+class doublyLinkedList {
+private:
+    Node* head;
+public:
+    /*Конструктор doublyLinkedList() иницилизирует указатель head значением nullptr,
+     *что позволяет создать пустой список*/
+    doublyLinkedList() : head(nullptr) {}
+
+    /*Функция append добавляет новый узел с заданным значением в конец списка.
+     *
+     *data - значение, добавляемое в список*/
+    void append(int data) {
+        Node* newNode = new Node(data);
+        if (!head) {
+            head = newNode;
+            return;
+        }
+        Node* last = head;
+        while (last->next) {
+            last = last->next;
+        }
+        last->next = newNode;
+        newNode->prev = last;
+    }
+    /*Функция display отображает список*/
+    void display() {
+        Node* current = head;
+        while (current) {
+            cout << current->data << " ";
+            current = current->next;
+        }
+        cout << endl;
+    }
+    /*Функция getLength возвращает длину списка*/
+    int getLength() {
+        int count = 0;
+        Node* current = head;
+        while ( current ) {
+            count++;
+            current = current->next;
+        }
+        return count;
+    }
+    /*Функция shiftRight сдвигает элементы списка вправо на k позиций.
+     *
+     *shift - значение, определяющее количество сдвигов вправо.
+     */
+    void shiftRight( int shift ) {
+        int length = getLength();
+        shift %= length;
+        if (shift == 0)
+            return;
+        Node* newTail = head;
+        for (int i = 0; i < length - shift - 1; i++) {
+            newTail = newTail->next;
+        }
+        Node* newHead = newTail->next;
+        if (!newHead)
+            return;
+        newTail->next = nullptr;
+        Node* lastNode = newHead;
+        while (lastNode->next) {
+            lastNode = lastNode->next;
+        }
+        lastNode->next = head;
+        head = newHead;
+    }
+
+    /*Функция clear очищает список*/
+    void clear() {
+        if (getLength() == 0) {
+            cout << "list is empty\n" << endl;
+            return;
+        }
+        else {
+            Node* current = head;
+            while (current) {
+                Node* nextNode = current->next;
+                delete current;
+                current = nextNode;
+            }
+            head = nullptr;
+            cout << "list is cleared\n" << endl;
+        }
+    }
+};
+
+int main() {
+
+    doublyLinkedList* list = new doublyLinkedList();
+    int choice, data, shift, count;
+    string filename;
+    ifstream file;
+    
+    do {
+        cout << "1 - make list with keyboard\n";
+        cout << "2 - make list from file\n";
+        cout << "3 - clear list\n";
+        cout << "4 - shift list\n";
+        cout << "5 - exit\n" << endl;
+        cout << "enter choice: ";
+
+        cin >> choice;
+        //цикл while проверяет коректность ввода данных
+        while (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits < streamsize > ::max(), '\n');
+        }
+
+        switch (choice)
+        {
+        case 1:
+            if (list->getLength() != 0) {
+                cout << "you need to clear list\n" << endl;
+            }
+            else {
+
+                cout << "enter length: ";
+                while ( !(cin >> count) || count <= 0 ) {
+                    cout << "error, you need to enter >0 int: ";
+                    cin.clear();
+                    cin.ignore(numeric_limits < streamsize > ::max(), '\n');
+                }
+
+                cout << "enter elements: ";
+                for (int i = 0; i < count; i++) {
+                    while ( !(cin >> data) ) {
+                        cout << "error, you need to enter int elements: ";
+                        cin.clear();
+                        cin.ignore(numeric_limits < streamsize > ::max(), '\n');
+                    }
+                    list->append(data);
+                }
+                cout << "list before changes: ";
+                list->display();
+            }
+
+            break;
+        
+        case 2:
+            if (list->getLength() != 0) {
+                cout << "you need to clear list\n" << endl;
+            }
+            else {
+                cout << "enter filename: ";
+                cin >> filename;
+                file.open(filename);
+                if (!file.is_open()) {
+                    cout << "cant open file" << endl;
+                }
+                else {
+                    while ( file >> data ) {
+                        list -> append(data);
+                    }
+                    cout << "list before changes: ";
+                    list->display();
+                }
+                file.close();
+            }
+            break;
+       
+        case 3:
+            list->clear();
+            break;
+
+        case 4:
+            if (list->getLength() == 0) {
+                cout << "list is empty\n" << endl;
+            }
+            else {
+                cout << "enter shift: ";
+                while (!(cin >> shift) || shift < 0) {
+                    cout << "error, enter int: ";
+                    cin.clear();
+                    cin.ignore(numeric_limits < streamsize > ::max(), '\n');
+                }
+                list->shiftRight(shift);
+                cout << "list after changes: ";
+                list->display();
+            }
+            break;
+        
+        case 5:
+            break;
+        
+        default:
+            cout << "wrong choice\n" << endl;
+            break;
+        }
+    } while (choice != 5);
+    delete list;
+    return 0;
+}
