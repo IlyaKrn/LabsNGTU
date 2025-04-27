@@ -78,7 +78,7 @@ CCSMatrix<int> getMatrixFromFile() {
 
 }
 
-int main() {
+int mainy() {
     try{
         CCSMatrix<int> matrix = getMatrixFromFile();
         auto printer = [](int item){

@@ -3,6 +3,7 @@ project(lab1)
 
 set(SOURCES
         main.cpp
+        test.cpp
 )
 
 add_executable(main ${SOURCES})
