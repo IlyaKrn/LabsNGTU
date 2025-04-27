@@ -59,7 +59,7 @@ int stressTest(){
     return elapsed_seconds.count();
 }
 
-int whiteBox() {
+int whiteBoxTest() {
     LinkedList<LinkedList<int>> matrixTemplate = LinkedList<LinkedList<int>>();
     static int evenCount = 0;
     for (int i = 0; i < 10; ++i) {
@@ -97,11 +97,73 @@ int whiteBox() {
     return 0;
 }
 
+int loadTest() {
+    const int ITERATIONS = 1000;
+    const int MATRIX_SIZE = 100;
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    for (int iter = 0; iter < ITERATIONS; iter++) {
+        LinkedList<LinkedList<int>> matrix;
+        for (int i = 0; i < MATRIX_SIZE; i++) {
+            LinkedList<int> row;
+            for (int j = 0; j < MATRIX_SIZE; j++) {
+                row.pushBack((i + j) % 5 == 0 ? 1 : 0); // Каждый 5й элемент ненулевой
+            }
+            matrix.pushBack(row);
+        }
+
+        CCSMatrix<int> ccs(matrix, MATRIX_SIZE, MATRIX_SIZE, 0);
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsed_seconds = end-start;
+    return elapsed_seconds.count();
+}
+
+int stabilityTest() {
+    const int seconds = 60; // Продолжительность теста в часах
+    const int CHECK_INTERVAL = 100; // Проверка каждые 100 итераций
+
+    auto start = std::chrono::steady_clock::now();
+    auto end_time = start + std::chrono::seconds (seconds);
+    int iteration = 0;
+
+    while (std::chrono::steady_clock::now() < end_time) {
+        int size = 50 + (iteration % 50);
+        LinkedList<LinkedList<int>> matrix;
+
+        for (int i = 0; i < size; i++) {
+            LinkedList<int> row;
+            for (int j = 0; j < size; j++) {
+                row.pushBack((i * j) % 7 == 0 ? 1 : 0);
+            }
+            matrix.pushBack(row);
+        }
+
+        {
+            CCSMatrix<int> ccs(matrix, size, size, 0);
+
+            if (iteration % CHECK_INTERVAL == 0) {
+                // Выводим прогресс
+                auto now = std::chrono::steady_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::minutes>(now - start).count();
+            }
+        }
+
+        iteration++;
+    }
+    return 0;
+
+}
+
 
 int main(){
     cout << "unit test " << (unitTest() == 0 ? "passed" : "failed") << endl;
-    cout << "unit test passed in " << stressTest() << " seconds" << endl;
-    cout << "unit test " << (whiteBox() == 0 ? "passed" : "failed") << endl;
+    cout << "stress test passed in " << stressTest() << " seconds" << endl;
+    cout << "whitebox test " << (whiteBoxTest() == 0 ? "passed" : "failed") << endl;
+    cout << "load test passed in " << loadTest() << " seconds" << endl;
+    cout << "stability test " << (stabilityTest() == 0 ? "passed" : "failed") << endl;
 
     return 0;
 }

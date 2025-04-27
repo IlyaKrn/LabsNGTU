@@ -96,7 +96,7 @@ LinkedList<T>::~LinkedList() {
         //если память доступна, то удаляем
         //если ошибка доступа, то нет
         try{
-            cur = nullptr;
+//            cur = nullptr;
         }catch(...) {
             continue;
         }

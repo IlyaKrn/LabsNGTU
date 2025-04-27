@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 project(lab1)
 
 set(SOURCES
-        main.cpp
+#        main.cpp
         test.cpp
 )
 
