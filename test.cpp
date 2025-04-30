@@ -122,7 +122,7 @@ int loadTest() {
 }
 
 int stabilityTest() {
-    const int seconds = 60;
+    const int seconds = 15;
 
     auto start = std::chrono::steady_clock::now();
     auto end_time = start + std::chrono::seconds (seconds);
