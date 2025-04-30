@@ -122,8 +122,7 @@ int loadTest() {
 }
 
 int stabilityTest() {
-    const int seconds = 60; // Продолжительность теста в часах
-    const int CHECK_INTERVAL = 100; // Проверка каждые 100 итераций
+    const int seconds = 60;
 
     auto start = std::chrono::steady_clock::now();
     auto end_time = start + std::chrono::seconds (seconds);
@@ -144,11 +143,6 @@ int stabilityTest() {
         {
             CCSMatrix<int> ccs(matrix, size, size, 0);
 
-            if (iteration % CHECK_INTERVAL == 0) {
-                // Выводим прогресс
-                auto now = std::chrono::steady_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::minutes>(now - start).count();
-            }
         }
 
         iteration++;
