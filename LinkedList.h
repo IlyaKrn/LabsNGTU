@@ -22,6 +22,8 @@ public:
     ~LinkedList();
 
     void pushBack(T data);
+    void pushTo(int index, T data);
+    void remove(int index);
     T *getItemPtr(int index);
     int getSize();
 
@@ -64,6 +66,45 @@ void LinkedList<T>::pushBack(T data) {
     }
     cur->next = new item<T>(data, nullptr);
     size++;
+}
+
+template<typename T>
+void LinkedList<T>::pushTo(int index, T data) {
+    if (index < 0 || index > size)
+        return;
+
+    if (index == 0) {
+        first = new item<T>(data, first);
+        size++;
+    } else {
+        item<T> *prev = first;
+        for (int i = 0; i < index - 1; ++i) {
+            prev = prev->next;
+        }
+        prev->next = new item<T>(data, prev->next);
+        size++;
+    }
+}
+
+template<typename T>
+void LinkedList<T>::remove(int index) {
+    if (index < 0 || index >= size)
+        return;
+
+    item<T> *toDelete;
+    if (index == 0) {
+        toDelete = first;
+        first = first->next;
+    } else {
+        item<T> *prev = first;
+        for (int i = 0; i < index - 1; ++i) {
+            prev = prev->next;
+        }
+        toDelete = prev->next;
+        prev->next = toDelete->next;
+    }
+    delete toDelete;
+    size--;
 }
 
 template<typename T>
