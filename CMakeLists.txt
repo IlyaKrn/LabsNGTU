@@ -3,6 +3,11 @@ project(lab1)
 
 set(SOURCES
         main.cpp
+        include/FieldMatrix.h
+        include/GameLogic.h
+        include/LinkedList.h
+        src/FieldMatrix.cpp
+        src/GameLogic.cpp
 )
 
 add_executable(main ${SOURCES})

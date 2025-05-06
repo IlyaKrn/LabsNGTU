@@ -4,7 +4,7 @@
 
 class GameLogic {
 private:
-    FieldMatrix fieldMatrix;
+    FieldMatrix* fieldMatrix;
     int height;
     int width;
 
@@ -13,5 +13,7 @@ private:
     bool isCorner(cellSide side1, cellSide side2);
 
 public:
-    FieldMatrix* getSolution();
+    GameLogic(FieldMatrix* fieldMatrix, int height, int width);
+
+    void getSolution();
 };
