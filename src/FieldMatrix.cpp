@@ -1,4 +1,4 @@
-#include "FieldMatrix.h"
+#include "../include/FieldMatrix.h"
 
 void FieldMatrix::insert(cell data, int x, int y) {
     for (int i = 0; i < coordX.getSize(); ++i) {
@@ -31,3 +31,16 @@ cell* FieldMatrix::getPtr(int x, int y) {
     }
     return nullptr;
 }
+
+void FieldMatrix::getFirstFilledCell(int* x, int* y){
+    *x = -1;
+    *y = -1;
+    if (values.getSize() > 0){
+        *x = *coordX.getItemPtr(0);
+        *y = *coordY.getItemPtr(0);
+    }
+}
+
+cell::cell(cellState state, cellSide lineIn, cellSide lineOut, bool isLine) : state(state), lineIn(lineIn), lineOut(lineOut), isLine(isLine) {}
+
+cell::cell() {}

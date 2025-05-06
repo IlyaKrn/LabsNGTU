@@ -16,6 +16,9 @@ struct cell{
     cellSide lineOut;
     bool isLine;
 
+    cell();
+    cell(cellState state, cellSide lineIn, cellSide lineOut, bool isLine);
+
 };
 
 class FieldMatrix {
@@ -30,5 +33,6 @@ public:
     void insert(cell data, int x, int y);
     void remove(int x, int y);
     cell* getPtr(int x, int y);
+    void getFirstFilledCell(int* x, int* y);
 
 };
