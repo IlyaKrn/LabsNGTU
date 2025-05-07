@@ -41,6 +41,10 @@ void FieldMatrix::getFirstFilledCell(int* x, int* y){
     }
 }
 
+LinkedList<cell>* FieldMatrix::getValuesPtr() {
+    return &values;
+}
+
 cell::cell(cellState state, cellSide lineIn, cellSide lineOut, bool isLine) : state(state), lineIn(lineIn), lineOut(lineOut), isLine(isLine) {}
 
 cell::cell() {}

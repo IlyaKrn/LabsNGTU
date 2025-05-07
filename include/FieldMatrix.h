@@ -35,4 +35,6 @@ public:
     cell* getPtr(int x, int y);
     void getFirstFilledCell(int* x, int* y);
 
+    LinkedList<cell>* getValuesPtr();
+
 };
