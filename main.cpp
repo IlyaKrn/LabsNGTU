@@ -79,7 +79,7 @@ void printField(FieldMatrix* field, int sizeX, int sizeY) {
                     }
                 }
             } else {
-                std::cout << ". ";
+                std::cout << "  ";
             }
         }
         std::cout << std::endl;
