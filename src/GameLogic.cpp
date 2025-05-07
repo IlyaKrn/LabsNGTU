@@ -1,6 +1,94 @@
 #include "../include/GameLogic.h"
 
+
+void printFieldDebug(FieldMatrix* field, int sizeX, int sizeY) {
+    for (int y = 0; y < sizeY; ++y) {
+        for (int x = 0; x < sizeX; ++x) {
+            cell* c = field->getPtr(x, y);
+            if (c != nullptr) {
+                if (c->state == BLACK) {
+                    std::cout << "○ ";
+                } else if (c->state == WHITE) {
+                    std::cout << "● ";
+                } else {
+                    switch (c->lineIn) {
+                        case RIGHT:
+                            switch (c->lineOut) {
+                                case LEFT:
+                                    std::cout << "- ";
+                                    break;
+                                case TOP:
+                                    std::cout << "\\ ";
+                                    break;
+                                case BOTTOM:
+                                    std::cout << "/ ";
+                                    break;
+                                default:
+                                    std::cout << "  ";
+                            }
+                            break;
+                        case LEFT:
+                            switch (c->lineOut) {
+                                case RIGHT:
+                                    std::cout << "- ";
+                                    break;
+                                case TOP:
+                                    std::cout << "/ ";
+                                    break;
+                                case BOTTOM:
+                                    std::cout << "\\ ";
+                                    break;
+                                default:
+                                    std::cout << "  ";
+                            }
+                            break;
+                        case TOP:
+                            switch (c->lineOut) {
+                                case RIGHT:
+                                    std::cout << "\\ ";
+                                    break;
+                                case LEFT:
+                                    std::cout << "/ ";
+                                    break;
+                                case BOTTOM:
+                                    std::cout << "| ";
+                                    break;
+                                default:
+                                    std::cout << "  ";
+                            }
+                            break;
+                        case BOTTOM:
+                            switch (c->lineOut) {
+                                case RIGHT:
+                                    std::cout << "/ ";
+                                    break;
+                                case LEFT:
+                                    std::cout << "\\ ";
+                                    break;
+                                case TOP:
+                                    std::cout << "| ";
+                                    break;
+                                default:
+                                    std::cout << "  ";
+                            }
+                            break;
+                        default:
+                            std::cout << "  ";
+                    }
+                }
+            } else {
+                std::cout << ". ";
+            }
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
+
 int GameLogic::checkCell(int x, int y, cellSide from, cell* prevCell, lineType typeOfLine) {
+
+    printFieldDebug(fieldMatrix, width, height);
+
     if (x < 0 || y < 0 || x >= width || y >= height)
         return -1;
 
@@ -98,6 +186,8 @@ int GameLogic::checkCell(int x, int y, cellSide from, cell* prevCell, lineType t
 
     if (result == -1){
         current->isLine = false;
+        if(current->state == NONE)
+            fieldMatrix->remove(x, y);
     }
 
     return result;

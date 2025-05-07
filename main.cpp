@@ -79,7 +79,7 @@ void printField(FieldMatrix* field, int sizeX, int sizeY) {
                     }
                 }
             } else {
-                std::cout << "  ";
+                std::cout << ". ";
             }
         }
         std::cout << std::endl;
@@ -89,42 +89,47 @@ void printField(FieldMatrix* field, int sizeX, int sizeY) {
 int main() {
     FieldMatrix* field = new FieldMatrix();
 
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 2, 0);
-    field->insert(cell(BLACK, RIGHT, RIGHT, false), 5, 0);
+//    field->insert(cell(WHITE, RIGHT, RIGHT, false), 2, 0);
+//    field->insert(cell(BLACK, RIGHT, RIGHT, false), 5, 0);
+//
+//    field->insert(cell(BLACK, RIGHT, RIGHT, false), 0, 2);
+//    field->insert(cell(BLACK, RIGHT, RIGHT, false), 3, 2);
+//    field->insert(cell(WHITE, RIGHT, RIGHT, false), 4, 2);
+//    field->insert(cell(BLACK, RIGHT, RIGHT, false), 7, 2);
+//    field->insert(cell(WHITE, RIGHT, RIGHT, false), 9, 2);
+//
+//    field->insert(cell(WHITE, RIGHT, RIGHT, false), 6, 3);
+//
+//    field->insert(cell(BLACK, RIGHT, RIGHT, false), 2, 4);
+//    field->insert(cell(BLACK, RIGHT, RIGHT, false), 7, 4);
+//    field->insert(cell(WHITE, RIGHT, RIGHT, false), 8, 4);
+//    field->insert(cell(WHITE, RIGHT, RIGHT, false), 9, 4);
+//
+//    field->insert(cell(WHITE, RIGHT, RIGHT, false), 5, 5);
+//
+//    field->insert(cell(WHITE, RIGHT, RIGHT, false), 1, 6);
+//    field->insert(cell(WHITE, RIGHT, RIGHT, false), 3, 6);
+//    field->insert(cell(WHITE, RIGHT, RIGHT, false), 6, 6);
+//    field->insert(cell(WHITE, RIGHT, RIGHT, false), 7, 6);
+//
+//    field->insert(cell(WHITE, RIGHT, RIGHT, false), 1, 7);
+//    field->insert(cell(WHITE, RIGHT, RIGHT, false), 4, 7);
+//
+//    field->insert(cell(BLACK, RIGHT, RIGHT, false), 8, 8);
+//
+//    field->insert(cell(BLACK, RIGHT, RIGHT, false), 0, 9);
+//    field->insert(cell(WHITE, RIGHT, RIGHT, false), 2, 9);
+//    field->insert(cell(WHITE, RIGHT, RIGHT, false), 5, 9);
 
-    field->insert(cell(BLACK, RIGHT, RIGHT, false), 0, 2);
-    field->insert(cell(BLACK, RIGHT, RIGHT, false), 3, 2);
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 4, 2);
-    field->insert(cell(BLACK, RIGHT, RIGHT, false), 7, 2);
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 9, 2);
 
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 6, 3);
 
-    field->insert(cell(BLACK, RIGHT, RIGHT, false), 2, 4);
-    field->insert(cell(BLACK, RIGHT, RIGHT, false), 7, 4);
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 8, 4);
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 9, 4);
+    field->insert(cell(BLACK, RIGHT, RIGHT, false), 2, 2);
+    field->insert(cell(BLACK, RIGHT, RIGHT, false), 0, 0);
 
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 5, 5);
-
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 1, 6);
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 3, 6);
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 6, 6);
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 7, 6);
-
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 1, 7);
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 4, 7);
-
-    field->insert(cell(BLACK, RIGHT, RIGHT, false), 8, 8);
-
-    field->insert(cell(BLACK, RIGHT, RIGHT, false), 0, 9);
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 2, 9);
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 5, 9);
-
-    GameLogic gl(field, 10, 10);
+    GameLogic gl(field, 5, 5);
     gl.getSolution();
 
-    printField(field, 10, 10);
+    printField(field, 5, 5);
     delete field;
     return 0;
 }
