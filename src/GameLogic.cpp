@@ -87,7 +87,7 @@ void printFieldDebug(FieldMatrix* field, int sizeX, int sizeY) {
 
 int GameLogic::checkCell(int x, int y, cellSide from, cell* prevCell, lineType typeOfLine) {
 
-    printFieldDebug(fieldMatrix, width, height);
+//    printFieldDebug(fieldMatrix, width, height);
 
     if (x < 0 || y < 0 || x >= width || y >= height)
         return -1;
@@ -123,29 +123,27 @@ int GameLogic::checkCell(int x, int y, cellSide from, cell* prevCell, lineType t
             allowedOuts.pushBack(getOppositeTo(from));
             break;
         case CORNER:
-            switch (from) {
-                case LEFT:
-                case RIGHT:
-                    allowedOuts.pushBack(getOppositeTo(TOP));
-                    allowedOuts.pushBack(getOppositeTo(BOTTOM));
-                    break;
-                case TOP:
-                case BOTTOM:
-                    allowedOuts.pushBack(getOppositeTo(LEFT));
-                    allowedOuts.pushBack(getOppositeTo(RIGHT));
-                    break;
+            if (from == LEFT || from == RIGHT){
+                allowedOuts.pushBack(getOppositeTo(TOP));
+                allowedOuts.pushBack(getOppositeTo(BOTTOM));
+            }
+            if (from == TOP || from == BOTTOM){
+                allowedOuts.pushBack(getOppositeTo(LEFT));
+                allowedOuts.pushBack(getOppositeTo(RIGHT));
             }
             break;
         case NO_SPECIFIED:
-            if (from != LEFT)
-                allowedOuts.pushBack(getOppositeTo(LEFT));
-            if (from != RIGHT)
-                allowedOuts.pushBack(getOppositeTo(RIGHT));
-            if (from != TOP)
-                allowedOuts.pushBack(getOppositeTo(TOP));
-            if (from != BOTTOM)
-                allowedOuts.pushBack(getOppositeTo(BOTTOM));
+            allowedOuts.pushBack(getOppositeTo(LEFT));
+            allowedOuts.pushBack(getOppositeTo(RIGHT));
+            allowedOuts.pushBack(getOppositeTo(TOP));
+            allowedOuts.pushBack(getOppositeTo(BOTTOM));
             break;
+    }
+    for (int i = 0; i < allowedOuts.getSize(); ++i) {
+        if (from == *allowedOuts.getItemPtr(i)) {
+            allowedOuts.remove(i);
+            break;
+        }
     }
 
     int result = -1;
@@ -173,6 +171,9 @@ int GameLogic::checkCell(int x, int y, cellSide from, cell* prevCell, lineType t
                     }
                 }
             }
+
+            if (nextCell->state == BLACK && isCorner(from, to))
+                fl = false;
             if (fl)
                 return 0;
         }

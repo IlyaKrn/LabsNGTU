@@ -123,7 +123,8 @@ int main() {
 
 
 
-    field->insert(cell(BLACK, RIGHT, RIGHT, false), 2, 2);
+    field->insert(cell(BLACK, RIGHT, RIGHT, false), 4, 4);
+    field->insert(cell(WHITE, RIGHT, RIGHT, false), 2, 2);
     field->insert(cell(BLACK, RIGHT, RIGHT, false), 0, 0);
 
     GameLogic gl(field, 5, 5);
