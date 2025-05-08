@@ -13,6 +13,8 @@ int GameLogic::checkCell(int x, int y, cellSide from, cell* prevCell, lineType t
         if (current->lineIn == from){
             if(current->state == BLACK && (isCorner(prevCell->lineIn, prevCell->lineOut) || typeOfLine == STRAIGHT))
                 return -1;
+            if(current->state == WHITE && typeOfLine == CORNER)
+                return -1;
             bool fl = true;
             for (int i = 0; i < fieldMatrix->getValuesPtr()->getSize(); ++i) {
                 cell* it = fieldMatrix->getValuesPtr()->getItemPtr(i);
@@ -25,6 +27,8 @@ int GameLogic::checkCell(int x, int y, cellSide from, cell* prevCell, lineType t
             }
             if (fl)
                 return 0;
+            else
+                return -1;
         } else{
             return -1;
         }
