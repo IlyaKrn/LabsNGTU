@@ -1,6 +1,6 @@
 #include "../include/GameLogic.h"
 
-int GameLogic::checkCell(int x, int y, cellSide from, cell* prevCell, lineType typeOfLine) {
+int GameLogic::checkCell(int x, int y, cellSide from, cell* prevCell, lineType typeOfLine, int pearlsReached) {
     if (x < 0 || y < 0 || x >= width || y >= height)
         return -1;
 
@@ -15,17 +15,7 @@ int GameLogic::checkCell(int x, int y, cellSide from, cell* prevCell, lineType t
                 return -1;
             if(current->state == WHITE && typeOfLine == CORNER)
                 return -1;
-            bool fl = true;
-            for (int i = 0; i < fieldMatrix->getValuesPtr()->getSize(); ++i) {
-                cell* it = fieldMatrix->getValuesPtr()->getItemPtr(i);
-                if (it->state == WHITE || it->state == BLACK){
-                    if (!it->isLine){
-                        fl = false;
-                        break;
-                    }
-                }
-            }
-            if (fl)
+            if (pearlsAll == pearlsReached)
                 return 0;
             else
                 return -1;
@@ -81,7 +71,7 @@ int GameLogic::checkCell(int x, int y, cellSide from, cell* prevCell, lineType t
         }
         cellSide nextFrom = getOppositeTo(to);
 
-        result = checkCell(nextX, nextY, nextFrom, current, nextLineType);
+        result = checkCell(nextX, nextY, nextFrom, current, nextLineType, ((current->state == WHITE || current->state == BLACK) ? pearlsReached + 1 : pearlsReached));
 
         if (result != -1)
             break;
@@ -127,8 +117,15 @@ void GameLogic::getSolution(){
     if (x == -1)
         return;
 
+    pearlsAll = 0;
+    for (int i = 0; i < fieldMatrix->getValuesPtr()->getSize(); ++i) {
+        cell* it = fieldMatrix->getValuesPtr()->getItemPtr(i);
+        if (it->state == WHITE || it->state == BLACK){
+            pearlsAll++;
+        }
+    }
     for (cellSide from : {LEFT, RIGHT, TOP, BOTTOM}) {
-        if (checkCell(x, y, from, nullptr, NO_SPECIFIED) != -1)
+        if (checkCell(x, y, from, nullptr, NO_SPECIFIED, 0) != -1)
             return;
     }
 }
