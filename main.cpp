@@ -13,6 +13,7 @@ void printField(FieldMatrix* fieldMatrix, SDL_Window* window, int height, int wi
                 for (int pxY = 0; pxY < pixelSize; pxY++) {
 
                     bool isFill = false;
+                    bool isRed = false;
 
                     if (pxX < 4 || pxY < 4) {
                         isFill = true;
@@ -34,13 +35,48 @@ void printField(FieldMatrix* fieldMatrix, SDL_Window* window, int height, int wi
                                 isFill = false;
                         }
                         if (curCell->isLine){
-
+                            switch (curCell->lineIn) {
+                                case RIGHT:
+                                    if(pxX >= pixelSize / 2 && pxY >= pixelSize / 2 - 1 && pxY <= pixelSize / 2 + 1)
+                                        isRed = true;
+                                    break;
+                                case LEFT:
+                                    if(pxX <= pixelSize / 2 && pxY >= pixelSize / 2 - 1 && pxY <= pixelSize / 2 + 1)
+                                        isRed = true;
+                                    break;
+                                case TOP:
+                                    if(pxY <= pixelSize / 2 && pxX >= pixelSize / 2 - 1 && pxX <= pixelSize / 2 + 1)
+                                        isRed = true;
+                                    break;
+                                case BOTTOM:
+                                    if(pxY >= pixelSize / 2 && pxX >= pixelSize / 2 - 1 && pxX <= pixelSize / 2 + 1)
+                                        isRed = true;
+                                    break;
+                            }
+                            switch (curCell->lineOut) {
+                                case RIGHT:
+                                    if(pxX >= pixelSize / 2 && pxY >= pixelSize / 2 - 1 && pxY <= pixelSize / 2 + 1)
+                                        isRed = true;
+                                    break;
+                                case LEFT:
+                                    if(pxX <= pixelSize / 2 && pxY >= pixelSize / 2 - 1 && pxY <= pixelSize / 2 + 1)
+                                        isRed = true;
+                                    break;
+                                case TOP:
+                                    if(pxY <= pixelSize / 2 && pxX >= pixelSize / 2 - 1 && pxX <= pixelSize / 2 + 1)
+                                        isRed = true;
+                                    break;
+                                case BOTTOM:
+                                    if(pxY >= pixelSize / 2 && pxX >= pixelSize / 2 - 1 && pxX <= pixelSize / 2 + 1)
+                                        isRed = true;
+                                    break;
+                            }
                         }
                     }
 
-                    pixels[4 * ((startY + pxY) * width * pixelSize + (startX + pxX)) + 0] = isFill ? 0 : 255;
-                    pixels[4 * ((startY + pxY) * width * pixelSize + (startX + pxX)) + 1] = isFill ? 0 : 255;
-                    pixels[4 * ((startY + pxY) * width * pixelSize + (startX + pxX)) + 2] = isFill ? 0 : 255;
+                    pixels[4 * ((startY + pxY) * width * pixelSize + (startX + pxX)) + 0] = isRed ? 0 : (isFill ? 0 : 255);
+                    pixels[4 * ((startY + pxY) * width * pixelSize + (startX + pxX)) + 1] = isRed ? 0 : (isFill ? 0 : 255);
+                    pixels[4 * ((startY + pxY) * width * pixelSize + (startX + pxX)) + 2] = isRed ? 255 : (isFill ? 0 : 255);
                     pixels[4 * ((startY + pxY) * width * pixelSize + (startX + pxX)) + 3] = 255;
 
                 }
@@ -62,14 +98,14 @@ int main() {
     FieldMatrix* field = new FieldMatrix();
     field->insert(cell(BLACK, RIGHT, RIGHT, false), 0, 0);
     field->insert(cell(WHITE, RIGHT, RIGHT, false), 2, 2);
-    field->insert(cell(BLACK, RIGHT, RIGHT, false), 4, 4);
+    field->insert(cell(BLACK, RIGHT, RIGHT, false), 5, 5);
 
-    printField(field, window, height, width, pxSize);
+    GameLogic gl(field, height, width);
+    gl.getSolution();
 
-//    GameLogic gl(field, 5, 5);
-//    gl.getSolution();
-
-    while (true){}
+    while (true){
+        printField(field, window, height, width, pxSize);
+    }
 
     delete field;
     return 0;
