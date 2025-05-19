@@ -96,17 +96,34 @@ int main() {
     SDL_Window* window = SDL_CreateWindow("Ожерелье", 0, 0, height * pxSize, width * pxSize, 0);
 
     FieldMatrix* field = new FieldMatrix();
-    field->insert(cell(BLACK, RIGHT, RIGHT, false), 0, 0);
-    field->insert(cell(WHITE, RIGHT, RIGHT, false), 2, 2);
-    field->insert(cell(BLACK, RIGHT, RIGHT, false), 5, 5);
-
+    SDL_Event event;
     GameLogic gl(field, height, width);
-    gl.getSolution();
-
+    int x;
+    int y;
     while (true){
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_MOUSEBUTTONDOWN:
+                    x = event.motion.x / pxSize;
+                    y = event.motion.y / pxSize;
+                    if (event.button.button == SDL_BUTTON_LEFT) {
+                        field->insert(cell(WHITE, RIGHT, RIGHT, false), x, y);
+                    }
+                    if (event.button.button == SDL_BUTTON_RIGHT) {
+                        field->insert(cell(BLACK, RIGHT, RIGHT, false), x, y);
+                    }
+                    if (event.button.button == SDL_BUTTON_MIDDLE) {
+                        field->remove(x, y);
+                    }
+                    gl.getSolution();
+                    break;
+                case SDL_QUIT:
+                    SDL_Quit();
+                    delete field;
+                    return 0;
+            }
+        }
         printField(field, window, height, width, pxSize);
     }
 
-    delete field;
-    return 0;
 }

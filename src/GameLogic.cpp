@@ -110,6 +110,9 @@ bool GameLogic::isCorner(cellSide side1, cellSide side2){
 }
 
 void GameLogic::getSolution(){
+    for (int i = 0; i < fieldMatrix->getValuesPtr()->getSize(); ++i) {
+        fieldMatrix->getValuesPtr()->getItemPtr(i)->isLine = false;
+    }
     int x = -1;
     int y = -1;
 

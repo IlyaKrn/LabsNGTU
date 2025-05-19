@@ -35,9 +35,11 @@ cell* FieldMatrix::getPtr(int x, int y) {
 void FieldMatrix::getFirstFilledCell(int* x, int* y){
     *x = -1;
     *y = -1;
-    if (values.getSize() > 0){
-        *x = *coordX.getItemPtr(0);
-        *y = *coordY.getItemPtr(0);
+    for (int i = 0; i < values.getSize(); ++i) {
+        if (values.getItemPtr(i)->state != NONE){
+            *x = *coordX.getItemPtr(i);
+            *y = *coordY.getItemPtr(i);
+        }
     }
 }
 
