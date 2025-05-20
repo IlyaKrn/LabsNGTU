@@ -15,6 +15,27 @@ int GameLogic::checkCell(int x, int y, cellSide from, cell* prevCell, lineType t
                 return -1;
             if(current->state == WHITE && typeOfLine == CORNER)
                 return -1;
+            if (current->state == WHITE && !isCorner(prevCell->lineIn, prevCell->lineOut)){
+                int nextX = x;
+                int nextY = y;
+                switch (current->lineOut) {
+                    case RIGHT:
+                        nextX++;
+                        break;
+                    case LEFT:
+                        nextX--;
+                        break;
+                    case TOP:
+                        nextY--;
+                        break;
+                    case BOTTOM:
+                        nextY++;
+                        break;
+                }
+                cell* nextCell = fieldMatrix->getPtr(nextX, nextY);
+                if(!isCorner(nextCell->lineIn, nextCell->lineOut))
+                    return -1;
+            }
             if (pearlsAll == pearlsReached)
                 return 0;
             else
