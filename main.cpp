@@ -5,37 +5,51 @@
 
 using namespace std;
 
-int main() {
+int main(int argc, char** argv) {
 
-    //размеры окна
-    int HEIGHT = 600;
-    int WIDTH = 600;
-    //окно
-    SDL_Window* window = SDL_CreateWindow("Численные методы лаб. 1", 0, 0, HEIGHT, WIDTH , 0);
+    //размеры окна и размер клетки
+    int HEIGHT = 1000;
+    int WIDTH = 1000;
+    int SCALE = 50;
+
+
+    //открываем окно и получаем матрицу пикселей
+    SDL_Window* window = SDL_CreateWindow("Численные методы лаб. 0", 0, 0, HEIGHT, WIDTH , 0);
     Uint32* pixels = (Uint32*) SDL_GetWindowSurface(window)->pixels;
 
 
-    //отрисовываем функции
+    //отрисовываем изображение и считываем действия пользователя
     while (true){
         //читаем события
-//        int x;
-//        int y;
-//        SDL_Event event;
-//        while (SDL_PollEvent(&event)) {
-//            switch (event.type) {
-//                case SDL_MOUSEBUTTONDOWN:
-//                    break;
-//                case SDL_QUIT:
-//                    SDL_Quit();
-//                    return 0;
-//            }
-//        }
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_MOUSEBUTTONDOWN:
+                    break;
+                case SDL_QUIT:
+                    SDL_Quit();
+                    return 0;
+            }
+        }
+
         //отрисовка функций
-        for (int i = 0; i < HEIGHT; ++i) {
-            for (int j = 0; j < WIDTH; ++j) {
-                double funcVal = -100*sin(j*3.14*2/WIDTH) + HEIGHT/2;
-                double taylorVal = -100*taylorSerial(j*3.14*2/WIDTH, 3.14, 1, 5) + HEIGHT/2;
-                pixels[i * WIDTH + j] = (funcVal + 1 > i && funcVal - 1 < i) || i == HEIGHT/2 || j == WIDTH/2 || (taylorVal + 2 > i && taylorVal - 2 < i) || abs(taylorVal - funcVal) > 10? 0 : 2147483647;
+        for (int y = 0; y < HEIGHT; ++y) {
+            for (int x = 0; x < WIDTH; ++x) {
+                //считаем координаты с поправкой на смещение осей и переворот
+                int fixX = x - WIDTH/2;
+                int fixY = - y + HEIGHT/2;
+                //вычисляем значения функций для текущего x с поправкой на перевернутую ось OY и смещение осей
+                float funcVal = sin((float) fixX / SCALE) * SCALE;
+                float taylorVal = taylorSerial((float) fixX / SCALE, 0, 1, 10) * SCALE;
+
+                //красим пиксель в нужный цвет
+                pixels[y * WIDTH + x] =
+                        fixX == 0 ||
+                        fixY == 0 ||
+                        (fixY + 2 > funcVal && fixY - 2 < funcVal) ||
+                        (fixY + 2 > taylorVal && fixY - 2 < taylorVal)
+                        ? 0 : 2147483647;
+
             }
         }
         SDL_UpdateWindowSurface(window);

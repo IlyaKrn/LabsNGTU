@@ -1,3 +1,3 @@
 #pragma once
 
-double taylorSerial(double x, double x0, double k, int members);
+float taylorSerial(float x, float x0, float k, int members);
