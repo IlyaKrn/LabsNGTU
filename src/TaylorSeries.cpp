@@ -1,9 +1,8 @@
 #include "../include/TaylorSeries.h"
 #include <cmath>
-#include <iostream>
 
 
-//вычисление значения ряда Тейлора с приближением в x0 для точки x
+//вычисление частичной суммы ряда Тейлора с приближением в x0 для точки x
 double taylorSerial(double x, double x0, double k, int members){
     //общий результат
     double result = 0;
