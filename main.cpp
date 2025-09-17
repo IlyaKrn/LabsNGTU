@@ -35,8 +35,8 @@ int main(int argc, char** argv) {
     float EPS = 0.1;        //максимальная разница между значениями функции и частичной суммы ряда Тейлора
 
     //массивы значений функции и частичной суммы ряда Тейлора для оптимизации отрисовки
-    int* funcVals = new int[WIDTH];
-    int* taylorVals = new int[WIDTH];
+    float* funcVals = new float[WIDTH];
+    float* taylorVals = new float[WIDTH];
 
     //рисуем белый фон на поле
     for (int i = 0; i < HEIGHT * WIDTH; ++i) {
@@ -112,14 +112,14 @@ int main(int argc, char** argv) {
             float curX = x - WIDTH / 2;
 
             //вычисляем значения функции и частичной суммы ряда Тейлора для текущего x с поправкой на смещение и переворот осей
-            int funcVal = - sin(k * curX / SCALE) * SCALE + HEIGHT / 2;
-            int taylorVal = - taylorSerial(curX / SCALE, x0, k, members) * SCALE + HEIGHT / 2;
+            float funcVal = - sin(k * curX / SCALE) * SCALE + HEIGHT / 2;
+            float taylorVal = - taylorSerial(curX / SCALE, x0, k, members) * SCALE + HEIGHT / 2;
 
             //сравниваем новое значение функций с предыдущими и удаляем его при необходимости
             if(funcVal != funcVals[x])
-                pixels[funcVals[x] * WIDTH + x] = COLOR_WHITE;
+                pixels[((int)funcVals[x]) * WIDTH + x] = COLOR_WHITE;
             if(taylorVal != taylorVals[x])
-                pixels[taylorVals[x] * WIDTH + x] = COLOR_WHITE;
+                pixels[((int)taylorVals[x]) * WIDTH + x] = COLOR_WHITE;
 
             //чистим промежуток с предыдущей допустимой погрешностью
             if(abs(funcVals[x] - taylorVals[x]) <= EPS * SCALE){
@@ -135,13 +135,13 @@ int main(int argc, char** argv) {
                 }
             }
 
-            //рисуем функции если необходимо
+            //рисуем функции
             if(funcVal >= 0 && funcVal < HEIGHT){
-                pixels[funcVal * WIDTH + x] = COLOR_BLACK;
+                pixels[((int) funcVal) * WIDTH + x] = COLOR_BLACK;
                 funcVals[x] = funcVal;
             }
             if(taylorVal >= 0 && taylorVal < HEIGHT){
-                pixels[taylorVal * WIDTH + x] = COLOR_BLACK;
+                pixels[((int) taylorVal) * WIDTH + x] = COLOR_BLACK;
                 taylorVals[x] = taylorVal;
             }
 
