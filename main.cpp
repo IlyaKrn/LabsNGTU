@@ -8,6 +8,7 @@ using namespace std;
 int main(int argc, char** argv) {
 
     int COLOR_WHITE = 2147483647;
+    int COLOR_GRAY = 1002159035;
     int COLOR_BLACK = 0;
 
     //размеры окна и размер клетки
@@ -16,7 +17,12 @@ int main(int argc, char** argv) {
     int SCALE = 50;
 
     //перезаписываем параметры окна из аргументов программы
-    //TODO('сделать перезапись параметров окна из аргументов')
+    if(argc == 3){
+        try{ HEIGHT = stoi(argv[0]); } catch(...) {}
+        try{ WIDTH = stoi(argv[1]);  } catch(...) {}
+        try{ SCALE = stoi(argv[2]);  } catch(...) {}
+    }
+    cout << "field: " << HEIGHT << "x" << WIDTH << "\n1 cell= " << SCALE << endl;
 
     //открываем окно и получаем матрицу пикселей
     SDL_Window* window = SDL_CreateWindow("Численные методы лаб. 0", 0, 0, HEIGHT, WIDTH , 0);
@@ -73,8 +79,32 @@ int main(int argc, char** argv) {
             cout << "================\nmembers: " << members << "\nk: " << k << "\nx0: " << x0 << endl;
         }
 
-        //рисуем оси и клетки
-        //TODO('нарисовать оси и клетки')
+        //рисуем клетки
+        for (int i = 1; i < HEIGHT / 2 - 1; ++i) {
+            if(i % SCALE == 0) {
+                for (int j = 0; j < WIDTH; ++j) {
+                    pixels[(i + HEIGHT / 2) * WIDTH + j] = COLOR_GRAY;
+                    pixels[(-i + HEIGHT / 2) * WIDTH + j] = COLOR_GRAY;
+                }
+            }
+        }
+        for (int i = 1; i < WIDTH / 2 - 1; ++i) {
+            if(i % SCALE == 0) {
+                for (int j = 0; j < HEIGHT; ++j) {
+                    pixels[j * WIDTH + ((i + WIDTH / 2 - 1))] = COLOR_GRAY;
+                    pixels[j * WIDTH + ((-i + WIDTH / 2 - 1))] = COLOR_GRAY;
+                }
+            }
+        }
+
+        //рисуем оси
+        for (int i = 0; i < HEIGHT; ++i) {
+            pixels[i * WIDTH + WIDTH / 2] = COLOR_BLACK;
+        }
+        for (int i = 0; i < WIDTH; ++i) {
+            pixels[(HEIGHT / 2 - 1) * WIDTH + i] = COLOR_BLACK;
+        }
+
 
         //отрисовка графиков
         for (int x = 0; x < WIDTH; ++x) {
@@ -90,6 +120,20 @@ int main(int argc, char** argv) {
                 pixels[funcVals[x] * WIDTH + x] = COLOR_WHITE;
             if(taylorVal != taylorVals[x])
                 pixels[taylorVals[x] * WIDTH + x] = COLOR_WHITE;
+
+            //чистим промежуток с предыдущей допустимой погрешностью
+            if(abs(funcVals[x] - taylorVals[x]) <= EPS * SCALE){
+                for (int i = min(funcVals[x], taylorVals[x]) + 1; i < max(funcVals[x], taylorVals[x]); ++i) {
+                    pixels[i * WIDTH + x] = COLOR_WHITE;
+                }
+            }
+
+            //рисуем новый промежуток с допустимой погрешностью
+            if(abs(funcVal - taylorVal) <= EPS * SCALE){
+                for (int i = min(funcVal, taylorVal) + 1; i < max(funcVal, taylorVal); ++i) {
+                    pixels[i * WIDTH + x] = COLOR_BLACK;
+                }
+            }
 
             //рисуем функции если необходимо
             if(funcVal >= 0 && funcVal < HEIGHT){
