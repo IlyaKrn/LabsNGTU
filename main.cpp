@@ -1,19 +1,46 @@
 #include <iostream>
-#include <unordered_map>
-#include "include/TaylorSeries.h"
-#include "SDL.h"
+#include <vector>
+#include "build/libs/sdl2/include/SDL.h"
+#include "include/InterpolatedFunctions.h"
 
 using namespace std;
 
-int main(int argc, char** argv) {
+const int COLOR_WHITE = 2147483647;
+const int COLOR_GRAY = 1002159035;
+const int COLOR_BLACK = 0;
 
-    int COLOR_WHITE = 2147483647;
-    int COLOR_GRAY = 1002159035;
-    int COLOR_BLACK = 0;
+//рисуем белый фон
+void drawSurface(Uint32* pixels, int h, int w){
+    for (int i = 0; i < h * w; ++i) {
+        pixels[i] = COLOR_WHITE;
+    }
+}
+
+//рисуем клетки и оси
+void drawField(Uint32* pixels, int h, int w, int s){
+    for (int i = 0; i < h / 2 - 1; ++i) {
+        if(i % s == 0) {
+            for (int j = 0; j < w; ++j) {
+                pixels[(i + h / 2) * w + j] = COLOR_GRAY;
+                pixels[(-i + h / 2) * w + j] = COLOR_GRAY;
+            }
+        }
+    }
+    for (int i = 0; i < w / 2 - 1; ++i) {
+        if(i % s == 0) {
+            for (int j = 0; j < h; ++j) {
+                pixels[j * w + ((i + w / 2 - 1))] = COLOR_GRAY;
+                pixels[j * w + ((-i + w / 2 - 1))] = COLOR_GRAY;
+            }
+        }
+    }
+}
+
+int main(int argc, char** argv) {
 
     //размеры окна и размер клетки
     int HEIGHT = 1000;
-    int WIDTH = 1000;
+    int WIDTH = 1500;
     int SCALE = 50;
 
     //перезаписываем параметры окна из аргументов программы
@@ -22,26 +49,17 @@ int main(int argc, char** argv) {
         try{ WIDTH = stoi(argv[1]);  } catch(...) {}
         try{ SCALE = stoi(argv[2]);  } catch(...) {}
     }
-    cout << "field: " << HEIGHT << "x" << WIDTH << "\n1 cell= " << SCALE << endl;
+    cout << "field: " << HEIGHT << "x" << WIDTH << "\ncell= " << SCALE << endl;
+
+    //получаем список узлов
+    vector<node> nodes = getNodes("/home/ilyakrn/CLionProjects/NumericalMethodsCourceWork/nodes.txt");
 
     //открываем окно и получаем матрицу пикселей
-    SDL_Window* window = SDL_CreateWindow("Численные методы лаб. 0", 0, 0, HEIGHT, WIDTH , 0);
+    SDL_Window* window = SDL_CreateWindow("Курсовая работа Численные методы", 0, 0, WIDTH, HEIGHT, 0);
     Uint32* pixels = (Uint32*) SDL_GetWindowSurface(window)->pixels;
 
-    //регулируемые значения
-    int members = 1;        //количество членов частичной суммы ряда Тейлора (1-10)
-    float k = 1;            //параметр в формуле
-    float x0 = 0;           //точка, в которой раскладываем функцию
-    float EPS = 0.1;        //максимальная разница между значениями функции и частичной суммы ряда Тейлора
-
-    //массивы значений функции и частичной суммы ряда Тейлора для оптимизации отрисовки
-    float* funcVals = new float[WIDTH];
-    float* taylorVals = new float[WIDTH];
-
-    //рисуем белый фон на поле
-    for (int i = 0; i < HEIGHT * WIDTH; ++i) {
-        pixels[i] = COLOR_WHITE;
-    }
+    //рисуем белый фон
+    drawSurface(pixels, HEIGHT, WIDTH);
 
     //рисуем графики и считываем действия пользователя
     while (true){
@@ -49,103 +67,91 @@ int main(int argc, char** argv) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
-                case SDL_KEYDOWN:
-                    switch (event.key.keysym.sym) {
-                        //изменяем параметр k (стрелки вверх-вниз)
-                        case SDLK_UP:       k += 0.05; break;
-                        case SDLK_DOWN:     k -= 0.05; break;
-                        //изменяем точку для разложения в ряд Тейлора (стрелки вправо-влево)
-                        case SDLK_RIGHT:    x0 += 0.1; break;
-                        case SDLK_LEFT:     x0 -= 0.1; break;
-                        //меняем количество членов частичной суммы ряда Тейлора (цифры 0-9)
-                        case SDLK_0: members = 1;  break;
-                        case SDLK_1: members = 2;  break;
-                        case SDLK_2: members = 3;  break;
-                        case SDLK_3: members = 4;  break;
-                        case SDLK_4: members = 5;  break;
-                        case SDLK_5: members = 6;  break;
-                        case SDLK_6: members = 7;  break;
-                        case SDLK_7: members = 8;  break;
-                        case SDLK_8: members = 9;  break;
-                        case SDLK_9: members = 10; break;
-                    }
-                    break;
-                //завершение программы при закрытии окна
                 case SDL_QUIT:
                     SDL_Quit();
                     return 0;
             }
-            //выводим значения переменных в консоль
-            cout << "================\nmembers: " << members << "\nk: " << k << "\nx0: " << x0 << endl;
         }
 
-        //рисуем клетки
-        for (int i = 1; i < HEIGHT / 2 - 1; ++i) {
-            if(i % SCALE == 0) {
-                for (int j = 0; j < WIDTH; ++j) {
-                    pixels[(i + HEIGHT / 2) * WIDTH + j] = COLOR_GRAY;
-                    pixels[(-i + HEIGHT / 2) * WIDTH + j] = COLOR_GRAY;
-                }
-            }
-        }
-        for (int i = 1; i < WIDTH / 2 - 1; ++i) {
-            if(i % SCALE == 0) {
-                for (int j = 0; j < HEIGHT; ++j) {
-                    pixels[j * WIDTH + ((i + WIDTH / 2 - 1))] = COLOR_GRAY;
-                    pixels[j * WIDTH + ((-i + WIDTH / 2 - 1))] = COLOR_GRAY;
-                }
-            }
-        }
+        //рисуем клетки и оси
+        drawField(pixels, HEIGHT, WIDTH, SCALE);
 
-        //рисуем оси
-        for (int i = 0; i < HEIGHT; ++i) {
-            pixels[i * WIDTH + WIDTH / 2] = COLOR_BLACK;
-        }
-        for (int i = 0; i < WIDTH; ++i) {
-            pixels[(HEIGHT / 2 - 1) * WIDTH + i] = COLOR_BLACK;
-        }
+        long double lastLinear = 0;
+        long double lastLagrange = 0;
+        long double lastNewton = 0;
+        long double lastSpline = 0;
 
 
-        //отрисовка графиков
         for (int x = 0; x < WIDTH; ++x) {
             //считаем текущую координату x с поправкой на смещение осей
-            float curX = x - WIDTH / 2;
+            float curX = x - SCALE;
 
-            //вычисляем значения функции и частичной суммы ряда Тейлора для текущего x с поправкой на смещение и переворот осей
-            float funcVal = - sin(k * curX / SCALE) * SCALE + HEIGHT / 2;
-            float taylorVal = - taylorSerial(curX / SCALE, x0, k, members) * SCALE + HEIGHT / 2;
+            //получаем координаты точек для текущего x
+            vector<long double> linear = linearInterpolation(curX / SCALE, nodes);
+            vector<long double> lagrange = lagrangeInterpolation(curX / SCALE, nodes);
+            vector<long double> newton = newtonInterpolation(curX / SCALE, nodes);
+            vector<long double> spline = splineInterpolation(curX / SCALE, nodes);
 
-            //сравниваем новое значение функций с предыдущими и удаляем его при необходимости
-            if(funcVal != funcVals[x])
-                pixels[((int)funcVals[x]) * WIDTH + x] = COLOR_WHITE;
-            if(taylorVal != taylorVals[x])
-                pixels[((int)taylorVals[x]) * WIDTH + x] = COLOR_WHITE;
-
-            //чистим промежуток с предыдущей допустимой погрешностью
-            if(abs(funcVals[x] - taylorVals[x]) <= EPS * SCALE){
-                for (int i = min(funcVals[x], taylorVals[x]) + 1; i < max(funcVals[x], taylorVals[x]); ++i) {
-                    pixels[i * WIDTH + x] = COLOR_WHITE;
+            //рисуем точки функции
+            for (int i = 0; i < linear.size(); ++i) {
+                //вычисляем значение функции с поправкой на смещение осей
+                long double y = linear[i] * SCALE + SCALE;
+                if (y < 0) y = 0;
+                if (y >= HEIGHT) y = HEIGHT - 1;
+                //рисуем если помещается на поле
+                for (int j = min(y, lastLinear); j <= max(y, lastLinear); ++j) {
+                    if(j >= 0 && j < HEIGHT) {
+                        pixels[((int) j) * WIDTH + x] = COLOR_GRAY;
+                    }
                 }
+                lastLinear = y;
             }
-
-            //рисуем новый промежуток с допустимой погрешностью
-            if(abs(funcVal - taylorVal) <= EPS * SCALE){
-                for (int i = min(funcVal, taylorVal) + 1; i < max(funcVal, taylorVal); ++i) {
-                    pixels[i * WIDTH + x] = COLOR_BLACK;
+            for (int i = 0; i < lagrange.size(); ++i) {
+                //вычисляем значение функции с поправкой на смещение осей
+                long double y = lagrange[i] * SCALE + SCALE;
+                if (y < 0) y = 0;
+                if (y >= HEIGHT) y = HEIGHT - 1;
+                //рисуем если помещается на поле
+                for (int j = min(y, lastLagrange); j <= max(y, lastLagrange); ++j) {
+                    if(j >= 0 && j < HEIGHT) {
+                        pixels[((int) j) * WIDTH + x] = COLOR_BLACK;
+                    }
                 }
+                lastLagrange = y;
             }
-
-            //рисуем функции
-            if(funcVal >= 0 && funcVal < HEIGHT){
-                pixels[((int) funcVal) * WIDTH + x] = COLOR_BLACK;
-                funcVals[x] = funcVal;
+            for (int i = 0; i < newton.size(); ++i) {
+                //вычисляем значение функции с поправкой на смещение осей
+                long double y = newton[i] * SCALE + SCALE;
+                if (y < 0) y = 0;
+                if (y >= HEIGHT) y = HEIGHT - 1;
+                //рисуем если помещается на поле
+                for (int j = min(y, lastNewton); j <= max(y, lastNewton); ++j) {
+                    if(j >= 0 && j < HEIGHT) {
+                        pixels[((int) j) * WIDTH + x] = COLOR_BLACK;
+                    }
+                }
+                lastNewton = y;
             }
-            if(taylorVal >= 0 && taylorVal < HEIGHT){
-                pixels[((int) taylorVal) * WIDTH + x] = COLOR_BLACK;
-                taylorVals[x] = taylorVal;
+            for (int i = 0; i < spline.size(); ++i) {
+                //вычисляем значение функции с поправкой на смещение осей
+                long double y = spline[i] * SCALE + SCALE;
+                if (y < 0) y = 0;
+                if (y >= HEIGHT) y = HEIGHT - 1;
+                //рисуем если помещается на поле
+                for (int j = min(y, lastSpline); j <= max(y, lastSpline); ++j) {
+                    if(j >= 0 && j < HEIGHT) {
+                        pixels[((int) j) * WIDTH + x] = COLOR_BLACK;
+                    }
+                }
+                lastSpline = y;
             }
-
+            SDL_UpdateWindowSurface(window);
         }
+
+
+
+
+
         SDL_UpdateWindowSurface(window);
     }
 

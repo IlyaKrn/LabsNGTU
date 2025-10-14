@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(lab1)
+project(numerical-methods-cource-work)
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/libs)
 
@@ -11,8 +11,8 @@ add_subdirectory(${CMAKE_BINARY_DIR}/libs/sdl2 sdl2)
 
 add_executable(main
         main.cpp
-        include/TaylorSeries.h
-        src/TaylorSeries.cpp
+        include/InterpolatedFunctions.h
+        src/InterpolatedFunctions.cpp
 )
 
 target_link_libraries(main SDL2)
