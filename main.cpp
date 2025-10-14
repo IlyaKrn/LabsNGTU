@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "build/libs/sdl2/include/SDL.h"
-#include "include/InterpolatedFunctions.h"
+#include "include/ApproximatedFunctions.h"
 
 using namespace std;
 
@@ -76,74 +76,28 @@ int main(int argc, char** argv) {
         //рисуем клетки и оси
         drawField(pixels, HEIGHT, WIDTH, SCALE);
 
-        long double lastLinear = 0;
-        long double lastLagrange = 0;
-        long double lastNewton = 0;
-        long double lastSpline = 0;
-
+        long double lastMinSquare = 0;
 
         for (int x = 0; x < WIDTH; ++x) {
             //считаем текущую координату x с поправкой на смещение осей
             float curX = x - SCALE;
 
             //получаем координаты точек для текущего x
-            vector<long double> linear = linearInterpolation(curX / SCALE, nodes);
-            vector<long double> lagrange = lagrangeInterpolation(curX / SCALE, nodes);
-            vector<long double> newton = newtonInterpolation(curX / SCALE, nodes);
-            vector<long double> spline = splineInterpolation(curX / SCALE, nodes);
+            vector<long double> minSquare = minSquaresApproximation(curX / SCALE, nodes);
 
             //рисуем точки функции
-            for (int i = 0; i < linear.size(); ++i) {
+            for (int i = 0; i < minSquare.size(); ++i) {
                 //вычисляем значение функции с поправкой на смещение осей
-                long double y = linear[i] * SCALE + SCALE;
+                long double y = minSquare[i] * SCALE + SCALE;
                 if (y < 0) y = 0;
                 if (y >= HEIGHT) y = HEIGHT - 1;
                 //рисуем если помещается на поле
-                for (int j = min(y, lastLinear); j <= max(y, lastLinear); ++j) {
+                for (int j = min(y, lastMinSquare); j <= max(y, lastMinSquare); ++j) {
                     if(j >= 0 && j < HEIGHT) {
                         pixels[((int) j) * WIDTH + x] = COLOR_GRAY;
                     }
                 }
-                lastLinear = y;
-            }
-            for (int i = 0; i < lagrange.size(); ++i) {
-                //вычисляем значение функции с поправкой на смещение осей
-                long double y = lagrange[i] * SCALE + SCALE;
-                if (y < 0) y = 0;
-                if (y >= HEIGHT) y = HEIGHT - 1;
-                //рисуем если помещается на поле
-                for (int j = min(y, lastLagrange); j <= max(y, lastLagrange); ++j) {
-                    if(j >= 0 && j < HEIGHT) {
-                        pixels[((int) j) * WIDTH + x] = COLOR_BLACK;
-                    }
-                }
-                lastLagrange = y;
-            }
-            for (int i = 0; i < newton.size(); ++i) {
-                //вычисляем значение функции с поправкой на смещение осей
-                long double y = newton[i] * SCALE + SCALE;
-                if (y < 0) y = 0;
-                if (y >= HEIGHT) y = HEIGHT - 1;
-                //рисуем если помещается на поле
-                for (int j = min(y, lastNewton); j <= max(y, lastNewton); ++j) {
-                    if(j >= 0 && j < HEIGHT) {
-                        pixels[((int) j) * WIDTH + x] = COLOR_BLACK;
-                    }
-                }
-                lastNewton = y;
-            }
-            for (int i = 0; i < spline.size(); ++i) {
-                //вычисляем значение функции с поправкой на смещение осей
-                long double y = spline[i] * SCALE + SCALE;
-                if (y < 0) y = 0;
-                if (y >= HEIGHT) y = HEIGHT - 1;
-                //рисуем если помещается на поле
-                for (int j = min(y, lastSpline); j <= max(y, lastSpline); ++j) {
-                    if(j >= 0 && j < HEIGHT) {
-                        pixels[((int) j) * WIDTH + x] = COLOR_BLACK;
-                    }
-                }
-                lastSpline = y;
+                lastMinSquare = y;
             }
             SDL_UpdateWindowSurface(window);
         }
