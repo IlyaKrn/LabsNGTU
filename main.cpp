@@ -34,13 +34,21 @@ void drawField(Uint32* pixels, int h, int w, int s){
             }
         }
     }
+
+    for (int j = 0; j < h; ++j) {
+        pixels[j * w + ((s - 1))] = COLOR_BLACK;
+    }
+
+    for (int j = 0; j < w; ++j) {
+        pixels[(h - s) * w + j] = COLOR_BLACK;
+    }
 }
 
 int main(int argc, char** argv) {
 
     //размеры окна и размер клетки
     int HEIGHT = 1000;
-    int WIDTH = 1500;
+    int WIDTH = 1000;
     int SCALE = 50;
 
     //перезаписываем параметры окна из аргументов программы
@@ -52,7 +60,7 @@ int main(int argc, char** argv) {
     cout << "field: " << HEIGHT << "x" << WIDTH << "\ncell= " << SCALE << endl;
 
     //получаем список узлов
-    vector<node> nodes = getNodes("/home/ilyakrn/CLionProjects/NumericalMethodsCourceWork/nodes.txt");
+    vector<node> nodes = getNodes("/home/ilyakrn/CLionProjects/LabsNGTU/nodes.txt");
 
     //открываем окно и получаем матрицу пикселей
     SDL_Window* window = SDL_CreateWindow("Курсовая работа Численные методы", 0, 0, WIDTH, HEIGHT, 0);
@@ -76,6 +84,19 @@ int main(int argc, char** argv) {
         //рисуем клетки и оси
         drawField(pixels, HEIGHT, WIDTH, SCALE);
 
+        //рисуем точки аппроксимации
+        for (int i = 0; i < nodes.size(); ++i) {
+            if(i > 1 && i < HEIGHT - 2) {
+                int y = (int)(nodes[i].y * SCALE + HEIGHT - SCALE);
+                int x = (int)(nodes[i].x * SCALE);
+                for (int j = x - 2; j < x + 2; ++j) {
+                    for (int k = y - 2; k < y + 2; ++k) {
+                        pixels[k * WIDTH + j] = COLOR_BLACK;
+                    }
+                }
+            }
+        }
+
         long double lastMinSquare = 0;
 
         for (int x = 0; x < WIDTH; ++x) {
@@ -88,13 +109,13 @@ int main(int argc, char** argv) {
             //рисуем точки функции
             for (int i = 0; i < minSquare.size(); ++i) {
                 //вычисляем значение функции с поправкой на смещение осей
-                long double y = minSquare[i] * SCALE + SCALE;
+                long double y = minSquare[i] * SCALE + HEIGHT - SCALE;
                 if (y < 0) y = 0;
                 if (y >= HEIGHT) y = HEIGHT - 1;
                 //рисуем если помещается на поле
                 for (int j = min(y, lastMinSquare); j <= max(y, lastMinSquare); ++j) {
                     if(j >= 0 && j < HEIGHT) {
-                        pixels[((int) j) * WIDTH + x] = COLOR_GRAY;
+                        pixels[((int) j) * WIDTH + x] = COLOR_BLACK;
                     }
                 }
                 lastMinSquare = y;
