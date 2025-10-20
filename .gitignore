@@ -1,3 +1,5 @@
 /build/
 /cmake-build-debug/
 /.idea/
+/fortran/a.out
+/fortran/m_module.mod
