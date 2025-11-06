@@ -10,7 +10,7 @@ vector<node> getNodes(string filePath){
     ifstream file(filePath);
     long double x, y;
     while (file >> x >> y){
-        nodes.push_back({x / 10, - y / 10});
+        nodes.push_back({x / 10,100* (- y / 10) + 99});
     }
     return nodes;
 }

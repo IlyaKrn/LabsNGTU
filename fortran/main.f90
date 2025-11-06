@@ -117,8 +117,8 @@ program main
 
     ! настраиваем параметры отрисовки
     points_count = 1000
-    xmin = x(1) - 1
-    xmax = x(n) + 1
+    xmin = -1
+    xmax = 101
     ymin = 0
     ymax = 0
     do i= 1, n
@@ -129,8 +129,8 @@ program main
             ymax = y(i)
         endif
     end do
-    ymin = ymin - 1
-    ymax = ymax + 1
+    ymin = 0.99
+    ymax = 1.01
 
     ! вычисляем значения графика
     allocate(x_func(points_count))
@@ -144,7 +144,7 @@ program main
     ! открытие окна и отрисовка
     call plinit()
     call plenv(xmin, xmax, ymin, ymax, 0, 0)
-    call pllab('x', 'y', '')
+    call pllab('t', 'C', '')
     call plline(x_func, y_func)
     call plpoin(x, y, 9)
 

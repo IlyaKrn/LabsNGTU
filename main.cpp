@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
     //размеры окна и размер клетки
     int HEIGHT = 1000;
     int WIDTH = 1000;
-    int SCALE = 50;
+    int SCALE = 100;
 
     //перезаписываем параметры окна из аргументов программы
     if(argc == 3){

@@ -72,6 +72,8 @@ for i in range(1000):
 
 mp.plot(ox, oy)
 mp.scatter(x, y)
+mp.xlabel('t')
+mp.ylabel('C')
 mp.show()
 
 
