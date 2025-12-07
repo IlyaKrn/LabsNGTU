@@ -1,85 +1,102 @@
-program slau_solver
+program main
     implicit none
 
-    integer :: n, i, j, row, max_row_index, num_systems
-    real(8), allocatable :: a(:,:), answer(:)
+    ! переменные для обработки матрицы и тд
+    integer :: n, i, j, k, row, max_row_index
     real(8) :: max_el, mnozh, sum
-    character(len=256) :: filename
-    integer :: io
 
-    filename = "/home/ilyakrn/CLionProjects/LabsNGTU/nodes.txt"
+    ! переменные для текущей матрицы
+    real(8), allocatable :: matrix(:,:)
+    real(8), allocatable :: temp_row(:)
+    real(8), allocatable :: answer(:)
 
-    open(unit=10, file=filename, status='old', action='read')
-
+    ! читаем файл
+    open(unit=0, file="/home/ilyakrn/CLionProjects/LabsNGTU/nodes.txt", status='old', action='read')
     do
-        read(10, *, iostat=io) n
-        if (io /= 0) exit  ! конец файла
+        ! читаем размер слау
+        read(0, *) n
+        print *, n
 
-        allocate(a(n, n+1))
+        ! выделяем память на матрицу и ответ
+        allocate(matrix(n, n+1))
         allocate(answer(n))
+        allocate(temp_row(n))
 
         ! читаем матрицу
         do i = 1, n
             do j = 1, n+1
-                read(10, *) a(i, j)
+                read(0, *) matrix(i, j)
             end do
         end do
 
+        ! выводим исходную матрицу
         print *, "============================"
-        call print_slau(n, a)
+        call print_slau(n, matrix)
 
-        ! --- Гауссово исключение ---
-        do row = 2, n
-            max_el = 0.0d0
-            max_row_index = row - 1
+        ! приводим к верхне треугольному виду с выбором главного элемента по столбцу
+        do row = 1, n
+            ! значение максимального элемента и индекс его строки
+            max_el = 0
+            max_row_index = row
 
-            ! поиск максимального элемента
-            do i = row - 1, n
-                if (abs(a(i, row - 1)) > abs(max_el)) then
-                    max_el = a(i, row - 1)
-                    max_row_index = i
+            ! поиск максимального элемента в столбце
+            do i = row, n
+                if (abs(matrix(i, row)) > abs(max_el)) then
+                    max_el = matrix(i, row)
+                    max_row_index = row
                 end if
             end do
 
             ! обмен строк
-            if (max_row_index /= row - 1) then
-                call swap_rows(a, row - 1, max_row_index, n)
+            if (max_row_index /= row) then
+                do k = 1, n+1
+                    temp_row(k) = matrix(row, k)
+                end do
+                do k = 1, n+1
+                    matrix(row, k) = matrix(max_row_index, k)
+                end do
+                do k = 1, n+1
+                    matrix(max_row_index, k) = temp_row(k)
+                end do
             end if
 
-            ! обнуление столбца ниже диагонали
+            ! обнуление столбца
             do i = row, n
-                mnozh = a(i, row - 1) / a(row - 1, row - 1)
-                do j = row - 1, n+1
-                    a(i, j) = a(i, j) - mnozh * a(row - 1, j)
+                mnozh = matrix(i, row) / matrix(row, row)
+                do j = row, n+1
+                    matrix(i, j) = matrix(i, j) - mnozh * matrix(row, j)
                 end do
-                a(i, row - 1) = 0.0d0
+                !-------------------matrix(i, row) = 0
             end do
         end do
 
+        ! выводим преобразованную слау
         print *, ""
-        call print_slau(n, a)
+        call print_slau(n, matrix)
 
-        ! --- обратный ход ---
+        ! считаем ответ
         do i = n, 1, -1
-            sum = 0.0d0
+            sum = 0
             do j = 1, n
-                sum = sum + answer(j) * a(i, j)
+                sum = sum + answer(j) * matrix(i, j)
             end do
-            answer(i) = (a(i, n+1) - sum) / a(i, i)
+            answer(i) = (matrix(i, n+1) - sum) / matrix(i, i)
         end do
 
+        ! выводим ответ
         print *, ""
         do i = 1, n
-            write(*,'(F12.6)', advance='no') answer(i)
+            print *, answer(i)
         end do
         print *, ""
         print *, "============================"
 
-        deallocate(a)
+        deallocate(matrix)
         deallocate(answer)
     end do
 
-    close(10)
+    ! закрываем файл
+    close(0)
 
 contains
 
@@ -89,23 +106,11 @@ contains
         integer :: i, j
         do i = 1, n
             do j = 1, n
-                write(*,'(F12.6)', advance='no') a(i,j)
-                write(*,'(A)', advance='no') " "
+                print *, a(i,j)
+                print *, " "
             end do
-            write(*,'(A,F12.6)') "= ", a(i, n+1)
+            print *, a(i, n+1)
         end do
     end subroutine print_slau
 
-    subroutine swap_rows(a, r1, r2, n)
-        real(8), intent(inout) :: a(:,:)
-        integer, intent(in) :: r1, r2, n
-        real(8) :: tmp
-        integer :: j
-        do j = 1, n+1
-            tmp = a(r1, j)
-            a(r1, j) = a(r2, j)
-            a(r2, j) = tmp
-        end do
-    end subroutine swap_rows
-
-end program slau_solver
+end program main
