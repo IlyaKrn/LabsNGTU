@@ -3,30 +3,30 @@ program main
 
     ! переменные для обработки матрицы и тд
     integer :: n, i, j, k, row, max_row_index
-    real(8) :: max_el, mnozh, sum
+    real(16) :: max_el, mnozh, sum
 
     ! переменные для текущей матрицы
-    real(8), allocatable :: matrix(:,:)
-    real(8), allocatable :: temp_row(:)
-    real(8), allocatable :: answer(:)
+    real(16), allocatable :: matrix(:,:)
+    real(16), allocatable :: temp_row(:)
+    real(16), allocatable :: answer(:)
 
     ! читаем файл
-    open(unit=0, file="/home/ilyakrn/CLionProjects/LabsNGTU/nodes.txt", status='old', action='read')
+    open(unit=0, file="/home/ilyakrn/CLionProjects/LabsNGTU/fortran/nodes.txt", status='old', action='read')
     do
         ! читаем размер слау
         read(0, *) n
-        print *, n
+        if (n == -1) then
+            exit
+        end if
 
         ! выделяем память на матрицу и ответ
         allocate(matrix(n, n+1))
         allocate(answer(n))
-        allocate(temp_row(n))
+        allocate(temp_row(n+1))
 
         ! читаем матрицу
         do i = 1, n
-            do j = 1, n+1
-                read(0, *) matrix(i, j)
-            end do
+            read(0, *) matrix(i, 1:n+1)
         end do
 
         ! выводим исходную матрицу
@@ -43,7 +43,7 @@ program main
             do i = row, n
                 if (abs(matrix(i, row)) > abs(max_el)) then
                     max_el = matrix(i, row)
-                    max_row_index = row
+                    max_row_index = i
                 end if
             end do
 
@@ -61,7 +61,7 @@ program main
             end if
 
             ! обнуление столбца
-            do i = row, n
+            do i = row+1, n
                 mnozh = matrix(i, row) / matrix(row, row)
                 do j = row, n+1
                     matrix(i, j) = matrix(i, j) - mnozh * matrix(row, j)
@@ -77,7 +77,7 @@ program main
         ! считаем ответ
         do i = n, 1, -1
             sum = 0
-            do j = 1, n
+            do j = i+1, n
                 sum = sum + answer(j) * matrix(i, j)
             end do
             answer(i) = (matrix(i, n+1) - sum) / matrix(i, i)
@@ -93,6 +93,7 @@ program main
 
         deallocate(matrix)
         deallocate(answer)
+        deallocate(temp_row)
     end do
 
     ! закрываем файл
@@ -102,14 +103,14 @@ contains
 
     subroutine print_slau(n, a)
         integer, intent(in) :: n
-        real(8), intent(in) :: a(n, n+1)
+        real(16), intent(in) :: a(n, n+1)
         integer :: i, j
         do i = 1, n
             do j = 1, n
-                print *, a(i,j)
-                print *, " "
+                write(*,'(F12.6)', advance='no') a(i,j)
+                write(*,'(A)', advance='no') " "
             end do
-            print *, a(i, n+1)
+            write(*,'(A,F12.6)') "= ", a(i, n+1)
         end do
     end subroutine print_slau
 
