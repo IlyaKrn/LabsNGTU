@@ -83,3 +83,17 @@ vector<long double> answerSLAU(SLAU slau){
 
     return answer;
 }
+
+vector<long double> slauError(SLAU slau, vector<long double> answer){
+    vector<long double> error;
+
+    for (int i = 0; i < slau.n; ++i) {
+        long double Ax_i = 0;
+        for (int j = 0; j < slau.n; ++j) {
+            Ax_i += slau.matrix[i][j] * answer[j];
+        }
+        error.push_back(Ax_i - slau.matrix[i][slau.n]);
+    }
+
+    return error;
+}

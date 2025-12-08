@@ -9,3 +9,4 @@ void printSLAU(SLAU slau);
 std::vector<SLAU> getSLAUs(std::string filename);
 SLAU solveSLAU(SLAU slau);
 std::vector<long double> answerSLAU(SLAU slau);
+std::vector<long double> slauError(SLAU slau, std::vector<long double> answer);

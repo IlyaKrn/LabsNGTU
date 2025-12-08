@@ -1,3 +1,4 @@
+import copy
 def print_slau(slau):
     n = slau[0]
     a = slau[1]
@@ -28,7 +29,6 @@ def get_slaus(filename):
 def solve_slau(slau):
     n, a = slau
 
-    # Gaussian elimination with row pivoting
     for row in range(1, n):
         max_el = 0
         max_row_index = row - 1
@@ -38,11 +38,9 @@ def solve_slau(slau):
                 max_el = a[i][row - 1]
                 max_row_index = i
 
-        # swap
         if max_row_index != row - 1:
             a[row - 1], a[max_row_index] = a[max_row_index], a[row - 1]
 
-        # eliminate
         for i in range(row, n):
             mnozh = a[i][row - 1] / a[row - 1][row - 1]
             for j in range(row - 1, n + 1):
@@ -63,20 +61,40 @@ def answer_slau(slau):
     return ans
 
 
+def residual(slau, answer):
+    n, a = slau
+    r = [0.0] * n
+
+    for i in range(n):
+        Ax = sum(a[i][j] * answer[j] for j in range(n))
+        b = a[i][n]
+        r[i] = Ax - b
+
+    return r
+
 slaus = get_slaus("/home/ilyakrn/CLionProjects/LabsNGTU/nodes.txt")
 
 for slau in slaus:
     n, raw_matrix = slau
-    # копии, чтобы не портить исходную
-    import copy
+
     raw_slau = (n, copy.deepcopy(raw_matrix))
     solved = solve_slau((n, copy.deepcopy(raw_matrix)))
     ans = answer_slau(solved)
 
-    print("\n\n============================")
+    print("\n============================")
+    print("Изначальная СЛАУ:")
     print_slau(raw_slau)
     print()
+
+    print("Верхнетреугольная СЛАУ:")
     print_slau(solved)
     print()
+
+    print("Ответ:")
     print(*ans)
-    print("============================\n\n")
+    print()
+
+    r = residual(raw_slau, ans)
+    print("Вектор невязки:")
+    print(*r)
+    print("============================\n")

@@ -7,8 +7,10 @@ program main
 
     ! переменные для текущей матрицы
     real(16), allocatable :: matrix(:,:)
+    real(16), allocatable :: orig_matrix(:,:)
     real(16), allocatable :: temp_row(:)
     real(16), allocatable :: answer(:)
+    real(16), allocatable :: residual(:)
 
     ! читаем файл
     open(unit=0, file="/home/ilyakrn/CLionProjects/LabsNGTU/fortran/nodes.txt", status='old', action='read')
@@ -21,16 +23,21 @@ program main
 
         ! выделяем память на матрицу и ответ
         allocate(matrix(n, n+1))
+        allocate(orig_matrix(n, n+1))
         allocate(answer(n))
         allocate(temp_row(n+1))
+        allocate(residual(n))
 
         ! читаем матрицу
         do i = 1, n
             read(0, *) matrix(i, 1:n+1)
         end do
 
-        ! выводим исходную матрицу
+        ! сохраняем слау для вычисления вектора невязки
+        orig_matrix = matrix
+
         print *, "============================"
+        print *, "Исходная СЛАУ:"
         call print_slau(n, matrix)
 
         ! приводим к верхне треугольному виду с выбором главного элемента по столбцу
@@ -66,12 +73,11 @@ program main
                 do j = row, n+1
                     matrix(i, j) = matrix(i, j) - mnozh * matrix(row, j)
                 end do
-                !-------------------matrix(i, row) = 0
             end do
         end do
 
         ! выводим преобразованную слау
-        print *, ""
+        print *, "Преобразованная СЛАУ:"
         call print_slau(n, matrix)
 
         ! считаем ответ
@@ -84,16 +90,31 @@ program main
         end do
 
         ! выводим ответ
-        print *, ""
+        print *, "Ответ:"
         do i = 1, n
             print *, answer(i)
         end do
-        print *, ""
+
+        ! считаем вектор невязки
+        do i = 1, n
+            sum = 0
+            do j = 1, n
+                sum = sum + orig_matrix(i,j) * answer(j)
+            end do
+            residual(i) = sum - orig_matrix(i, n+1)
+        end do
+
+        print *, "Вектор невязки:"
+        do i = 1, n
+            print *, residual(i)
+        end do
         print *, "============================"
 
         deallocate(matrix)
         deallocate(answer)
         deallocate(temp_row)
+        deallocate(residual)
+        deallocate(orig_matrix)
     end do
 
     ! закрываем файл
