@@ -1,99 +1,51 @@
 #include <iostream>
-#include <fstream>
 #include <algorithm>
 #include "../include/SLAU.h"
 
 using namespace std;
 
-void printSLAU(SLAU slau){
-    for (int i = 0; i < slau.n; ++i) {
-        for (int j = 0; j < slau.n; ++j) {
-            cout << slau.matrix[i][j] << "\t";
-        }
-        cout << "=  " << slau.matrix[i][slau.n] << "\n";
-    }
-}
-
-vector<SLAU> getSLAUs(string filename){
-    ifstream file(filename);
-    vector<SLAU> slaus;
-
-    while (true) {
-        if (file.eof())
-            break;
-
-        SLAU slau;
-        file >> slau.n;
-
-        for (int i = 0; i < slau.n; ++i) {
-            slau.matrix.push_back(vector<long double>());
-            for (int j = 0; j < slau.n + 1; ++j) {
-                long double a;
-                file >> a;
-                slau.matrix[i].push_back(a);
-            }
-        }
-
-        slaus.push_back(slau);
-    }
-
-    return slaus;
-}
-
-SLAU solveSLAU(SLAU slau){
-    for (int row = 1; row < slau.n; ++row) {
+vector<long double> solveSLAU(vector<vector<long double>> matrix){
+    for (int row = 1; row < matrix.size(); ++row) {
         int maxRowIndex = 0;
         long double maxEl = 0;
-        for (int i = row - 1; i < slau.n; ++i) {
-            if (abs(slau.matrix[i][row-1]) > abs(maxEl)){
-                maxEl = slau.matrix[i][row-1];
+        for (int i = row - 1; i < matrix.size(); ++i) {
+            if (abs(matrix[i][row-1]) > abs(maxEl)){
+                maxEl = matrix[i][row-1];
                 maxRowIndex = i;
             }
         }
         if(row-1 != maxRowIndex){
-            vector<long double> temp = slau.matrix[row-1];
-            slau.matrix[row-1] = slau.matrix[maxRowIndex];
-            slau.matrix[maxRowIndex] = temp;
+            vector<long double> temp = matrix[row-1];
+            matrix[row-1] = matrix[maxRowIndex];
+            matrix[maxRowIndex] = temp;
         }
-        for (int i = row; i < slau.n; ++i) {
-            long double mnozh = slau.matrix[i][row-1] / slau.matrix[row-1][row-1];
-            for (int j = row-1; j < slau.n+1; ++j) {
-                slau.matrix[i][j] -= mnozh * slau.matrix[row-1][j];
+        for (int i = row; i < matrix.size(); ++i) {
+            long double mnozh = matrix[i][row-1] / matrix[row-1][row-1];
+            for (int j = row-1; j < matrix.size()+1; ++j) {
+                matrix[i][j] -= mnozh * matrix[row-1][j];
             }
-            slau.matrix[i][row-1] = 0;
+            matrix[i][row-1] = 0;
         }
     }
-    return slau;
-}
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            cout << matrix[i][j] << "\t";
+        }
+        cout<< endl;
+    }
 
-
-vector<long double> answerSLAU(SLAU slau){
     vector<long double> answer;
-    for (int i = 0; i < slau.n; ++i) {
+    for (int i = 0; i < matrix.size(); ++i) {
         answer.push_back(0);
     }
 
-    for (int i = slau.n - 1; i >= 0; --i) {
+    for (int i = matrix.size() - 1; i >= 0; --i) {
         long double sum = 0;
-        for (int j = 0; j < slau.n; ++j) {
-            sum += answer[j] * slau.matrix[i][j];
+        for (int j = 0; j < matrix.size(); ++j) {
+            sum += answer[j] * matrix[i][j];
         }
-        answer[i] = (slau.matrix[i][slau.n] - sum) / slau.matrix[i][i];
+        answer[i] = (matrix[i][matrix.size()] - sum) / matrix[i][i];
     }
 
     return answer;
-}
-
-vector<long double> slauError(SLAU slau, vector<long double> answer){
-    vector<long double> error;
-
-    for (int i = 0; i < slau.n; ++i) {
-        long double Ax_i = 0;
-        for (int j = 0; j < slau.n; ++j) {
-            Ax_i += slau.matrix[i][j] * answer[j];
-        }
-        error.push_back(Ax_i - slau.matrix[i][slau.n]);
-    }
-
-    return error;
 }
