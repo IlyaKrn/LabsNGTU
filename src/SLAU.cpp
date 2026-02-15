@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <math.h>
 #include "../include/SLAU.h"
 
 using namespace std;
@@ -27,12 +28,6 @@ vector<long double> solveSLAU(vector<vector<long double>> matrix){
             matrix[i][row-1] = 0;
         }
     }
-    for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 4; ++j) {
-            cout << matrix[i][j] << "\t";
-        }
-        cout<< endl;
-    }
 
     vector<long double> answer;
     for (int i = 0; i < matrix.size(); ++i) {
@@ -48,4 +43,20 @@ vector<long double> solveSLAU(vector<vector<long double>> matrix){
     }
 
     return answer;
+}
+
+vector<vector<long double>> getJacobean(vector<long double> X){
+    vector<vector<long double>> result = {
+            {-sin(0.4 * X[1] + X[0] * X[0]) * 2 * X[0] + 2 * X[0], -sin(0.4 * X[1] + X[0] * X[0]) * 0.4 + 2 * X[1]},
+            {3 * X[0], -X[1] / 0.18}
+    };
+    return result;
+}
+
+vector<long double> getFuncErr(vector<long double> X){
+    vector<long double> result = {
+        cos(0.4 * X[1] + X[0] * X[0]) + X[1] * X[1] + X[0] * X[0] - 1.6,
+        1.5 * X[0] * X[0] - ((X[1] * X[1]) / 0.36) - 1
+    };
+    return result;
 }
