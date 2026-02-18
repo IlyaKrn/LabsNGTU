@@ -37,8 +37,7 @@ def get_jacobean(X):
     result = [
         [-math.sin(0.4 * X[1] + X[0] * X[0]) * 2 * X[0] + 2 * X[0],
          -math.sin(0.4 * X[1] + X[0] * X[0]) * 0.4 + 2 * X[1]],
-        [3 * X[0],
-         -X[1] / 0.18]
+        [3 * X[0], -X[1] / 0.18]
     ]
     return result
 
@@ -99,17 +98,17 @@ def main():
         d1 = 0
         d2 = 0
         for i in range(len(Fk)):
-            if d1 < abs(Fk[i]):  # Добавил abs(), так как обычно берут модуль
+            if d1 < abs(Fk[i]):
                 d1 = abs(Fk[i])
 
         if math.sqrt(Xk1[0] * Xk1[0] + Xk1[1] * Xk1[1]) < 1:
             for i in range(len(Fk)):
-                tmp = abs(Xk1[i] - Xk[i])  # Добавил abs()
+                tmp = abs(Xk1[i] - Xk[i])
                 if d2 < tmp:
                     d2 = tmp
         else:
             for i in range(len(Fk)):
-                tmp = abs((Xk1[i] - Xk[i]) / Xk1[i])  # Добавил abs()
+                tmp = abs((Xk1[i] - Xk[i]) / Xk1[i])
                 if d2 < tmp:
                     d2 = tmp
 

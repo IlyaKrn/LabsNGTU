@@ -55,22 +55,22 @@ int main(int argc, char** argv) {
         d1 = 0;
         d2 = 0;
         for (int i = 0; i < Fk.size(); ++i) {
-            if (d1 < Fk[i])
-                d1 = Fk[i];
+            if (d1 < abs(Fk[i]))
+                d1 = abs(Fk[i]);
         }
         if(sqrt(Xk1[0]*Xk1[0] + Xk1[1]*Xk1[1]) < 1){
             for (int i = 0; i < Fk.size(); ++i) {
                 long double tmp = Xk1[i] - Xk[i];
-                if (d2 < tmp) {
-                    d2 = tmp;
+                if (d2 < abs(tmp)) {
+                    d2 = abs(tmp);
                 }
             }
         }
         else {
             for (int i = 0; i < Fk.size(); ++i) {
                 long double tmp = (Xk1[i] - Xk[i]) / Xk1[i];
-                if (d2 < tmp) {
-                    d2 = tmp;
+                if (d2 < abs(tmp)) {
+                    d2 = abs(tmp);
                 }
             }
         }
