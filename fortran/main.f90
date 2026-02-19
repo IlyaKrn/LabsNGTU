@@ -5,8 +5,8 @@ program main
     integer, parameter :: n=200
     real(8), parameter :: xmin=-2, xmax=2, ymin=-2, ymax=2
     real(8) :: x(n), y(n)
-    real(kind=plflt), dimension(:,:) :: f1(n,n), f2(n,n)
-	real(kind=plflt), dimension(:) :: clevel(1)
+    real(kind=plflt) :: f1(n,n), f2(n,n)
+    real(kind=plflt) :: clevel(1)
     real(8) :: appr1(2), appr2(2)
     real(8) :: ptx(4), pty(4)
     integer :: i, j
@@ -19,6 +19,8 @@ program main
     do i = 1, n
        x(i) = xmin + (xmax - xmin)*(i-1)/(n-1)
        y(i) = ymin + (ymax - ymin)*(i-1)/(n-1)
+    end do
+    do i = 1, n
        do j = 1, n
           f1(i,j) = cos(0.4*y(j) + x(i)**2) + y(j)**2 + x(i)**2 - 1.6
           f2(i,j) = 1.5*x(i)**2 - (y(j)**2/0.36) - 1.0
@@ -42,7 +44,8 @@ program main
     call pllab('x1', 'x2', '')
 
     call plpoin(ptx, pty, 9)
-    call plcont(f1, 1, n, 1, n, clevel)
+    call plcont(f1, 1, n, 1, n, clevel, x, y)
+    call plcont(f2, 1, n, 1, n, clevel, x, y)
 
     call plend()
 
