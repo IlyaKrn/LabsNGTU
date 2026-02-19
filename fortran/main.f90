@@ -1,5 +1,56 @@
 program main
+    use plplot
     implicit none
+
+    integer, parameter :: n=200
+    real(8), parameter :: xmin=-2, xmax=2, ymin=-2, ymax=2
+    real(8) :: x(n), y(n)
+    real(kind=plflt), dimension(:,:) :: f1(n,n), f2(n,n)
+	real(kind=plflt), dimension(:) :: clevel(1)
+    real(8) :: appr1(2), appr2(2)
+    real(8) :: ptx(4), pty(4)
+    integer :: i, j
+
+
+    call solve_snau(1.0d0, -1.0d0, appr1)
+    call solve_snau(-1.0d0, 1.0d0, appr2)
+
+    ! Вычисление значений функций
+    do i = 1, n
+       x(i) = xmin + (xmax - xmin)*(i-1)/(n-1)
+       y(i) = ymin + (ymax - ymin)*(i-1)/(n-1)
+       do j = 1, n
+          f1(i,j) = cos(0.4*y(j) + x(i)**2) + y(j)**2 + x(i)**2 - 1.6
+          f2(i,j) = 1.5*x(i)**2 - (y(j)**2/0.36) - 1.0
+       end do
+    end do
+
+    ptx(1) = 1.0d0
+    ptx(2) = -1.0d0
+    ptx(3) = appr1(1)
+    ptx(4) = appr2(1)
+
+    pty(1) = -1.0d0
+    pty(2) = 1.0d0
+    pty(3) = appr1(2)
+    pty(4) = appr2(2)
+
+    clevel(1) = 0
+
+    call plinit()
+    call plenv(xmin, xmax, ymin, ymax, 0, 0)
+    call pllab('x1', 'x2', '')
+
+    call plpoin(ptx, pty, 9)
+    call plcont(f1, 1, n, 1, n, clevel)
+
+    call plend()
+
+contains
+
+subroutine solve_snau(x1, x2, res)
+    real(8), intent(out) :: res(2)
+    real(8), intent(in) :: x1, x2
 
     ! объявляем все переменные
     integer :: k, max_iter, i
@@ -14,8 +65,8 @@ program main
     e2 = 1.0d-9
     max_iter = 1000
 
-    Xk(1) = 1.0d0
-    Xk(2) = -1.0d0
+    Xk(1) = x1
+    Xk(2) = x2
 
     d1 = e1 * 2.0d0
     d2 = e2 * 2.0d0
@@ -81,110 +132,12 @@ program main
 
     end do
 
-    print *, ""
     print *, "Приближенное решение:"
     print *, Xk(1), Xk(2)
 
+    res = Xk
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-contains
+end subroutine solve_snau
 
 subroutine solve_slau(matrix, n, answer)
     implicit none
