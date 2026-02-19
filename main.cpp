@@ -7,7 +7,7 @@ using namespace std;
 int main(int argc, char** argv) {
 
     //начальные данные
-    int k = 1;
+    int k = 0;
     long double e1 = 1e-9;
     long double e2 = 1e-9;
     int maxIter = 1000;
