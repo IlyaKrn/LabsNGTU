@@ -1,5 +1,5 @@
+import matplotlib.pyplot as plot
 import math
-
 def solve_slau(matrix):
     n = len(matrix)
 
@@ -47,16 +47,12 @@ def get_func_err(X):
     ]
     return result
 
-
-def main():
+def solveSNAU(Xk):
     # начальные данные
     k = 0
     e1 = 1e-9
     e2 = 1e-9
     max_iter = 1000
-
-    # приближение предыдущей итерации
-    Xk = [1, -1]
 
     # нормы ошибок предыдущей итерации
     d2 = e2 * 2
@@ -117,7 +113,44 @@ def main():
         print(f"k-тое приближение: ({Xk[0]} {Xk[1]})")
 
     print(f"Приближенное решение:\n{Xk[0]}\t\t{Xk[1]}")
+    return Xk
 
+
+def main():
+
+    # получаем значения от приближений
+    init1 = [1, -1]
+    init2 = [-1, 1]
+    ans1 = solveSNAU(init1)
+    ans2 = solveSNAU(init2)
+
+    # рисуем график системы и точки приближенного решения
+    plot.xlabel("x1")
+    plot.ylabel("x2")
+    h = 0.02
+    a = [-2 + i*h for i in range(int(4/h)+1)]
+
+    X = [[x1 for x1 in a] for _ in a]
+    Y = [[x2 for _ in a] for x2 in a]
+
+    Z1 = [[math.cos(0.4*x2 + x1**2) + x2**2 + x1**2 - 1.6
+        for x1 in a] for x2 in a]
+
+    Z2 = [[1.5*x1**2 - x2**2/0.36 - 1
+        for x1 in a] for x2 in a]
+
+
+    plot.axhline(0, color='black', linewidth=1)
+    plot.axvline(0, color='black', linewidth=1)
+    plot.contour(X, Y, Z1, levels=[0])
+    plot.contour(X, Y, Z2, levels=[0])
+    plot.scatter(ans1[0], ans1[1], color='green')
+    plot.scatter(ans2[0], ans2[1], color='green')
+    plot.scatter(init1[0], init1[1], color='red')
+    plot.scatter(init2[0], init2[1], color='red')
+
+    plot.gca().set_aspect('equal')
+    plot.show()
 
 if __name__ == "__main__":
     main()
