@@ -34,15 +34,61 @@ void drawField(Uint32* pixels, int h, int w, int s){
             }
         }
     }
-    for (int i = 0; i < w; ++i) {
-        pixels[(h / 2) * w + i] = COLOR_BLACK;
+    for (int k = 0; k < 2; ++k) {
+        for (int i = 0; i < w; ++i) {
+            pixels[(h / 2 + k) * w + i] = COLOR_BLACK;
+        }
+        for (int i = 0; i < h; ++i) {
+            pixels[i * w + (w / 2 + k)] = COLOR_BLACK;
+        }
     }
-    for (int i = 0; i < h; ++i) {
-        pixels[i * w + (w / 2)] = COLOR_BLACK;
+
+    //рисуем стрелки
+    for (int k = -1; k < 2; ++k) {
+        for (int i = 0; i < s / 16; i++) {
+            pixels[(h / 2 + i + k) * w + (w - i)] = COLOR_BLACK;
+            pixels[(h / 2 - i + k) * w + (w - i)] = COLOR_BLACK;
+            pixels[(i) * w + (w / 2 + i + k)] = COLOR_BLACK;
+            pixels[(i) * w + (w / 2 - i + k)] = COLOR_BLACK;
+        }
     }
 
     //рисуем буквы
+    int size = s / 6;
+    int x1x = w - size - size / 5;
+    int x1y = h / 2 + size / 5 + size / 4;
+    int x2x = w / 2 - size - size / 10 - size / 4 - size / 5 - size / 4;
+    int x2y = size / 5;
 
+    for(int l = 0; l  < 2; l++){
+        for (int k = 0; k < 2; ++k) {
+            int x1_x = x1x + k;
+            int x2_x = x2x + k;
+            int x1_y = x1y + l;
+            int x2_y = x2y + l;
+
+            for (int i = 0; i < size; i++) {
+                pixels[(x1_y + i) * w + (x1_x + i)] = COLOR_BLACK;
+                pixels[(x1_y + i) * w + (x1_x + size - 1 - i)] = COLOR_BLACK;
+                if(i >= size / 2){
+                    pixels[(x1_y + i) * w + x1_x + size + size / 10] = COLOR_BLACK;
+                }
+            }
+            for (int i = 0; i < size; i++) {
+                pixels[(x2_y + i) * w + (x2_x + i)] = COLOR_BLACK;
+                pixels[(x2_y + i) * w + (x2_x + size - 1 - i)] = COLOR_BLACK;
+                if(i >= size - size / 4)
+                    pixels[(x2_y + i) * w + x2_x + size + size / 10] = COLOR_BLACK;
+                else if(i >= size / 2)
+                    pixels[(x2_y + i) * w + x2_x + size + size / 10 + size / 4] = COLOR_BLACK;
+                if(i < size / 4 ){
+                    pixels[(x2_y + size / 2) * w + x2_x + size + size / 10 + i] = COLOR_BLACK;
+                    pixels[(x2_y + size * 3 / 4) * w + x2_x + size + size / 10 + i] = COLOR_BLACK;
+                    pixels[(x2_y - 1 + size) * w + x2_x + size + size / 10 + i] = COLOR_BLACK;
+                }
+            }
+        }
+    }
 }
 
 void drawPoint(int x, int y, int mx, int my, Uint32* pixels){
