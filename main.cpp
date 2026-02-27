@@ -103,6 +103,10 @@ void drawPoint(int x, int y, int mx, int my, Uint32* pixels){
 
 int main(int argc, char** argv) {
 
+    cout << "Исходные уравнения:" << endl;
+    cout << "cos(0.4 * x2 + x1^2) + x2^2 + x1^2 - 1.6" << endl;
+    cout << "1.5 * x1^2 - (x2^2) / 0.36 - 1" << endl;
+
     //вычисляем точки
     vector<long double> start1 = {1, -1};
     vector<long double> start2 = {-1, 1};

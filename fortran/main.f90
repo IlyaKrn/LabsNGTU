@@ -11,6 +11,10 @@ program main
     real(8) :: ptx(4), pty(4)
     integer :: i, j
 
+    print *, "Исходные уравнения:"
+    print *, "cos(0.4 * x2 + x1^2) + x2^2 + x1^2 - 1.6"
+    print *, "1.5 * x1^2 - (x2^2) / 0.36 - 1"
+
 
     call solve_snau(1.0d0, -1.0d0, appr1)
     call solve_snau(-1.0d0, 1.0d0, appr2)
