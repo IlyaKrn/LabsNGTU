@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
         }
 
         for (int i = 0; i < m.size(); ++i) {
-            int y = m[i] + HEIGHT / 2;
+            int y = -m[i] + HEIGHT / 2;
             if(y >= 0 && y < HEIGHT && i < WIDTH){
                 pixels[y * WIDTH + i] = COLOR_BLACK;
             }
