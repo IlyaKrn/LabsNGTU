@@ -60,3 +60,84 @@ vector<vector<long double>> getInterpolationMatrix(int n, long double h, long do
     matrix[n-1][n] -= Un;
     return matrix;
 }
+
+long double scalar(vector<long double> v1, vector<long double> v2){
+    long double s = 0;
+    for (int i = 0; i < v1.size(); ++i) {
+        s += v1[i]*v2[i];
+    }
+    return s;
+}
+
+long double norm(vector<long double> v){
+    long double n = 0;
+    for (int i = 0; i < v.size(); ++i) {
+        n += v[i]*v[i];
+    }
+    return sqrt(n);
+}
+
+vector<long double> normed(vector<long double> v){
+    long double n = norm(v);
+    for (int i = 0; i < v.size(); ++i) {
+        v[i] /= n;
+    }
+    return v;
+}
+
+long double getLambdaStep(vector<vector<long double>> matrix){
+    //начальный вектор
+    vector<long double> Yk;
+    for (int i = 0; i < matrix.size(); ++i) {
+        Yk.push_back(1);
+    }
+
+    //новый вектор
+    vector<long double> Yk1 = Yk;
+    for (int i = 0; i < 100; ++i) {
+        Yk = Yk1;
+        for (int j = 0; j < matrix.size(); ++j) {
+            Yk1[j] = 0;
+            for (int k = 0; k < matrix.size(); ++k) {
+                Yk1[j] += matrix[j][k] * Yk[k];
+            }
+        }
+        //нормируем только если это не последняя итерация,
+        //где вычисляется вектор для получения собственного числа
+        if(i < 99)
+            Yk1 = normed(Yk1);
+    }
+
+    return scalar(Yk1, Yk)/scalar(Yk, Yk);
+}
+
+long double getLambdaBackIter(vector<vector<long double>> matrix){
+    //начальный вектор
+    long double m = -3.4;
+    vector<long double> Yk;
+    for (int i = 0; i < matrix.size(); ++i) {
+        Yk.push_back(1);
+    }
+
+    //добавляем правую часть и вычитаем единичную матрицу * m
+    for (int i = 0; i < matrix.size(); ++i) {
+        matrix[i].push_back(0);
+        matrix[i][i] -= m;
+    }
+
+    //новый вектор
+    vector<long double> Yk1 = Yk;
+    for (int i = 0; i < 10; ++i) {
+        Yk = Yk1;
+        for (int j = 0; j < matrix.size(); ++j) {
+            matrix[j][matrix.size()] = Yk[j];
+        }
+        Yk1 = solveSLAU(matrix);
+        //нормируем только если это не последняя итерация,
+        //где вычисляется вектор для получения собственного числа
+        if(i < 99)
+            Yk1 = normed(Yk1);
+    }
+
+    return scalar(Yk1, Yk)/scalar(Yk, Yk);
+}
