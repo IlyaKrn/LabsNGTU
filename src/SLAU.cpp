@@ -127,7 +127,7 @@ long double getLambdaBackIter(vector<vector<long double>> matrix){
 
     //новый вектор
     vector<long double> Yk1 = Yk;
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 100; ++i) {
         Yk = Yk1;
         for (int j = 0; j < matrix.size(); ++j) {
             matrix[j][matrix.size()] = Yk[j];
