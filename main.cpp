@@ -7,10 +7,20 @@ using namespace std;
 int main(int argc, char** argv) {
 
 
-    auto matrix = getInterpolationMatrix(3, 1, 0, 0, 0, [](long double x) -> long double {
+    int n = 3;
+    int m = -3;
+    auto matrix = getInterpolationMatrix(n, 1, 0, 0, 0, [](long double x) -> long double {
         return 0;
     });
-    cout << getLambdaStep(matrix) << endl;
-    cout << getLambdaBackIter(matrix) << endl;
+    cout << "Матрица задачи для n=" << n << endl;
+    for (int i = 0; i < matrix.size(); ++i) {
+        for (int j = 0; j < matrix.size(); ++j) {
+            cout << matrix[i][j] << "\t";
+        }
+        cout << endl;
+    }
+
+    cout << "Собственное значение при степенном методе\n" << getLambdaStep(matrix, 1e-100, 100) << endl;
+    cout << "Собственное значение при методе обратных итераций и m=" << m << "\n" << getLambdaBackIter(matrix, m, 1e-100, 100) << endl;
 
 }

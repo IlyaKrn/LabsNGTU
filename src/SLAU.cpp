@@ -86,7 +86,18 @@ vector<long double> normed(vector<long double> v){
     return v;
 }
 
-long double getLambdaStep(vector<vector<long double>> matrix){
+long double getLForVector(vector<vector<long double>> matrix, vector<long double> v){
+    vector<long double> v1 = v;
+    for (int j = 0; j < matrix.size(); ++j) {
+        v1[j] = 0;
+        for (int k = 0; k < matrix.size(); ++k) {
+            v1[j] += matrix[j][k] * v[k];
+        }
+    }
+    return scalar(v1, v)/scalar(v, v);
+}
+
+long double getLambdaStep(vector<vector<long double>> matrix, long double eps, int maxIter){
     //начальный вектор
     vector<long double> Yk;
     for (int i = 0; i < matrix.size(); ++i) {
@@ -95,7 +106,15 @@ long double getLambdaStep(vector<vector<long double>> matrix){
 
     //новый вектор
     vector<long double> Yk1 = Yk;
-    for (int i = 0; i < 100; ++i) {
+    int iter = 0;
+    while (true){
+        iter++;
+        //слишком много итераций
+        if(iter >= maxIter){
+            cerr << "iter limit error!" << endl;
+            break;
+        }
+        //переходим к вектору из предыдущей итерации и вычисляем новый
         Yk = Yk1;
         for (int j = 0; j < matrix.size(); ++j) {
             Yk1[j] = 0;
@@ -103,44 +122,53 @@ long double getLambdaStep(vector<vector<long double>> matrix){
                 Yk1[j] += matrix[j][k] * Yk[k];
             }
         }
-        //нормируем только если это не последняя итерация,
-        //где вычисляется вектор для получения собственного числа
-        if(i < 99)
-            Yk1 = normed(Yk1);
+        Yk1 = normed(Yk1);
+
+        //если собственное число изменилось достаточно мало с предыдущей итерации,
+        //то считаем что вектор найден
+        if(abs(getLForVector(matrix, Yk1) - getLForVector(matrix, Yk)) < eps)
+            break;
     }
 
-    return scalar(Yk1, Yk)/scalar(Yk, Yk);
+    return getLForVector(matrix, Yk1);
 }
 
-long double getLambdaBackIter(vector<vector<long double>> matrix){
+long double getLambdaBackIter(vector<vector<long double>> matrix, long double m, long double eps, int maxIter){
     //начальный вектор
-    long double m = -3.4;
     vector<long double> Yk;
     for (int i = 0; i < matrix.size(); ++i) {
         Yk.push_back(1);
     }
 
     //добавляем правую часть и вычитаем единичную матрицу * m
-    for (int i = 0; i < matrix.size(); ++i) {
-        matrix[i].push_back(0);
-        matrix[i][i] -= m;
+    vector<vector<long double>> matrixForSlau = matrix;
+    for (int i = 0; i < matrixForSlau.size(); ++i) {
+        matrixForSlau[i].push_back(0);
+        matrixForSlau[i][i] -= m;
     }
 
     //новый вектор
-    for (int i = 0; i < 100; ++i) {
-        for (int j = 0; j < matrix.size(); ++j) {
-            matrix[j][matrix.size()] = Yk[j];
+    vector<long double> Yk1 = Yk;
+    int iter = 0;
+    while (true){
+        iter++;
+        //слишком много итераций
+        if(iter >= maxIter){
+            cerr << "iter limit error!" << endl;
+            break;
         }
-        Yk = normed(solveSLAU(matrix));
+        //переходим к вектору из предыдущей итерации и вычисляем новый
+        Yk = Yk1;
+        for (int j = 0; j < matrixForSlau.size(); ++j) {
+            matrixForSlau[j][matrixForSlau.size()] = Yk[j];
+        }
+        Yk1 = normed(solveSLAU(matrixForSlau));
+
+        //если собственное число изменилось достаточно мало с предыдущей итерации,
+        //то считаем что вектор найден
+        if(abs(getLForVector(matrix, Yk1) - getLForVector(matrix, Yk)) < eps)
+            break;
     }
 
-    // Вычисляем собственное число
-    vector<long double> Yk1;
-    for (int i = 0; i < matrix.size(); ++i) {
-        Yk1.push_back(0);
-        for (int j = 0; j < matrix.size(); ++j) {
-            Yk1[i] += matrix[i][j] * Yk[j];
-        }
-    }
-    return scalar(Yk, Yk1) / scalar(Yk, Yk) + m;
+    return getLForVector(matrix, Yk1);
 }
