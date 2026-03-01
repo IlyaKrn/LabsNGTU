@@ -1,4 +1,5 @@
 #include "../include/SLAU.h"
+#include <iostream>
 #include <cmath>
 
 using namespace std;
@@ -126,18 +127,20 @@ long double getLambdaBackIter(vector<vector<long double>> matrix){
     }
 
     //новый вектор
-    vector<long double> Yk1 = Yk;
     for (int i = 0; i < 100; ++i) {
-        Yk = Yk1;
         for (int j = 0; j < matrix.size(); ++j) {
             matrix[j][matrix.size()] = Yk[j];
         }
-        Yk1 = solveSLAU(matrix);
-        //нормируем только если это не последняя итерация,
-        //где вычисляется вектор для получения собственного числа
-        if(i < 99)
-            Yk1 = normed(Yk1);
+        Yk = normed(solveSLAU(matrix));
     }
 
-    return scalar(Yk1, Yk)/scalar(Yk, Yk);
+    // Вычисляем собственное число
+    vector<long double> Yk1;
+    for (int i = 0; i < matrix.size(); ++i) {
+        Yk1.push_back(0);
+        for (int j = 0; j < matrix.size(); ++j) {
+            Yk1[i] += matrix[i][j] * Yk[j];
+        }
+    }
+    return scalar(Yk, Yk1) / scalar(Yk, Yk) + m;
 }
