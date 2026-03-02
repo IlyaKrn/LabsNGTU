@@ -7,9 +7,9 @@ using namespace std;
 int main(int argc, char** argv) {
 
 
-    int n = 3;
-    int m = -3;
-    int maxIter = 7;
+    int n = 4;
+    int maxIter = 10000;
+    long double m = -3.1;
     long double eps = 1e-3;
 
     auto matrix = getInterpolationMatrix(n, 1, 0, 0, 0, [](long double x) -> long double {return 0;});
