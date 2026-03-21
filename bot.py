@@ -2,13 +2,12 @@ import enum
 import requests
 import spacy
 import re
-
-from typer.cli import state
-
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
 import logger
-
-# анализатор строк
-nlp = spacy.load("ru_core_news_sm")
+import pandas as pd
+import joblib
 
 # состояния автомата
 class States:
@@ -20,11 +19,52 @@ class States:
     WEATHER_CITY = 'WEATHER_CITY'
     END = 'END'
 
+# intent
+intents = [
+    'GREETING',
+    'GOODBYE',
+    'ADDITION',
+    'WEATHER',
+]
+
+# анализатор строк
+nlp = spacy.load("ru_core_news_sm")
+
+# нормализация
+def preprocess(text):
+    tokens = []
+    for token in nlp(text):
+        if not token.is_stop and not token.is_punct:
+            tokens.append(token.lemma_)
+    return " ".join(tokens)
+
+# датасет
+data = pd.read_csv("dataset.csv")
+texts = [preprocess(text) for text in data.iloc[:, 0]]
+labels = data.iloc[:, 1]
+
+# векторизация
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(texts)
+
+X_train, X_test, y_train, y_test = train_test_split(X, labels, test_size=0.2)
+
+# модель
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# получение intent
+def intent(text):
+    processed = preprocess(text)
+    vector = vectorizer.transform([processed])
+    proba = model.predict_proba(vector)
+    if max(proba[0]) < 0.3:
+        return None
+    print(model.predict(vector))
+    return model.predict(vector)[0]
+
 # выражения
-greeting_regex = re.compile(r"(\A|\s)(здравствуй(те)?|привет|хай|добр(ое\s+утро|ый\s+(день|вечер))|салют|здарова)(\Z|\s)",re.IGNORECASE)
-goodbye_regex = re.compile(r"(\A|\s)(досвидания|до\s+свидания|пока|всего\s+(доброго|хорошего)|до\s+(встречи|связи)|счастливо|увидимся)(\Z|\s)",re.IGNORECASE)
 addition_regex = re.compile(r"(\A|\s)([\d\s*\+\s*]+\d)(\Z|\s)",re.IGNORECASE)
-weather_regex = re.compile(r"(\A|\s)((не|)погод(а|ы|е|у|ой))(\Z|\s)",re.IGNORECASE)
 def getCity(text):return (list(map(lambda ent: ent.lemma_, list(filter(lambda ent: ent.label_ in ["GPE", "LOC"], nlp(text).ents))))+['NULL'])[0]
 
 # апи
@@ -45,13 +85,14 @@ if __name__ == "__main__":
         match state:
             case 'START':
                 message = input('Вы: ')
-                if re.search(greeting_regex, message):
+                i = intent(message)
+                if i == 'GREETING':
                     state = States.GREETING
-                elif re.search(weather_regex, message):
+                elif i == 'WEATHER':
                     state = States.WEATHER
-                elif re.search(addition_regex, message):
+                elif i == 'ADDITION':
                     state = States.ADDITION
-                elif re.search(goodbye_regex, message):
+                elif i == 'GOODBYE':
                     state = States.GOODBYE
                 else:
                     print('Извините, я не понял ваше сообщение')
