@@ -132,23 +132,7 @@ int main(int argc, char** argv) {
         }
 
         //отрисовка функций
-        for (int i = 0; i < HEIGHT; ++i) {
-            for (int j = 0; j < WIDTH; ++j) {
-                long double x = (long double) (j - WIDTH / 2) / SCALE;
-                long double y = (long double) -(i - HEIGHT / 2) / SCALE;
-                long double f1 = cos(0.4 * y + x * x) + y * y + x * x - 1.6;
-                long double f2 = 1.5 * x * x - ((y * y) / 0.36) - 1;
 
-                if(abs(f1) < 0.004 || abs(f2) < 0.015)
-                    pixels[i * WIDTH + j] = COLOR_BLACK;
-            }
-        }
-
-        //отрисовка точек
-        drawPoint(start1[0] * SCALE + WIDTH / 2, -start1[1] * SCALE + HEIGHT / 2, WIDTH, HEIGHT, pixels);
-        drawPoint(start2[0] * SCALE + WIDTH / 2, -start2[1] * SCALE + HEIGHT / 2, WIDTH, HEIGHT, pixels);
-        drawPoint(appr1[0] * SCALE + WIDTH / 2, -appr1[1] * SCALE + HEIGHT / 2, WIDTH, HEIGHT, pixels);
-        drawPoint(appr2[0] * SCALE + WIDTH / 2, -appr2[1] * SCALE + HEIGHT / 2, WIDTH, HEIGHT, pixels);
         SDL_UpdateWindowSurface(window);
     }
 
