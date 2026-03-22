@@ -21,10 +21,16 @@ int main(int argc, char** argv) {
         }
         cout << endl;
     }
+    cout << "λ1 = -2.5 + 0.5 * sqrt(5)" << endl;
+    cout << "λ2 = -2.5 - 0.5 * sqrt(5)" << endl;
+    cout << "λ3 = -1.5 + 0.5 * sqrt(5)" << endl;
+    cout << "λ4 = -1.5 - 0.5 * sqrt(5)" << endl;
 
     cout << "Погрешность: " << eps << endl;
     cout << "Максимальное число итераций: " << maxIter << endl;
     cout << "Собственное значение при степенном методе:\n" << getLambdaStep(matrix, eps, maxIter) << endl;
+    cout << "Собственное значение при методе обратных итераций и m = " << m << ":\n" << getLambdaBackIter(matrix, m, eps, maxIter) << endl;
+    m = 0;
     cout << "Собственное значение при методе обратных итераций и m = " << m << ":\n" << getLambdaBackIter(matrix, m, eps, maxIter) << endl;
 
 }
