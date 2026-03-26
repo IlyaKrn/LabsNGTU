@@ -44,9 +44,9 @@ vector<long double> solveSLAU(vector<vector<long double>> matrix){
 
 vector<long double> solveSNAU(vector<long double> start, function<vector<long double>(vector<long double>)> snau, function<vector<vector<long double>>(vector<long double>)> snauJ, long double e1, long double e2, int maxIter){
     int k = 0;
-    vector<long double> Xk = {start[0], start[1]};
-    long double d2 = e2*2;
-    long double d1 = e1*2;
+    vector<long double> Xk = start;
+    long double d2 = e2+1;
+    long double d1 = e1+1;
     while (d1 > e1 || d2 > e2){
         k++;
         if (k > maxIter)
@@ -68,7 +68,11 @@ vector<long double> solveSNAU(vector<long double> start, function<vector<long do
             if (d1 < abs(Fk[i]))
                 d1 = abs(Fk[i]);
         }
-        if(sqrt(Xk1[0]*Xk1[0] + Xk1[1]*Xk1[1]) < 1){
+        long double norm = 0;
+        for (int i = 0; i < Xk1.size(); ++i) {
+            norm += Xk1[i] * Xk1[i];
+        }
+        if(sqrt(norm) < 1){
             for (int i = 0; i < Fk.size(); ++i) {
                 long double tmp = Xk1[i] - Xk[i];
                 if (d2 < abs(tmp)) {
@@ -87,4 +91,34 @@ vector<long double> solveSNAU(vector<long double> start, function<vector<long do
         Xk = Xk1;
     }
     return Xk;
+}
+
+vector<vect_t> eulerExplicit(vect_t start, long double maxTime, long double eps_i, long double tau_max, function<vector<long double>(vect_t)> rhs){
+    vector<vect_t> result = {start};
+    vect_t curYkt = start;
+    while (curYkt.t <= maxTime){
+        vector<long double> f = rhs(curYkt);
+
+        vector<long double> taus;
+        for (int i = 0; i < f.size(); ++i) {
+            taus.push_back(eps_i / (abs(f[i]) + eps_i / tau_max) );
+        }
+        long double tau = taus[0];
+        for (int i = 0; i < taus.size(); ++i) {
+            if(tau > taus[i])
+                tau = taus[i];
+        }
+
+        for (int i = 0; i < curYkt.vect.size(); ++i) {
+            curYkt.vect[i] += tau * f[i];
+        }
+        curYkt.t += tau;
+        result.push_back(curYkt);
+    }
+
+    return result;
+}
+
+vector<vect_t> eulerNonExplicit(vect_t start, long double maxTime, long double eps_i, long double tau_min, long double tau_max, function<vector<long double>(vect_t)> rhs, function<vector<vector<long double>>(vect_t)> rhsJ){
+
 }
