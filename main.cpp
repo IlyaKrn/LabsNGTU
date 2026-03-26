@@ -106,8 +106,6 @@ int main(int argc, char** argv) {
     //вычисляем точки
     vector<long double> start1 = {1, -1};
     vector<long double> start2 = {-1, 1};
-    vector<long double> appr1 = solveSNAU(start1);
-    vector<long double> appr2 = solveSNAU(start2);
 
     //размеры окна и размер клетки
     int HEIGHT = 1000;
