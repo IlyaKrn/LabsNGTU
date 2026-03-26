@@ -28,12 +28,10 @@ vector<long double> solveSLAU(vector<vector<long double>> matrix){
             matrix[i][row-1] = 0;
         }
     }
-
     vector<long double> answer;
     for (int i = 0; i < matrix.size(); ++i) {
         answer.push_back(0);
     }
-
     for (int i = matrix.size() - 1; i >= 0; --i) {
         long double sum = 0;
         for (int j = 0; j < matrix.size(); ++j) {
@@ -41,74 +39,29 @@ vector<long double> solveSLAU(vector<vector<long double>> matrix){
         }
         answer[i] = (matrix[i][matrix.size()] - sum) / matrix[i][i];
     }
-
     return answer;
 }
 
-vector<vector<long double>> getJacobean(vector<long double> X){
-    vector<vector<long double>> result = {
-            {-sin(0.4 * X[1] + X[0] * X[0]) * 2 * X[0] + 2 * X[0], -sin(0.4 * X[1] + X[0] * X[0]) * 0.4 + 2 * X[1]},
-            {3 * X[0], -X[1] / 0.18}
-    };
-    return result;
-}
-
-vector<long double> getFuncErr(vector<long double> X){
-    vector<long double> result = {
-        cos(0.4 * X[1] + X[0] * X[0]) + X[1] * X[1] + X[0] * X[0] - 1.6,
-        1.5 * X[0] * X[0] - ((X[1] * X[1]) / 0.36) - 1
-    };
-    return result;
-}
-
-vector<long double> solveSNAU(vector<long double> start){
-
-    //начальные данные
+vector<long double> solveSNAU(vector<long double> start, function<vector<long double>(vector<long double>)> snau, function<vector<vector<long double>>(vector<long double>)> snauJ, long double e1, long double e2, int maxIter){
     int k = 0;
-    long double e1 = 1e-9;
-    long double e2 = 1e-9;
-    int maxIter = 1000;
-
-    //приближение предыдущей итерации
     vector<long double> Xk = {start[0], start[1]};
-
-    //нормы ошибок предыдущей итерации
     long double d2 = e2*2;
     long double d1 = e1*2;
-
-    //выводим начальные данные
-    cout << "Начальное приближение: (" << Xk[0] << " " << Xk[1] << ")" << endl;
-    cout << "Заданная погрешность: е1 = " << e1 << "; e2 = " << e2 << endl;
-    cout << "Предельное число итераций: " << maxIter << endl;
-
-    //начинаем итерации
     while (d1 > e1 || d2 > e2){
         k++;
-
-        //если итераций слишком много, выходим с ошибкой
-        if (k > maxIter){
-            cout << "iteration limit error" << endl;
-            break;
+        if (k > maxIter)
+            throw "iteration limit error!";
+        vector<vector<long double>> Jk = snauJ(Xk);
+        vector<long double> Fk = snau(Xk);
+        vector<vector<long double>> slau = Jk;
+        for (int i = 0; i < Jk.size(); ++i) {
+            slau[i].push_back(-Fk[i]);
         }
-
-        //получаем матрицу Якоби и вектор невязки
-        vector<vector<long double>> Jk = getJacobean(Xk);
-        vector<long double> Fk = getFuncErr(Xk);
-
-        //решаем СЛАУ для нахождения дельты
-        vector<long double> Dxk = solveSLAU({
-                                                    {Jk[0][0], Jk[0][1], -Fk[0]},
-                                                    {Jk[1][0], Jk[1][1], -Fk[1]},
-                                            });
-
-
-        //получаем следующее приближение
-        vector<long double> Xk1 = {
-                Xk[0] + Dxk[0],
-                Xk[1] + Dxk[1],
-        };
-
-        //пересчитываем нормы
+        vector<long double> Dxk = solveSLAU(slau);
+        vector<long double> Xk1;
+        for (int i = 0; i < Xk.size(); ++i) {
+            Xk1.push_back(Xk[i] + Dxk[i]);
+        }
         d1 = 0;
         d2 = 0;
         for (int i = 0; i < Fk.size(); ++i) {
@@ -131,15 +84,7 @@ vector<long double> solveSNAU(vector<long double> start){
                 }
             }
         }
-
-        //переходим в новому приближению
         Xk = Xk1;
-
-        cout << "Итерация " << k << ": d1 = " << d1 << "; d2 = " << d2 << endl;
-        cout << "k-тое приближение: (" << Xk[0] << " " << Xk[1] << ")" << endl;
-
     }
-    cout << "Приближенное решение:\n" << Xk[0] << "\t\t" << Xk[1] << endl;
     return Xk;
-
 }
