@@ -30,16 +30,27 @@ int main(int argc, char** argv) {
         }
 
         //отрисовка функций
-        auto u = eulerExplicit({{0.1}, 0}, 90, 0.01, 0.01, [](vect_t cur){
+        auto u1 = eulerExplicit({{0.1}, 0}, 90, 0.01, 0.01, [](vect_t cur){
             vector<long double> res = {cur.vect[0]*(2-cur.vect[0]*0.1)};
             return res;
         });
 
-        for (int i = 0; i < u.size(); ++i) {
-            if(u[i].vect[0] >= 0 && u[i].vect[0] < HEIGHT)
-                pixels[((int)(u[i].vect[0]*30)) * WIDTH + i] = COLOR_WHITE;
-            pixels[((int)((       1/(9.95/pow(2.7182818284590452353602874713527, i*0.2)+1)          ) * 600.0)) * WIDTH + i + 20-3] = COLOR_RED;
-            pixels[((int)(20*10)) * WIDTH + i] = COLOR_WHITE;
+        auto u2 = eulerNonExplicit({{0.1}, 0}, 90, 0.01, 0.01, 1, [](vect_t cur){
+            vector<long double> res = {cur.vect[0]*(2-cur.vect[0]*0.1)};
+            return res;
+        }, [](vect_t cur){
+            vector<vector<long double>> res = {{2-2*cur.vect[0]*0.1}};
+            return res;
+        });
+
+        for (int i = 0; i < u1.size(); ++i) {
+            if(u1[i].vect[0] >= 0 && u1[i].vect[0] < HEIGHT)
+                pixels[((int)(u1[i].vect[0]*30)) * WIDTH + (int)(u1[i].t*9)] = COLOR_WHITE;
+        }
+
+        for (int i = 0; i < u2.size(); ++i) {
+            if(u2[i].vect[0] >= 0 && u2[i].vect[0] < HEIGHT)
+                pixels[((int)(u2[i].vect[0]*30)) * WIDTH + (int)(u2[i].t*9)] = COLOR_RED;
         }
 
 

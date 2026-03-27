@@ -120,5 +120,73 @@ vector<vect_t> eulerExplicit(vect_t start, long double maxTime, long double eps_
 }
 
 vector<vect_t> eulerNonExplicit(vect_t start, long double maxTime, long double eps_i, long double tau_min, long double tau_max, function<vector<long double>(vect_t)> rhs, function<vector<vector<long double>>(vect_t)> rhsJ){
+    vector<vect_t> result = {start};
+    vect_t curYktLast = {start.vect, start.t - tau_min};
+    vect_t curYkt = start;
+    vect_t curYktNext = start;
+    long double tauk = tau_min;
+    while (curYkt.t <= maxTime){
+        curYktNext.t = curYkt.t + tauk;
 
+
+        auto snau = [=](vector<long double> cur){
+            vector<long double> res = rhs({cur, curYktNext.t});
+            for (int i = 0; i < res.size(); ++i) {
+                res[i] = cur[i] - curYkt.vect[i] - tauk * res[i];
+            }
+            return res;
+        };
+        auto snauJ = [=](vector<long double> cur){
+            vector<vector<long double>> res = rhsJ({cur, curYktNext.t});
+            for (int i = 0; i < res.size(); ++i) {
+                for (int j = 0; j < res.size(); ++j) {
+                    res[i][j] = 1 - tauk * res[i][j];
+                }
+            }
+            return res;
+        };
+
+        curYktNext.vect = solveSNAU(curYktNext.vect, snau, snauJ, 1e-3, 1e-3, 1000);
+
+
+        bool isOk = true;
+        vector<long double> eps_ik = {};
+        for (int i = 0; i < curYkt.vect.size(); ++i) {
+            eps_ik.push_back(- (tauk / (tauk + curYkt.t - curYktLast.t))
+                             * (curYktNext.vect[i] - curYkt.vect[i]
+                                - ( tauk / (curYkt.t - curYktLast.t)) *
+                                  (curYkt.vect[i] - curYktLast.vect[i])
+                             ));
+            if (abs(eps_ik[i]) > eps_i){
+                isOk = false;
+                break;
+            }
+        }
+        if (!isOk){
+            tauk = tauk / 2;
+            curYktNext = curYkt;
+            continue;
+        }
+
+        vector<long double> tausNext = {};
+        for (int i = 0; i < curYktNext.vect.size(); ++i) {
+            tausNext.push_back(sqrt(eps_i/abs(eps_ik[i]))*tauk);
+        }
+
+        long double tauNext = tausNext[0];
+        for (int i = 0; i < tausNext.size(); ++i) {
+            if(tausNext[i] < tauNext)
+                tauNext = tausNext[i];
+        }
+
+        if (tauNext > tau_max)
+            tauNext = tau_max;
+        result.push_back(curYktNext);
+
+        curYktLast = curYkt;
+        curYkt = curYktNext;
+        tauk = tauNext;
+    }
+
+    return result;
 }
