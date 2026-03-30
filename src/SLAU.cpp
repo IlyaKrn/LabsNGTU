@@ -119,7 +119,7 @@ vector<vect_t> eulerExplicit(vect_t start, long double maxTime, long double eps_
     return result;
 }
 
-vector<vect_t> eulerNonExplicit(vect_t start, long double maxTime, long double eps_i, long double tau_min, long double tau_max, function<vector<long double>(vect_t)> rhs, function<vector<vector<long double>>(vect_t)> rhsJ){
+vector<vect_t> eulerNonExplicit(vect_t start, long double maxTime, long double eps_i, long double tau_min, long double tau_max, function<vector<long double>(vect_t)> rhs, function<vector<vector<long double>>(vect_t)> rhsJ, long double snauE1, long double snauE2, int snauMaxIter){
     vector<vect_t> result = {start};
     vect_t curYktLast = {start.vect, start.t - tau_min};
     vect_t curYkt = start;
@@ -146,7 +146,7 @@ vector<vect_t> eulerNonExplicit(vect_t start, long double maxTime, long double e
             return res;
         };
 
-        curYktNext.vect = solveSNAU(curYktNext.vect, snau, snauJ, 1e-3, 1e-3, 1000);
+        curYktNext.vect = solveSNAU(curYktNext.vect, snau, snauJ, snauE1, snauE2, snauMaxIter);
 
 
         bool isOk = true;
@@ -191,7 +191,7 @@ vector<vect_t> eulerNonExplicit(vect_t start, long double maxTime, long double e
     return result;
 }
 
-vector<vect_t> shikhman(vect_t start, long double maxTime, long double eps_i, long double tau_min, long double tau_max, function<vector<long double>(vect_t)> rhs, function<vector<vector<long double>>(vect_t)> rhsJ){
+vector<vect_t> shikhman(vect_t start, long double maxTime, long double eps_i, long double tau_min, long double tau_max, function<vector<long double>(vect_t)> rhs, function<vector<vector<long double>>(vect_t)> rhsJ, long double snauE1, long double snauE2, int snauMaxIter){
     vector<vect_t> result = {start};
     vect_t curYktLast = {start.vect, start.t - tau_min};
     vect_t curYkt = start;
@@ -219,7 +219,7 @@ vector<vect_t> shikhman(vect_t start, long double maxTime, long double eps_i, lo
             }
             return res;
         };
-        curYktNext.vect = solveSNAU(curYktNext.vect, snau, snauJ, 1e-3, 1e-3, 1000);
+        curYktNext.vect = solveSNAU(curYktNext.vect, snau, snauJ, snauE1, snauE2, snauMaxIter);
         bool isOk = true;
         vector<long double> eps_ik = {};
         for (int i = 0; i < curYkt.vect.size(); ++i) {
@@ -280,7 +280,7 @@ vector<vect_t> shikhman(vect_t start, long double maxTime, long double eps_i, lo
             return res;
         };
 
-        curYktNext.vect = solveSNAU(curYktNext.vect, snau, snauJ, 1e-3, 1e-3, 1000);
+        curYktNext.vect = solveSNAU(curYktNext.vect, snau, snauJ, snauE1, snauE2, snauMaxIter);
 
 
         bool isOk = true;

@@ -13,6 +13,9 @@ struct task{
     long double maxTime;
     long double tau_min;
     long double tau_max;
+    long double snauE1;
+    long double snauE2;
+    int snauMaxIter;
 };
 
 //коэффициенты
@@ -38,7 +41,7 @@ vector<task> tasks = {
             }};
             return res;
         },
-        {{0, -0.412}, 0}, 1, 0.01, 0.1
+        {{0, -0.412}, 0}, 1, 0.01, 0.1, 1e-2, 1e-2, 10000
     },{
         [](vect_t cur) {
             vector<long double> res = {
@@ -57,7 +60,7 @@ vector<task> tasks = {
             }};
             return res;
         },
-        {{1, 0}, 0}, 1, 0.01, 0.1
+        {{1, 0}, 0}, 1, 0.01, 0.1, 1e-3, 1e-3, 10000
     },{
         [](vect_t cur) {
             vector<long double> res = {
@@ -83,7 +86,7 @@ vector<task> tasks = {
             }};
             return res;
         },
-        {{1, 1, 1}, 0}, 1, 0.01, 0.1
+        {{1, 1, 1}, 0}, 1, 0.01, 0.1, 1e-3, 1e-3, 10000
     },{
         [](vect_t cur) {
             vector<long double> res = {
@@ -102,7 +105,7 @@ vector<task> tasks = {
             }};
             return res;
         },
-        {{10, 22, 9}, 0}, T, 0.01, 0.1
+        {{10, 22, 9}, 0}, T, 0.01, 0.1, 1e-3, 1e-3, 10000
     }
 };
 
@@ -188,10 +191,10 @@ int main(int argc, char** argv) {
             result = eulerExplicit(selectedTask.start, selectedTask.maxTime, eps_i, selectedTask.tau_max, selectedTask.rhs);
             break;
         case 2:
-            result = eulerNonExplicit(selectedTask.start, selectedTask.maxTime, eps_i, selectedTask.tau_min, selectedTask.tau_max, selectedTask.rhs, selectedTask.rhsJ);
+            result = eulerNonExplicit(selectedTask.start, selectedTask.maxTime, eps_i, selectedTask.tau_min, selectedTask.tau_max, selectedTask.rhs, selectedTask.rhsJ, selectedTask.snauE1, selectedTask.snauE2, selectedTask.snauMaxIter);
             break;
         case 3:
-            result = shikhman(selectedTask.start, selectedTask.maxTime, eps_i, selectedTask.tau_min, selectedTask.tau_max, selectedTask.rhs, selectedTask.rhsJ);
+            result = shikhman(selectedTask.start, selectedTask.maxTime, eps_i, selectedTask.tau_min, selectedTask.tau_max, selectedTask.rhs, selectedTask.rhsJ, selectedTask.snauE1, selectedTask.snauE2, selectedTask.snauMaxIter);
             break;
     }
     cout << result.size() << endl;
