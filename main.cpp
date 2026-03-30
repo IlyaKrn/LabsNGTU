@@ -15,8 +15,96 @@ struct task{
     long double tau_max;
 };
 
+//коэффициенты
+long double a, k, w, lambda1, lambda2, lambda3, T;
+
 //список задач
-vector<task>tasks={};
+vector<task> tasks = {
+    {
+        [](vect_t cur) {
+            vector<long double> res = {
+                -cur.vect[0]*cur.vect[1] + sin(cur.t)/cur.t,
+                -cur.vect[1]*cur.vect[1] + a*cur.t/(1+cur.t*cur.t)
+            };
+            return res;
+        },
+        [](vect_t cur) {
+            vector<vector<long double>> res = {{
+                -cur.vect[1],
+                -cur.vect[0]
+            },{
+                0,
+                -2*cur.vect[1]
+            }};
+            return res;
+        },
+        {{0, -0.412}, 0}, 1, 0.01, 0.1
+    },{
+        [](vect_t cur) {
+            vector<long double> res = {
+                cur.vect[1] - (a*cur.vect[0] + k*cur.vect[1])*cur.vect[0],
+                exp(cur.vect[0]) - (cur.vect[0] + a*cur.vect[1])*cur.vect[0]
+            };
+            return res;
+        },
+        [](vect_t cur) {
+            vector<vector<long double>> res = {{
+                - (a)*cur.vect[0] - (a*cur.vect[0] + k*cur.vect[1]),
+                1 - (k)*cur.vect[0]
+            },{
+                exp(cur.vect[0]) - cur.vect[0] - (cur.vect[0] + a*cur.vect[1]),
+                - (a)*cur.vect[0]
+            }};
+            return res;
+        },
+        {{1, 0}, 0}, 1, 0.01, 0.1
+    },{
+        [](vect_t cur) {
+            vector<long double> res = {
+                (k-a)/a * cur.vect[1]*cur.vect[2],
+                (a+k)/k * cur.vect[0]*cur.vect[2],
+                (a-k)/a * cur.vect[0]*cur.vect[1]
+            };
+            return res;
+        },
+        [](vect_t cur) {
+            vector<vector<long double>> res = {{
+                0,
+                (k-a)/a * cur.vect[2],
+                (k-a)/a * cur.vect[1]
+            },{
+                (a+k)/k * cur.vect[2],
+                0,
+                (a+k)/k * cur.vect[0]
+            },{
+                (a-k)/a * cur.vect[1],
+                (a-k)/a * cur.vect[0],
+                0
+            }};
+            return res;
+        },
+        {{1, 1, 1}, 0}, 1, 0.01, 0.1
+    },{
+        [](vect_t cur) {
+            vector<long double> res = {
+                -cur.vect[0]*cur.vect[1] + sin(cur.t)/cur.t,
+                -cur.vect[1]*cur.vect[1] + a*cur.t/(1+cur.t*cur.t)
+            };
+            return res;
+        },
+        [](vect_t cur) {
+            vector<vector<long double>> res = {{
+                -cur.vect[1],
+                -cur.vect[0]
+            },{
+                0,
+                -2*cur.vect[1]
+            }};
+            return res;
+        },
+        {{10, 22, 9}, 0}, T, 0.01, 0.1
+    }
+};
 
 int main(int argc, char** argv) {
 
@@ -38,9 +126,38 @@ int main(int argc, char** argv) {
         cout << "Неверный ввод. Выбрана задача 1" << endl;
         taskNumber = 1;
     }
-    selectedTask = tasks[taskNumber];
+    selectedTask = tasks[taskNumber - 1];
 
-    //todo("задаем значения коэффициентов в задаче")
+    //получаем значения коэффициентов
+    switch(taskNumber) {
+        case 1:
+            cout << "Введите параметр w: ";
+            cin >> w;
+            a = 2.5 + w / 40;
+            break;
+        case 2:
+            cout << "Введите параметр a: ";
+            cin >> a;
+            cout << "Введите параметр k: ";
+            cin >> k;
+            break;
+        case 3:
+            cout << "Введите параметр a: ";
+            cin >> a;
+            cout << "Введите параметр k: ";
+            cin >> k;
+            break;
+        case 4:
+            cout << "Введите lambda1: ";
+            cin >> lambda1;
+            cout << "Введите lambda2: ";
+            cin >> lambda2;
+            cout << "Введите lambda3: ";
+            cin >> lambda3;
+            cout << "Введите конечное время T: ";
+            cin >> T;
+            break;
+    }
 
     // выбираем eps_i
     cout << "Выберите погрешность:" << endl;
@@ -77,6 +194,7 @@ int main(int argc, char** argv) {
             result = shikhman(selectedTask.start, selectedTask.maxTime, eps_i, selectedTask.tau_min, selectedTask.tau_max, selectedTask.rhs, selectedTask.rhsJ);
             break;
     }
+    cout << result.size() << endl;
 
     return 0;
 }
