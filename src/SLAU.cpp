@@ -274,7 +274,7 @@ vector<vect_t> shikhman(vect_t start, long double maxTime, long double eps_i, lo
             vector<vector<long double>> res = rhsJ({cur, curYktNext.t});
             for (int i = 0; i < res.size(); ++i) {
                 for (int j = 0; j < res.size(); ++j) {
-                    res[i][j] = 1 - b0 * res[i][j];
+                    res[i][j] = (i == j ? 1 : 0) - b0 * res[i][j];
                 }
             }
             return res;
