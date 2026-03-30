@@ -41,7 +41,7 @@ vector<task> tasks = {
             }};
             return res;
         },
-        {{0, -0.412}, 0}, 1, 0.01, 0.1, 1e-2, 1e-2, 10000
+        {{0, -0.412}, 0}, 1, 0.01, 0.1, 1e-3, 1e-3, 10000
     },{
         [](vect_t cur) {
             vector<long double> res = {
