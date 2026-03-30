@@ -201,7 +201,6 @@ vector<vect_t> shikhman(vect_t start, long double maxTime, long double eps_i, lo
 
     int eulerIter = 0;
     while (curYkt.t <= maxTime && eulerIter < 2){
-        cout << "gg" << endl;
         eulerIter++;
         curYktNext.t = curYkt.t + tauk;
         auto snau = [=](vector<long double> cur){

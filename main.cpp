@@ -5,71 +5,78 @@
 
 using namespace std;
 
-const int COLOR_WHITE = 2147483647;
-const int COLOR_GRAY = 1002159035;
-const int COLOR_RED = 16711680;
-const int COLOR_BLACK = 0;
+//задача
+struct task{
+    function<vector<long double>(vect_t)> rhs;
+    function<vector<vector<long double>>(vect_t)> rhsJ;
+    vect_t start;
+    long double maxTime;
+    long double tau_min;
+    long double tau_max;
+};
+
+//список задач
+vector<task>tasks={};
 
 int main(int argc, char** argv) {
-    //открываем окно и получаем матрицу пикселей
-    int HEIGHT = 1000;
-    int WIDTH = 1000;
-    int SCALE = 250;
-    SDL_Window* window = SDL_CreateWindow("СНАУ", 0, 0, HEIGHT, WIDTH , 0);
-    Uint32* pixels = (Uint32*) SDL_GetWindowSurface(window)->pixels;
 
+    //значения для подстановки в методы
+    task selectedTask;
+    int methodNumber;
+    long double eps_i;
 
-    //отрисовываем функции
-    while (true) {
-        SDL_Event event;
-        while (SDL_PollEvent(&event)) {
-            if(event.type == SDL_QUIT) {
-                SDL_Quit();
-                return 0;
-            }
-        }
+    //выбираем задачу
+    cout << "Выберите задачу:" << endl;
+    cout << "1. Уравнение Ван-дер-Поля" << endl;
+    cout << "2. Уравнение Рэлея" << endl;
+    cout << "3. Система трех уравнений" << endl;
+    cout << "4. Система с матрицей A" << endl;
 
-        //отрисовка функций
-        auto u1 = eulerExplicit({{0.1}, 0}, 90, 0.01, 0.01, [](vect_t cur){
-            vector<long double> res = {cur.vect[0]*(2-cur.vect[0]*0.1)};
-            return res;
-        });
+    int taskNumber;
+    try{cin >> taskNumber;}catch (...){taskNumber=0;}
+    if(taskNumber <= 0 || taskNumber > 4){
+        cout << "Неверный ввод. Выбрана задача 1" << endl;
+        taskNumber = 1;
+    }
+    selectedTask = tasks[taskNumber];
 
-        auto u2 = eulerNonExplicit({{0.1}, 0}, 90, 0.01, 0.01, 1, [](vect_t cur){
-            vector<long double> res = {cur.vect[0]*(2-cur.vect[0]*0.1)};
-            return res;
-        }, [](vect_t cur){
-            vector<vector<long double>> res = {{2-2*cur.vect[0]*0.1}};
-            return res;
-        });
+    //todo("задаем значения коэффициентов в задаче")
 
-        auto u3 = shikhman({{0.1}, 0}, 90, 0.01, 0.01, 1, [](vect_t cur){
-            vector<long double> res = {cur.vect[0]*(2-cur.vect[0]*0.1)};
-            return res;
-        }, [](vect_t cur){
-            vector<vector<long double>> res = {{2-2*cur.vect[0]*0.1}};
-            return res;
-        });
+    // выбираем eps_i
+    cout << "Выберите погрешность:" << endl;
+    cout << "1. 1e-3" << endl;
+    cout << "2. 1e-5" << endl;
+    int eps_i_Number;
+    try{cin >> eps_i_Number;}catch (...){eps_i_Number=0;}
+    if(eps_i_Number <= 0 || eps_i_Number > 2){
+        cout << "Неверный ввод. Выбрана погрешность 1" << endl;
+        eps_i_Number = 1;
+    }
+    eps_i = eps_i_Number == 1 ? 1e-3 : 1e-5;
 
-        for (int i = 0; i < u1.size(); ++i) {
-            if(u1[i].vect[0] >= 0 && u1[i].vect[0] < HEIGHT)
-                pixels[((int)(u1[i].vect[0]*30)) * WIDTH + (int)(u1[i].t*9)] = COLOR_WHITE;
-        }
+    // выбираем метод
+    cout << "Выберите метод:" << endl;
+    cout << "1. явный м. Эйлера" << endl;
+    cout << "2. неявный м. Эйлера" << endl;
+    cout << "3. неявный м. Шихмана" << endl;
+    try{cin >> methodNumber;}catch (...){methodNumber=0;}
+    if(methodNumber <= 0 || methodNumber > 3){
+        cout << "Неверный ввод. Выбран метод 1" << endl;
+        methodNumber = 1;
+    }
+    vector<vect_t> result;
 
-        for (int i = 0; i < u2.size(); ++i) {
-            if(u2[i].vect[0] >= 0 && u2[i].vect[0] < HEIGHT)
-                pixels[((int)(u2[i].vect[0]*30)) * WIDTH + (int)(u2[i].t*9)] = COLOR_WHITE;
-        }
-
-        for (int i = 0; i < u3.size(); ++i) {
-            if(u3[i].vect[0] >= 0 && u3[i].vect[0] < HEIGHT)
-                pixels[((int)(u3[i].vect[0]*30)) * WIDTH + (int)(u3[i].t*9)] = COLOR_RED;
-        }
-
-
-
-        SDL_UpdateWindowSurface(window);
+    switch(methodNumber) {
+        case 1:
+            result = eulerExplicit(selectedTask.start, selectedTask.maxTime, eps_i, selectedTask.tau_max, selectedTask.rhs);
+            break;
+        case 2:
+            result = eulerNonExplicit(selectedTask.start, selectedTask.maxTime, eps_i, selectedTask.tau_min, selectedTask.tau_max, selectedTask.rhs, selectedTask.rhsJ);
+            break;
+        case 3:
+            result = shikhman(selectedTask.start, selectedTask.maxTime, eps_i, selectedTask.tau_min, selectedTask.tau_max, selectedTask.rhs, selectedTask.rhsJ);
+            break;
     }
 
-
+    return 0;
 }
