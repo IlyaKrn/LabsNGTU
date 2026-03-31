@@ -118,10 +118,10 @@ int main(int argc, char** argv) {
 
     //выбираем задачу
     cout << "Выберите задачу:" << endl;
-    cout << "1. Уравнение Ван-дер-Поля" << endl;
-    cout << "2. Уравнение Рэлея" << endl;
-    cout << "3. Система трех уравнений" << endl;
-    cout << "4. Система с матрицей A" << endl;
+    cout << "1. Задача 1" << endl;
+    cout << "2. Задача 2" << endl;
+    cout << "3. Задача 3" << endl;
+    cout << "4. Задача 4" << endl;
 
     int taskNumber;
     try{cin >> taskNumber;}catch (...){taskNumber=0;}
