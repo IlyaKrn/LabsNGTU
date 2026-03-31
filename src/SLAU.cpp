@@ -285,19 +285,24 @@ vector<vect_t> shikhman(vect_t start, long double maxTime, long double eps_i, lo
 
         bool isOk = true;
         vector<long double> eps_ik = {};
-        for (int i = 0; i < curYkt.vect.size(); ++i) {
-            long double u = 6*(
-                curYktNext.vect[i]/(tauk*(tauk+curYkt.t-curYktLast.t)*(tauk+curYkt.t-curYktLast.t+curYktLast.t-curYktLastLast.t))-
-                curYkt.vect[i]/(tauk*(curYkt.t-curYktLast.t)*(curYkt.t-curYktLast.t+curYktLast.t-curYktLastLast.t))+
-                curYktLast.vect[i]/((curYkt.t-curYktLast.t)*(curYktLast.t-curYktLastLast.t)*(tauk+curYkt.t-curYktLast.t))-
-                curYktLastLast.vect[i]/((curYktLast.t-curYktLastLast.t)*(curYkt.t-curYktLast.t+curYktLast.t-curYktLastLast.t)*(tauk+curYkt.t-curYktLast.t+curYktLast.t-curYktLastLast.t))
-            );
-            long double R = tauk*tauk*(tauk+curYkt.t-curYktLast.t)*(tauk+curYkt.t-curYktLast.t)/(6*((2*tauk+curYkt.t-curYktLast.t)))*u;
-            eps_ik.push_back(R);
-            if (abs(eps_ik[i]) > eps_i){
-                isOk = false;
-                break;
+        if (curYkt.t - curYktLast.t > 0 && curYktLast.t - curYktLastLast.t > 0) {
+            for (int i = 0; i < curYkt.vect.size(); ++i) {
+                long double u = 6*(
+                        curYktNext.vect[i]/(tauk*(tauk+curYkt.t-curYktLast.t)*(tauk+curYkt.t-curYktLast.t+curYktLast.t-curYktLastLast.t))-
+                        curYkt.vect[i]/(tauk*(curYkt.t-curYktLast.t)*(curYkt.t-curYktLast.t+curYktLast.t-curYktLastLast.t))+
+                        curYktLast.vect[i]/((curYkt.t-curYktLast.t)*(curYktLast.t-curYktLastLast.t)*(tauk+curYkt.t-curYktLast.t))-
+                        curYktLastLast.vect[i]/((curYktLast.t-curYktLastLast.t)*(curYkt.t-curYktLast.t+curYktLast.t-curYktLastLast.t)*(tauk+curYkt.t-curYktLast.t+curYktLast.t-curYktLastLast.t))
+                );
+                long double R = tauk*tauk*(tauk+curYkt.t-curYktLast.t)*(tauk+curYkt.t-curYktLast.t)/(6*((2*tauk+curYkt.t-curYktLast.t)))*u;
+                eps_ik.push_back(R);
+                if (abs(eps_ik[i]) > eps_i){
+                    isOk = false;
+                    break;
+                }
             }
+        } else {
+            isOk = true;
+            eps_ik.resize(curYkt.vect.size(), 0);
         }
         if (!isOk){
             tauk = tauk / 2;
