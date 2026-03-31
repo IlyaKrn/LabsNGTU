@@ -197,7 +197,6 @@ int main(int argc, char** argv) {
             result = shikhman(selectedTask.start, selectedTask.maxTime, eps_i, selectedTask.tau_min, selectedTask.tau_max, selectedTask.rhs, selectedTask.rhsJ, selectedTask.snauE1, selectedTask.snauE2, selectedTask.snauMaxIter);
             break;
     }
-    cout << result.size() << endl;
 
     int HEIGHT = 800;
     int WIDTH = 1000;
@@ -224,6 +223,69 @@ int main(int argc, char** argv) {
                 return 0;
             }
         }
+        //отрисовка поля
+        for (int i = 0; i < HEIGHT; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                pixels[i * WIDTH + j] = 0xFFFFFFFF;
+            }
+        }
+
+        int zeroX = -result[0].t * SCALE_W;
+        int zeroY = HEIGHT + umin * SCALE_H;
+        int gridX = SCALE_W/2;
+        int gridY = SCALE_H/2;
+        int curStep = 0;
+
+        if(zeroY >= 0 && zeroY < HEIGHT){
+            for (int i = 0; i < WIDTH; ++i) {
+                pixels[zeroY * WIDTH + i] = 0x0;
+            }
+        }
+        while (true){
+            curStep += gridY;
+            bool stop = true;
+            int r = zeroY + curStep;
+            int l = zeroY - curStep;
+            if(r >= 0 && r < HEIGHT){
+                stop = false;
+                for (int i = 0; i < WIDTH; ++i) {
+                    pixels[r * WIDTH + i] = 0x88888888;
+                }
+            }
+            if(l >= 0 && l < HEIGHT){
+                stop = false;
+                for (int i = 0; i < WIDTH; ++i) {
+                    pixels[l * WIDTH + i] = 0x88888888;
+                }
+            }
+            if (stop) break;
+        }
+
+        curStep = 0;
+        if(zeroX >= 0 && zeroX < WIDTH){
+            for (int i = 0; i < HEIGHT; ++i) {
+                pixels[i * WIDTH + zeroX] = 0x0;
+            }
+        }
+        while (true){
+            curStep += gridX;
+            bool stop = true;
+            int r = zeroX + curStep;
+            int l = zeroX - curStep;
+            if(r >= 0 && r < WIDTH){
+                stop = false;
+                for (int i = 0; i < HEIGHT; ++i) {
+                    pixels[i * WIDTH + r] = 0x88888888;
+                }
+            }
+            if(l >= 0 && l < WIDTH){
+                stop = false;
+                for (int i = 0; i < HEIGHT; ++i) {
+                    pixels[i * WIDTH + l] = 0x88888888;
+                }
+            }
+            if (stop) break;
+        }
 
         //отрисовка функций
         for (int i = 0; i < result.size(); ++i) {
@@ -231,8 +293,12 @@ int main(int argc, char** argv) {
                 long double x = (result[i].t - result[0].t) * SCALE_W;
                 long double y = HEIGHT - (result[i].vect[j] - umin) * SCALE_H;
 
-                if((int)x >= 0 && (int)x < WIDTH && (int)y >= 0 && (int)y < HEIGHT)
-                    pixels[((int)y) * WIDTH + (int)x] = 0xFFFFFFFF;
+                for (int l = -1; l < 2; ++l) {
+                    for (int m = -1; m < 2; ++m) {
+                        if((int)x+l >= 0 && (int)x+l < WIDTH && (int)y+m >= 0 && (int)y+m < HEIGHT)
+                            pixels[((int)y+m) * WIDTH + (int)x+l] = 0x0;
+                    }
+                }
             }
         }
 
