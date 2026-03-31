@@ -199,5 +199,48 @@ int main(int argc, char** argv) {
     }
     cout << result.size() << endl;
 
+    int HEIGHT = 800;
+    int WIDTH = 1000;
+    long double SCALE_W = ((long double)WIDTH) / (result.back().t - result[0].t);
+    long double umin = result[0].vect[0], umax = result[0].vect[0];
+    for (int i = 0; i < result.size(); ++i) {
+        for (int j = 0; j < result[i].vect.size(); ++j) {
+            if(umax < result[i].vect[j])
+                umax = result[i].vect[j];
+            if(umin > result[i].vect[j])
+                umin = result[i].vect[j];
+        }
+    }
+    long double SCALE_H = ((long double)HEIGHT) / (umax - umin);
+
+    SDL_Window* window = SDL_CreateWindow("СОДУ", 0, 0, WIDTH, HEIGHT , 0);
+    Uint32* pixels = (Uint32*) SDL_GetWindowSurface(window)->pixels;
+
+    while (true) {
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if(event.type == SDL_QUIT) {
+                SDL_Quit();
+                return 0;
+            }
+        }
+
+        //отрисовка функций
+        for (int i = 0; i < result.size(); ++i) {
+            for (int j = 0; j < result[i].vect.size(); ++j) {
+                long double x = (result[i].t - result[0].t) * SCALE_W;
+                long double y = HEIGHT - (result[i].vect[j] - umin) * SCALE_H;
+
+                if((int)x >= 0 && (int)x < WIDTH && (int)y >= 0 && (int)y < HEIGHT)
+                    pixels[((int)y) * WIDTH + (int)x] = 0xFFFFFFFF;
+            }
+        }
+
+
+
+
+        SDL_UpdateWindowSurface(window);
+    }
+
     return 0;
 }
