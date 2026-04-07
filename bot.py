@@ -2,12 +2,11 @@ import enum
 import requests
 import spacy
 import re
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
 import logger
 import pandas as pd
 import joblib
+import numpy as np
 
 # состояния автомата
 class States:
@@ -28,7 +27,7 @@ intents = [
 ]
 
 # анализатор строк
-nlp = spacy.load("ru_core_news_sm")
+nlp = spacy.load("ru_core_news_md")
 
 # нормализация
 def preprocess(text):
@@ -38,25 +37,25 @@ def preprocess(text):
             tokens.append(token.lemma_)
     return " ".join(tokens)
 
+# нормализация
+def vectorize(text):
+    return nlp(text).vector
+
 # датасет
 data = pd.read_csv("dataset.csv")
 texts = [preprocess(text) for text in data.iloc[:, 0]]
 labels = data.iloc[:, 1]
 
 # векторизация
-vectorizer = TfidfVectorizer()
-X = vectorizer.fit_transform(texts)
-
-X_train, X_test, y_train, y_test = train_test_split(X, labels, test_size=0.2)
+X = np.array([vectorize(text) for text in texts])
 
 # модель
 model = LogisticRegression()
-model.fit(X_train, y_train)
+model.fit(X, labels)
 
 # получение intent
 def intent(text):
-    processed = preprocess(text)
-    vector = vectorizer.transform([processed])
+    vector = vectorize(text).reshape(1, -1)
     proba = model.predict_proba(vector)
     if max(proba[0]) < 0.3:
         return None
