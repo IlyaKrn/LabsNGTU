@@ -12,48 +12,31 @@ import torch
 from transformers import AutoTokenizer, AutoModel
 from transformers import AutoModelForSequenceClassification
 from transformers import Trainer, TrainingArguments
+from datetime import datetime
 
-def train_bert_model():
-    tokenizer = AutoTokenizer.from_pretrained("DeepPavlov/rubert-base-cased")
-    model = AutoModel.from_pretrained("DeepPavlov/rubert-base-cased")
+nlp = spacy.load("ru_core_news_md")
 
-    def bert_vector(text):
-        inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
-        outputs = model(**inputs)
-        cls_vector = outputs.last_hidden_state[:, 0, :]
-        return cls_vector.detach().numpy()[0]
-
-    data = pd.read_csv("dataset.csv")
-    texts = [preprocess(text) for text in data["text"]]
-    labels = data["intent"]
-
-    X = np.array([bert_vector(text) for text in texts])
-    y = labels
-
-    clf = LogisticRegression(max_iter=1000)
-    clf.fit(X, y)
-    return clf
-
-
-
-
+# нормализация
+def preprocess(text):
+    tokens = []
+    for token in nlp(text):
+        if not token.is_stop and not token.is_punct:
+            tokens.append(token.lemma_)
+    return " ".join(tokens)
 
 def train_bert_classifier():
     MODEL_NAME = "DeepPavlov/rubert-base-cased"
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-    model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME,num_labels=3)
 
     df = pd.read_csv("dataset.csv")
-
     label2id = {label: idx for idx, label in enumerate(df["intent"].unique())}
     id2label = {v: k for k, v in label2id.items()}
-
     df["label"] = df["intent"].map(label2id)
+
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME,num_labels=5)
 
     train_texts, val_texts, train_labels, val_labels = train_test_split(
         df["text"].tolist(), df["label"].tolist(), test_size=0.2)
-
-
 
     def tokenize(texts):
         return tokenizer(texts,
@@ -82,7 +65,7 @@ def train_bert_classifier():
 
     training_args = TrainingArguments(
         output_dir="./results",
-        num_train_epochs=4,
+        num_train_epochs=35,
         per_device_train_batch_size=8,
         per_device_eval_batch_size=8,
         eval_strategy="epoch",
@@ -124,7 +107,9 @@ def load_bert_bot():
     label_map = {
         0: "GREETING",
         1: "GOODBYE",
-        2: "WEATHER"
+        2: "WEATHER",
+        3: "DATE",
+        4: "SMALL_TALK"
     }
 
     def predict_intent(text: str) -> str:
@@ -137,27 +122,17 @@ def load_bert_bot():
 
     return predict_intent
 
-
-nlp = spacy.load("ru_core_news_md")
-
 # состояния автомата
 class States:
     START = 'START'
-    GREETING = 'GREETING'
-    GOODBYE = 'GOODBYE'
     ADDITION = 'ADDITION'
-    WEATHER = 'WEATHER'
     WEATHER_CITY = 'WEATHER_CITY'
     END = 'END'
-
-# intent
-intents = [
-    'GREETING',
-    'GOODBYE',
-    'WEATHER',
-    'ADDITION',
-]
-
+    GREETING = 'GREETING'
+    GOODBYE = 'GOODBYE'
+    WEATHER = 'WEATHER'
+    DATE = 'DATE'
+    SMALL_TALK = 'SMALL_TALK'
 
 # выражения
 addition_regex = re.compile(r"(\A|\s)([\d\s*\+\s*]+\d)(\Z|\s)",re.IGNORECASE)
@@ -229,4 +204,10 @@ if __name__ == "__main__":
                     state = States.START
                 else:
                     state = States.WEATHER
+                continue
+            case States.DATE:
+                print(datetime.now().strftime('%d.%m.%Y'))
+                continue
+            case States.SMALL_TALK:
+                print('Спроси что-нибудь другое')
                 continue
