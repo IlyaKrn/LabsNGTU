@@ -1,14 +1,14 @@
 #include <vector>
 #include <functional>
 
+//срез по времени
 struct vect_t{
-    std::vector<long double> vect;
+    std::vector<long double> X;
+    std::vector<long double> U;
     long double t;
 };
 
 std::vector<long double> solveSLAU(std::vector<std::vector<long double>> matrix);
-std::vector<long double> solveSNAU(std::vector<long double> start, std::function<std::vector<long double>(std::vector<long double>)> snau, std::function<std::vector<std::vector<long double>>(std::vector<long double>)> snauJ, long double e1, long double e2, int maxIter);
 
-std::vector<vect_t> eulerExplicit(vect_t start, long double maxTime, long double eps_i, long double tau_max, std::function<std::vector<long double>(vect_t)> rhs);
-std::vector<vect_t> eulerNonExplicit(vect_t start, long double maxTime, long double eps_i, long double tau_min, long double tau_max, std::function<std::vector<long double>(vect_t)> rhs, std::function<std::vector<std::vector<long double>>(vect_t)> rhsJ, long double snauE1, long double snauE2, int snauMaxIter);
-std::vector<vect_t> shikhman(vect_t start, long double maxTime, long double eps_i, long double tau_min, long double tau_max, std::function<std::vector<long double>(vect_t)> rhs, std::function<std::vector<std::vector<long double>>(vect_t)> rhsJ, long double snauE1, long double snauE2, int snauMaxIter);
+std::vector<vect_t> explicitSchema(std::function<long double(long double)> fi, std::function<long double(long double)> g1, std::function<long double(long double)> g2, long double a, long double T1, long double T2, long double X1, long double X2, int Tn);
+std::vector<vect_t> nonExplicitSchema(std::function<long double(long double)> fi, std::function<long double(long double)> g1, std::function<long double(long double)> g2, long double a, long double T1, long double T2, long double X1, long double X2, int Tn);
