@@ -39,11 +39,6 @@ int main(int argc, char** argv) {
     }
     long double SCALE_H = ((long double)HEIGHT) / (umax - umin);
 
-    cout << SCALE_W << endl;
-    cout << SCALE_H << endl;
-    cout << umin << endl;
-    cout << umax << endl;
-
     SDL_Window* window = SDL_CreateWindow("ДУЧП", 0, 0, WIDTH, HEIGHT , 0);
     Uint32* pixels = (Uint32*) SDL_GetWindowSurface(window)->pixels;
 
