@@ -8,18 +8,22 @@ using namespace std;
 int main(int argc, char** argv) {
 
     auto fi = [](long double x){
-        return cos(x);
+        return x*x*x*(1-x);
     };
 
     auto g1 = [](long double t){
-        return cos(-3);
+        return 0;
     };
 
     auto g2 = [](long double t){
-        return cos(3);
+        return 0;
     };
 
-    vector<vect_t> result = explicitSchema(fi, g1, g2, 1, 0, 10, -3, 3, 100);
+    auto f = [](long double x, long double t){
+        return 0;
+    };
+
+    vector<vect_t> result = explicitSchema(fi, f, g1, g2, 1, 0, 100, -3, 3, 100000);
 
     int HEIGHT = 800;
     int WIDTH = 1000;
@@ -44,7 +48,8 @@ int main(int argc, char** argv) {
     Uint32* pixels = (Uint32*) SDL_GetWindowSurface(window)->pixels;
 
     int curTimeLayer = 0;
-    while (true) {
+    long double lastEnergy = 0;
+    while (curTimeLayer < result.size()) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             if(event.type == SDL_QUIT) {
@@ -59,10 +64,23 @@ int main(int argc, char** argv) {
             }
         }
 
+        //проверка сохранения энергии
+        long double energy = 0;
+        long double lastX = result[0].X[0];
+        long double lastY = result[0].U[0];
+
         //отрисовка функций
         for (int j = 0; j < result[curTimeLayer].X.size(); ++j) {
             long double x = (result[curTimeLayer].X[j] - result[curTimeLayer].X[0]) * SCALE_W;
             long double y = HEIGHT - (result[curTimeLayer].U[j] - umin) * SCALE_H;
+
+            //интеграл
+            long double curX = result[curTimeLayer].X[j];
+            long double curY = result[curTimeLayer].U[j];
+            energy += (curX - lastX) * (curY + lastY) / 2;
+
+            lastX = curX;
+            lastY = curY;
 
             for (int l = -1; l < 2; ++l) {
                 for (int m = -1; m < 2; ++m) {
@@ -71,6 +89,9 @@ int main(int argc, char** argv) {
                 }
             }
         }
+        long double err = (result[1].t - result[0].t + (result[0].X[1] - result[0].X[0])) * (result[0].X[1] - result[0].X[0]);
+        cout << err << "\t" << abs(lastEnergy - energy) << "\t" << (err > abs(lastEnergy - energy)) << endl;
+        lastEnergy = energy;
         curTimeLayer++;
         SDL_Delay(1);
 

@@ -42,8 +42,7 @@ vector<long double> solveSLAU(vector<vector<long double>> matrix){
     return answer;
 }
 
-vector<vect_t> explicitSchema(function<long double(long double)> fi, function<long double(long double)> g1, function<long double(long double)> g2, long double a, long double T1, long double T2, long double X1, long double X2, int Tn){
-    vector<vect_t> result;
+vector<vect_t> explicitSchema(function<long double(long double)> fi, std::function<long double(long double, long double)> f, function<long double(long double)> g1, function<long double(long double)> g2, long double a, long double T1, long double T2, long double X1, long double X2, int Tn){    vector<vect_t> result;
 
     //вычисляем количество точек сетки
 
@@ -64,14 +63,14 @@ vector<vect_t> explicitSchema(function<long double(long double)> fi, function<lo
         long double curT = T1 + i * (T2-T1) / Tn;
         vect_t curLayer = {{}, {}, curT};
         curLayer.X = start.X;
-        curLayer.U.push_back(g1(curT));
+        curLayer.U.push_back(-g1(curT)*(X2-X1)/Xn+ll.U[1]);
         for (int j = 1; j < curLayer.X.size() - 1; ++j) {
             curLayer.U.push_back(
                     ll.U[j] + (a*(T2-T1)*Xn*Xn) / (Tn*(X2-X1)*(X2-X1))
-                    * (ll.U[j+1] - 2*ll.U[j] + ll.U[j-1])
+                    * (ll.U[j+1] - 2*ll.U[j] + ll.U[j-1]) + f(curLayer.X[j], curT)
             );
         }
-        curLayer.U.push_back(g2(curT));
+        curLayer.U.push_back(g2(curT)*(X2-X1)/Xn+ll.U[ll.U.size()-2]);
         result.push_back(curLayer);
     }
 
@@ -79,7 +78,7 @@ vector<vect_t> explicitSchema(function<long double(long double)> fi, function<lo
     
 }
 
-vector<vect_t> nonExplicitSchema(function<long double(long double)> fi, function<long double(long double)> g1, function<long double(long double)> g2, long double a, long double T1, long double T2, long double X1, long double X2, int Tn){
+vector<vect_t> nonExplicitSchema(function<long double(long double)> fi, std::function<long double(long double, long double)> f, function<long double(long double)> g1, function<long double(long double)> g2, long double a, long double T1, long double T2, long double X1, long double X2, int Tn){
     
 }
 
