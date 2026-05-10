@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
         return 0;
     };
 
-    vector<vect_t> result = explicitSchema(fi, f, g1, g2, 1, 0, 6, 0, 2, 1000);
+    vector<vect_t> result = explicitSchema(fi, f, g1, g2, 1, 0, 2, 0, 2, 1000);
 
     int HEIGHT = 800;
     int WIDTH = 1000;
@@ -81,6 +81,32 @@ int main(int argc, char** argv) {
         for (int i = 0; i < 40; ++i) {
             pixels[i * WIDTH + WIDTH - centerX + i] = 0x000000;
             pixels[i * WIDTH + WIDTH - centerX - i] = 0x000000;
+        }
+
+        //буква X (снизу под стрелкой OX, отступ 10 пикселей)
+        int xPos = WIDTH - 80;
+        int yPos = centerY + 80;
+        for (int i = -20; i <= 20; i++) {
+            if(xPos + i >= 0 && xPos + i < WIDTH && yPos + i >= 0 && yPos + i < HEIGHT)
+                pixels[(yPos + i) * WIDTH + (xPos + i)] = 0x000000;
+            if(xPos + i >= 0 && xPos + i < WIDTH && yPos - i >= 0 && yPos - i < HEIGHT)
+                pixels[(yPos - i) * WIDTH + (xPos + i)] = 0x000000;
+        }
+
+        //буква U (справа от края стрелки OY, отступ 10 пикселей)
+        int uX = WIDTH - centerX + 50;
+        int uY = 50;
+        for (int i = 0; i <= 40; i++) {
+            if(uY + i >= 0 && uY + i < HEIGHT) {
+                if(uX >= 0 && uX < WIDTH)
+                    pixels[(uY + i) * WIDTH + uX] = 0x000000;
+                if(uX + 30 >= 0 && uX + 30 < WIDTH)
+                    pixels[(uY + i) * WIDTH + (uX + 30)] = 0x000000;
+            }
+        }
+        for (int i = 0; i <= 30; i++) {
+            if(uY + 40 >= 0 && uY + 40 < HEIGHT && uX + i >= 0 && uX + i < WIDTH)
+                pixels[(uY + 40) * WIDTH + (uX + i)] = 0x000000;
         }
 
         //сетка
