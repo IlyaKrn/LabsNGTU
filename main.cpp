@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
         }
 
         curTimeLayer++;
-        SDL_Delay();
+        SDL_Delay(10);
 
 
 
