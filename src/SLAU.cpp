@@ -98,33 +98,40 @@ vector<vect_t> nonExplicitSchema(function<long double(long double)> fi, std::fun
     }
     result.push_back(start);
 
+    int N = Xn + 1;
     //находим следующие слои неявным методом
     for (int i = 1; i <= Tn; ++i) {
-        vect_t ll = result[result.size()-1];
+        vect_t ll = result.back();
         long double curT = T1 + i * tau;
         vect_t curLayer = {{}, {}, curT};
         curLayer.X = start.X;
 
-        vector<vector<long double>> slau(Xn-1, vector<long double>(Xn, 0));
-        for (int j = 0; j < Xn-1; ++j) {
-            slau[j][j] = -2*(1+r);
+        vector<vector<long double>> slau(N, vector<long double>(N + 1, 0));
 
-            if (j > 0) slau[j][j-1] = r;
-            if (j < Xn-2) slau[j][j+1] = r;
+        // u(-1)=u1-2h*g1
+        // (1+2r)u0 - 2r*u1 = rhs - 2rhg1
+        slau[0][0] = 1 + 2 * r;
+        slau[0][1] = -2 * r;
+        slau[0][N] = ll.U[0] + tau * f(curLayer.X[0], curT) - 2 * r * h * g1(curT);
 
-            slau[j][Xn-1] = 2*(1-r)*ll.U[j+1] + r*ll.U[j] + r*ll.U[j+2] + f(curLayer.X[j+1], curT - tau);
+        //внутренние узлы
+        for (int j = 1; j < N - 1; ++j) {
+            slau[j][j-1] = -r;
+            slau[j][j] = 1 + 2 * r;
+            slau[j][j+1] = -r;
+            slau[j][N] = ll.U[j] + tau * f(curLayer.X[j], curT);
         }
 
-        slau[0][Xn-1] -= r * (-g1(curT)*h+ll.U[1]);
-        slau[Xn-2][Xn-1] -= r * (g2(curT)*h+ll.U[Xn-1]);
+        // u(N+1)=u(N-1)+2h*g2
+        // -2r*u(N-2) + (1+2r)u(N-1)
+        // = rhs + 2rhg2
+        slau[N - 1][N - 2] = -2 * r;
+        slau[N - 1][N - 1] = 1 + 2 * r;
+        slau[N - 1][N] = ll.U[N - 1] + tau * f(curLayer.X[N - 1], curT) + 2 * r * h * g2(curT);
 
         vector<long double> solution = solveSLAU(slau);
 
-        curLayer.U.push_back(-g1(curT)*h+solution[0]);
-        for (int j = 0; j < solution.size(); ++j) {
-            curLayer.U.push_back(solution[j]);
-        }
-        curLayer.U.push_back(g2(curT)*h+solution.back());
+        curLayer.U = solution;
 
         result.push_back(curLayer);
     }
