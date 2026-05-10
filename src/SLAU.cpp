@@ -115,16 +115,16 @@ vector<vect_t> nonExplicitSchema(function<long double(long double)> fi, std::fun
             slau[j][Xn-1] = 2*(1-r)*ll.U[j+1] + r*ll.U[j] + r*ll.U[j+2] + f(curLayer.X[j+1], curT - tau);
         }
 
-        slau[0][Xn-1] -= r * g1(curT);
-        slau[Xn-2][Xn-1] -= r * g2(curT);
+        slau[0][Xn-1] -= r * (-g1(curT)*h+ll.U[1]);
+        slau[Xn-2][Xn-1] -= r * (g2(curT)*h+ll.U[Xn-1]);
 
         vector<long double> solution = solveSLAU(slau);
 
-        curLayer.U.push_back(g1(curT));
+        curLayer.U.push_back(-g1(curT)*h+solution[0]);
         for (int j = 0; j < solution.size(); ++j) {
             curLayer.U.push_back(solution[j]);
         }
-        curLayer.U.push_back(g2(curT));
+        curLayer.U.push_back(g2(curT)*h+solution.back());
 
         result.push_back(curLayer);
     }
