@@ -108,26 +108,34 @@ vector<vect_t> nonExplicitSchema(function<long double(long double)> fi, std::fun
 
         vector<vector<long double>> slau(N, vector<long double>(N + 1, 0));
 
-        // u(-1)=u1-2h*g1
-        // (1+2r)u0 - 2r*u1 = rhs - 2rhg1
-        slau[0][0] = 1 + 2 * r;
+        slau[0][0] = 2 * (1 + r);
         slau[0][1] = -2 * r;
-        slau[0][N] = ll.U[0] + tau * f(curLayer.X[0], curT) - 2 * r * h * g1(curT);
 
-        //внутренние узлы
+        slau[0][N] =
+                2 * (1 - r) * ll.U[0]
+                + 2 * r * ll.U[1]
+                + 2 * r * h * g1(curT)
+                + tau * f(curLayer.X[0], curT);
+
         for (int j = 1; j < N - 1; ++j) {
             slau[j][j-1] = -r;
-            slau[j][j] = 1 + 2 * r;
+            slau[j][j]= 2 * (1 + r);
             slau[j][j+1] = -r;
-            slau[j][N] = ll.U[j] + tau * f(curLayer.X[j], curT);
+            slau[j][N] =
+                    r * ll.U[j - 1]
+                    + 2 * (1 - r) * ll.U[j]
+                    + r * ll.U[j + 1]
+                    + tau * f(curLayer.X[j], curT);
         }
 
-        // u(N+1)=u(N-1)+2h*g2
-        // -2r*u(N-2) + (1+2r)u(N-1)
-        // = rhs + 2rhg2
         slau[N - 1][N - 2] = -2 * r;
-        slau[N - 1][N - 1] = 1 + 2 * r;
-        slau[N - 1][N] = ll.U[N - 1] + tau * f(curLayer.X[N - 1], curT) + 2 * r * h * g2(curT);
+        slau[N - 1][N - 1] = 2 * (1 + r);
+
+        slau[N - 1][N] =
+                2 * r * ll.U[N - 2]
+                + 2 * (1 - r) * ll.U[N - 1]
+                - 2 * r * h * g2(curT)
+                + tau * f(curLayer.X[N - 1], curT);
 
         vector<long double> solution = solveSLAU(slau);
 
