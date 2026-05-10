@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
         return 0;
     };
 
-    vector<vect_t> result = nonExplicitSchema(fi, f, g1, g2, 1, 0, 5, -3, 3, 1000);
+    vector<vect_t> result = explicitSchema(fi, f, g1, g2, 1, 0, 6, 0, 2, 1000);
 
     int HEIGHT = 800;
     int WIDTH = 1000;
@@ -38,6 +38,10 @@ int main(int argc, char** argv) {
         }
     }
     long double SCALE_H = ((long double)HEIGHT) / (umax - umin);
+
+    // Пиксельные координаты центра мировых координат
+    int centerX = ((result[0].X[0] + result[0].X.back()) / 2 - result[0].X[0]) * SCALE_W;
+    int centerY = HEIGHT - ((umin + umax) / 2 - umin) * SCALE_H;
 
     SDL_Window* window = SDL_CreateWindow("ДУЧП", 0, 0, WIDTH, HEIGHT , 0);
     Uint32* pixels = (Uint32*) SDL_GetWindowSurface(window)->pixels;
@@ -55,6 +59,37 @@ int main(int argc, char** argv) {
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
                 pixels[i * WIDTH + j] = 0xFFFFFFFF;
+            }
+        }
+
+
+        //оси координат
+        for (int j = 0; j < HEIGHT; ++j) {
+            pixels[j * WIDTH + centerX] = 0x000000;
+        }
+        for (int j = 0; j < WIDTH; ++j) {
+            pixels[centerY * WIDTH + j] = 0x000000;
+        }
+
+        //сетка
+        for (int i = centerX+SCALE_W; i < WIDTH; i+= SCALE_W) {
+            for (int j = 0; j < HEIGHT; ++j) {
+                pixels[j * WIDTH + i] = 0xAAAAAA;
+            }
+        }
+        for (int i = centerX-SCALE_W; i >= 0; i-= SCALE_W) {
+            for (int j = 0; j < HEIGHT; ++j) {
+                pixels[j * WIDTH + i] = 0xAAAAAA;
+            }
+        }
+        for (int i = centerY+SCALE_H; i < HEIGHT; i+= SCALE_H) {
+            for (int j = 0; j < WIDTH; ++j) {
+                pixels[i * WIDTH + j] = 0xAAAAAA;
+            }
+        }
+        for (int i = centerY-SCALE_H; i >= 0; i-= SCALE_H) {
+            for (int j = 0; j < WIDTH; ++j) {
+                pixels[i * WIDTH + j] = 0xAAAAAA;
             }
         }
 
