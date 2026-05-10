@@ -71,6 +71,18 @@ int main(int argc, char** argv) {
             pixels[centerY * WIDTH + j] = 0x000000;
         }
 
+        //стрелки
+        for (int i = 0; i < 40; ++i) {
+            pixels[(centerY + i) * WIDTH + WIDTH - i] = 0x000000;
+            pixels[(centerY - i) * WIDTH + WIDTH - i] = 0x000000;
+        }
+
+        //стрелки
+        for (int i = 0; i < 40; ++i) {
+            pixels[i * WIDTH + WIDTH - centerX + i] = 0x000000;
+            pixels[i * WIDTH + WIDTH - centerX - i] = 0x000000;
+        }
+
         //сетка
         for (int i = centerX+SCALE_W; i < WIDTH; i+= SCALE_W) {
             for (int j = 0; j < HEIGHT; ++j) {
