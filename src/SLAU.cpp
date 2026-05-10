@@ -115,7 +115,7 @@ vector<vect_t> nonExplicitSchema(function<long double(long double)> fi, std::fun
                 2 * (1 - r) * ll.U[0]
                 + 2 * r * ll.U[1]
                 + 2 * r * h * g1(curT)
-                + tau * f(curLayer.X[0], curT);
+                + f(curLayer.X[0], curT);
 
         for (int j = 1; j < N - 1; ++j) {
             slau[j][j-1] = -r;
@@ -125,7 +125,7 @@ vector<vect_t> nonExplicitSchema(function<long double(long double)> fi, std::fun
                     r * ll.U[j - 1]
                     + 2 * (1 - r) * ll.U[j]
                     + r * ll.U[j + 1]
-                    + tau * f(curLayer.X[j], curT);
+                    + f(curLayer.X[j], curT);
         }
 
         slau[N - 1][N - 2] = -2 * r;
@@ -135,7 +135,7 @@ vector<vect_t> nonExplicitSchema(function<long double(long double)> fi, std::fun
                 2 * r * ll.U[N - 2]
                 + 2 * (1 - r) * ll.U[N - 1]
                 - 2 * r * h * g2(curT)
-                + tau * f(curLayer.X[N - 1], curT);
+                + f(curLayer.X[N - 1], curT);
 
         vector<long double> solution = solveSLAU(slau);
 
