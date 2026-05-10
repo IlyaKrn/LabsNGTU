@@ -43,7 +43,6 @@ int main(int argc, char** argv) {
     Uint32* pixels = (Uint32*) SDL_GetWindowSurface(window)->pixels;
 
     int curTimeLayer = 0;
-    long double lastEnergy = 0;
     while (curTimeLayer < result.size()) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -59,36 +58,28 @@ int main(int argc, char** argv) {
             }
         }
 
-        //проверка сохранения энергии
-        long double energy = 0;
-        long double lastX = result[0].X[0];
-        long double lastY = result[0].U[0];
-
         //отрисовка функций
-        for (int j = 0; j < result[curTimeLayer].X.size(); ++j) {
-            long double x = (result[curTimeLayer].X[j] - result[curTimeLayer].X[0]) * SCALE_W;
-            long double y = HEIGHT - (result[curTimeLayer].U[j] - umin) * SCALE_H;
-
-            //интеграл
-            long double curX = result[curTimeLayer].X[j];
-            long double curY = result[curTimeLayer].U[j];
-            energy += (curX - lastX) * (curY + lastY) / 2;
-
-            lastX = curX;
-            lastY = curY;
+        for (int j = 1; j < result[curTimeLayer].X.size(); ++j) {
+            int x = (result[curTimeLayer].X[j] - result[curTimeLayer].X[0]) * SCALE_W;
+            int y = HEIGHT - (result[curTimeLayer].U[j] - umin) * SCALE_H;
+            int lastX = (result[curTimeLayer].X[j-1] - result[curTimeLayer].X[0]) * SCALE_W;
+            int lastY = HEIGHT - (result[curTimeLayer].U[j-1] - umin) * SCALE_H;
 
             for (int l = -1; l < 2; ++l) {
                 for (int m = -1; m < 2; ++m) {
-                    if((int)x+l >= 0 && (int)x+l < WIDTH && (int)y+m >= 0 && (int)y+m < HEIGHT)
-                        pixels[((int)y+m) * WIDTH + (int)x+l] = 0x0;
+                    //отрисовываем линию к предыдущей точке
+                    for (int xl = lastX; xl < x; ++xl) {
+                        int yl = lastY + (lastX-xl)*(lastY-y)/(x-lastX);
+                        if((int)xl+l >= 0 && (int)xl+l < WIDTH && (int)yl+m >= 0 && (int)yl+m < HEIGHT)
+                            pixels[((int)yl+m) * WIDTH + (int)xl+l] = 0x0;
+                    }
+
                 }
             }
         }
-        long double err = (result[1].t - result[0].t + (result[0].X[1] - result[0].X[0])) * (result[0].X[1] - result[0].X[0]);
-        cout << err << "\t" << abs(lastEnergy - energy) << "\t" << (err > abs(lastEnergy - energy)) << endl;
-        lastEnergy = energy;
+
         curTimeLayer++;
-        SDL_Delay(10);
+        SDL_Delay();
 
 
 
