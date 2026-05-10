@@ -84,6 +84,9 @@ vector<vect_t> nonExplicitSchema(function<long double(long double)> fi, std::fun
     //вычисляем количество точек сетки
     int Xn = (X2-X1)*sqrt(Tn/(2*a*(T2-T1))) - 1;
 
+    //параметр схемы
+    long double r = a * (T2-T1) * Xn * Xn / ((X2-X1)*(X2-X1)*Tn);
+
     //вычисляем начальные значения
     vect_t start = {{}, {}, T1};
     for (int i = 0; i <= Xn; ++i) {
@@ -99,25 +102,41 @@ vector<vect_t> nonExplicitSchema(function<long double(long double)> fi, std::fun
         long double curT = T1 + i * (T2-T1) / Tn;
         vect_t curLayer = {{}, {}, curT};
         curLayer.X = start.X;
-        curLayer.U.push_back(-g1(curT)*(X2-X1)/Xn+ll.U[1]);
 
+        vector<vector<long double>> slau(Xn-1, vector<long double>(Xn, 0));
 
+        slau[0][0] = -2*(1+r);
+        slau[0][1] = r;
+        slau[0][Xn-1] = 2*(1-r)*ll.U[1] + r*ll.U[0] + r*ll.U[2] + f(curLayer.X[1], curT-(T2-T1)/Tn) - r*g1(curT);
 
-        vector<vector<long double>> slau = {{}};
+        slau[Xn-2][Xn-2] = -2*(1+r);
+        slau[Xn-2][Xn-3] = r;
+        slau[Xn-2][Xn-1] = 2*(1-r)*ll.U[Xn-1] + r*ll.U[Xn-2] + r*ll.U[Xn] + f(curLayer.X[Xn-1], curT-(T2-T1)/Tn) - r*g2(curT);
 
-
-
-        for (int j = 1; j < curLayer.X.size() - 1; ++j) {
-            curLayer.U.push_back(
-                    ll.U[j] + (a*(T2-T1)*Xn*Xn) / (Tn*(X2-X1)*(X2-X1))
-                              * (ll.U[j+1] - 2*ll.U[j] + ll.U[j-1]) + f(curLayer.X[j], curT)
-            );
+        //составляем слау
+        for (int j = 1; j < Xn-2; ++j) {
+            slau[j][j-1] = r;
+            slau[j][j] = -2*(1+r);
+            slau[j][j+1] = r;
+            slau[j][Xn-1] = 2*(1-r)*ll.U[j+1] + r*ll.U[j] + r*ll.U[j+2] + f(curLayer.X[j+1], curT-(T2-T1)/Tn);
         }
 
+        for (int j = 0; j < slau.size(); ++j) {
+            for (int k = 0; k < slau[j].size(); ++k) {
+                cout << slau[j][k] << "\t";
+            }
+            cout << endl;
+        }
+        cout << endl;
 
 
+        curLayer.U = solveSLAU(slau);
 
-        curLayer.U.push_back(g2(curT)*(X2-X1)/Xn+ll.U[ll.U.size()-2]);
+        for (int k = 0; k < curLayer.U.size(); ++k) {
+            cout << curLayer.U[k] << "\t";
+        }
+        cout << endl;
+
         result.push_back(curLayer);
     }
 

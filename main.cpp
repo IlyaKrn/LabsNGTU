@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
         return 0;
     };
 
-    vector<vect_t> result = explicitSchema(fi, f, g1, g2, 1, 0, 100, -3, 3, 100000);
+    vector<vect_t> result = nonExplicitSchema(fi, f, g1, g2, 1, 0, 1, -3, 3, 100);
 
     int HEIGHT = 800;
     int WIDTH = 1000;
@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
         cout << err << "\t" << abs(lastEnergy - energy) << "\t" << (err > abs(lastEnergy - energy)) << endl;
         lastEnergy = energy;
         curTimeLayer++;
-        SDL_Delay(1);
+        SDL_Delay(1000);
 
 
 
