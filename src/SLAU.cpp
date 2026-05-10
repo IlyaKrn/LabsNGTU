@@ -85,12 +85,14 @@ vector<vect_t> nonExplicitSchema(function<long double(long double)> fi, std::fun
     int Xn = (X2-X1)*sqrt(Tn/(2*a*(T2-T1))) - 1;
 
     //параметр схемы
-    long double r = a * (T2-T1) * Xn * Xn / ((X2-X1)*(X2-X1)*Tn);
+    long double tau = (T2 - T1) / Tn;
+    long double h = (X2 - X1) / Xn;
+    long double r = a * tau / (h * h);
 
     //вычисляем начальные значения
     vect_t start = {{}, {}, T1};
     for (int i = 0; i <= Xn; ++i) {
-        long double curX = X1 + i * (X2-X1) / Xn;
+        long double curX = X1 + i * h;
         start.X.push_back(curX);
         start.U.push_back(fi(curX));
     }
@@ -99,48 +101,33 @@ vector<vect_t> nonExplicitSchema(function<long double(long double)> fi, std::fun
     //находим следующие слои неявным методом
     for (int i = 1; i <= Tn; ++i) {
         vect_t ll = result[result.size()-1];
-        long double curT = T1 + i * (T2-T1) / Tn;
+        long double curT = T1 + i * tau;
         vect_t curLayer = {{}, {}, curT};
         curLayer.X = start.X;
 
         vector<vector<long double>> slau(Xn-1, vector<long double>(Xn, 0));
-
-        slau[0][0] = -2*(1+r);
-        slau[0][1] = r;
-        slau[0][Xn-1] = 2*(1-r)*ll.U[1] + r*ll.U[0] + r*ll.U[2] + f(curLayer.X[1], curT-(T2-T1)/Tn) - r*g1(curT);
-
-        slau[Xn-2][Xn-2] = -2*(1+r);
-        slau[Xn-2][Xn-3] = r;
-        slau[Xn-2][Xn-1] = 2*(1-r)*ll.U[Xn-1] + r*ll.U[Xn-2] + r*ll.U[Xn] + f(curLayer.X[Xn-1], curT-(T2-T1)/Tn) - r*g2(curT);
-
-        //составляем слау
-        for (int j = 1; j < Xn-2; ++j) {
-            slau[j][j-1] = r;
+        for (int j = 0; j < Xn-1; ++j) {
             slau[j][j] = -2*(1+r);
-            slau[j][j+1] = r;
-            slau[j][Xn-1] = 2*(1-r)*ll.U[j+1] + r*ll.U[j] + r*ll.U[j+2] + f(curLayer.X[j+1], curT-(T2-T1)/Tn);
+
+            if (j > 0) slau[j][j-1] = r;
+            if (j < Xn-2) slau[j][j+1] = r;
+
+            slau[j][Xn-1] = 2*(1-r)*ll.U[j+1] + r*ll.U[j] + r*ll.U[j+2] + f(curLayer.X[j+1], curT - tau);
         }
 
-        for (int j = 0; j < slau.size(); ++j) {
-            for (int k = 0; k < slau[j].size(); ++k) {
-                cout << slau[j][k] << "\t";
-            }
-            cout << endl;
+        slau[0][Xn-1] -= r * g1(curT);
+        slau[Xn-2][Xn-1] -= r * g2(curT);
+
+        vector<long double> solution = solveSLAU(slau);
+
+        curLayer.U.push_back(g1(curT));
+        for (int j = 0; j < solution.size(); ++j) {
+            curLayer.U.push_back(solution[j]);
         }
-        cout << endl;
-
-
-        curLayer.U = solveSLAU(slau);
-
-        for (int k = 0; k < curLayer.U.size(); ++k) {
-            cout << curLayer.U[k] << "\t";
-        }
-        cout << endl;
+        curLayer.U.push_back(g2(curT));
 
         result.push_back(curLayer);
     }
 
     return result;
-
 }
-
