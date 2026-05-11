@@ -13,8 +13,21 @@ from transformers import AutoTokenizer, AutoModel
 from transformers import AutoModelForSequenceClassification
 from transformers import Trainer, TrainingArguments
 from datetime import datetime
+import pyttsx3
+import threading
 
 nlp = spacy.load("ru_core_news_md")
+
+engine = pyttsx3.init()
+engine.setProperty('rate', 150)
+engine.setProperty('volume', 0.9)
+
+def speak(text):
+    engine.say(text)
+    engine.runAndWait()
+
+def speak_async(text):
+    threading.Thread(target=speak, args=(text,)).start()
 
 # нормализация
 def preprocess(text):
@@ -174,16 +187,19 @@ if __name__ == "__main__":
 
             case States.GREETING:
                 print('Привет еще раз!' if States.GREETING in lastStates[0:-1] else 'Привет!')
+                speak_async('Привет еще раз!' if States.GREETING in lastStates[0:-1] else 'Привет!')
                 state = States.START
                 continue
 
             case States.GOODBYE:
                 print('Пока!')
+                speak_async('Пока!')
                 state = States.END
                 continue
 
             case States.ADDITION:
                 print(re.search(addition_regex, message).group().replace(' ', '') + ' = ' + str(sum(int(num) for num in re.findall(r'\d+', re.search(addition_regex, message).group()))))
+                speak_async(re.search(addition_regex, message).group().replace(' ', '') + ' = ' + str(sum(int(num) for num in re.findall(r'\d+', re.search(addition_regex, message).group()))))
                 state = States.START
                 continue
 
@@ -193,6 +209,7 @@ if __name__ == "__main__":
                     state = States.WEATHER_CITY
                 else:
                     print(get_weather(city))
+                    speak_async(get_weather(city))
                     state = States.START
                 continue
 
@@ -201,13 +218,16 @@ if __name__ == "__main__":
                 city = getCity(message)
                 if city == 'NULL':
                     print('Извините, я не понял ваше сообщение')
+                    speak_async('Извините, я не понял ваше сообщение')
                     state = States.START
                 else:
                     state = States.WEATHER
                 continue
             case States.DATE:
                 print(datetime.now().strftime('%d.%m.%Y'))
+                speak_async(datetime.now().strftime('%d.%m.%Y'))
                 continue
             case States.SMALL_TALK:
                 print('Спроси что-нибудь другое')
+                speak_async('Спроси что-нибудь другое')
                 continue
