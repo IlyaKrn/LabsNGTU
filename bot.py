@@ -15,6 +15,7 @@ from transformers import Trainer, TrainingArguments
 from datetime import datetime
 import pyttsx3
 import threading
+from voice import listen
 
 nlp = spacy.load("ru_core_news_md")
 
@@ -170,7 +171,8 @@ if __name__ == "__main__":
         lastStates.append(state)
         match state:
             case 'START':
-                message = input('Вы: ')
+                message = listen()
+                print(message)
                 i = intent(message)
                 if i == 'GREETING':
                     state = States.GREETING
@@ -218,7 +220,7 @@ if __name__ == "__main__":
                 continue
 
             case States.WEATHER_CITY:
-                message = input('Введите город: ')
+                message = listen()
                 city = getCity(message)
                 if city == 'NULL':
                     print('Извините, я не понял ваше сообщение')
