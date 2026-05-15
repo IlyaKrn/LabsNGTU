@@ -18,13 +18,13 @@ import threading
 
 nlp = spacy.load("ru_core_news_md")
 
-engine = pyttsx3.init()
-engine.setProperty('rate', 150)
-engine.setProperty('volume', 0.9)
-
 def speak(text):
+    engine = pyttsx3.init()
+    engine.setProperty('rate', 150)
+    engine.setProperty('volume', 0.9)
     engine.say(text)
     engine.runAndWait()
+    engine.stop()
 
 def speak_async(text):
     threading.Thread(target=speak, args=(text,)).start()
@@ -180,6 +180,10 @@ if __name__ == "__main__":
                     state = States.ADDITION
                 elif i == 'GOODBYE':
                     state = States.GOODBYE
+                elif i == 'DATE':
+                    state = States.DATE
+                elif i == 'SMALL_TALK':
+                    state = States.SMALL_TALK
                 else:
                     print('Извините, я не понял ваше сообщение')
                     state = States.START
@@ -226,8 +230,10 @@ if __name__ == "__main__":
             case States.DATE:
                 print(datetime.now().strftime('%d.%m.%Y'))
                 speak_async(datetime.now().strftime('%d.%m.%Y'))
+                state = States.START
                 continue
             case States.SMALL_TALK:
                 print('Спроси что-нибудь другое')
                 speak_async('Спроси что-нибудь другое')
+                state = States.START
                 continue
