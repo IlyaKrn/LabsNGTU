@@ -5,25 +5,7 @@
 
 using namespace std;
 
-int main(int argc, char** argv) {
-
-    auto fi = [](long double x){
-        return x*x*x*(1-x);
-    };
-
-    auto g1 = [](long double t){
-        return 0;
-    };
-
-    auto g2 = [](long double t){
-        return 0;
-    };
-
-    auto f = [](long double x, long double t){
-        return 0;
-    };
-
-    vector<vect_t> result = explicitSchema(fi, f, g1, g2, 1, 0, 2, 0, 2, 1000);
+int draw2D(vector<vect_t> result) {
 
     int HEIGHT = 800;
     int WIDTH = 1000;
@@ -161,4 +143,32 @@ int main(int argc, char** argv) {
     }
 
     return 0;
+}
+
+int draw3D(vector<vect_t> result) {
+
+}
+
+int main(int argc, char** argv) {
+
+    auto fi = [](long double x){
+        return x*x*x*(1-x);
+    };
+
+    auto g1 = [](long double t){
+        return 0;
+    };
+
+    auto g2 = [](long double t){
+        return 0;
+    };
+
+    auto f = [](long double x, long double t){
+        return 0;
+    };
+
+    vector<vect_t> result = explicitSchema(fi, f, g1, g2, 1, 0, 2, 0, 2, 1000);
+
+    return draw2D(result);
+    // return draw3D(result);
 }
