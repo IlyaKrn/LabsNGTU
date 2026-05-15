@@ -147,6 +147,140 @@ int draw2D(vector<vect_t> result) {
 
 int draw3D(vector<vect_t> result) {
 
+    int HEIGHT = 800;
+    int WIDTH = 1000;
+    long double SCALE_W = ((long double)WIDTH) / (result[0].X.back() - result[0].X[0]);
+    long double umin = result[0].U[0], umax = result[0].U[0];
+    for (int i = 0; i < result.size(); ++i) {
+        for (int j = 0; j < result[i].U.size(); ++j) {
+            if(umax < result[i].U[j])
+                umax = result[i].U[j];
+            if(umin > result[i].U[j])
+                umin = result[i].U[j];
+        }
+    }
+    long double SCALE_H = ((long double)HEIGHT) / (result.back().t - result[0].t);
+    long double SCALE_U = 255.0/ (umax - umin);
+
+    // Пиксельные координаты центра мировых координат
+    int centerX = ((result[0].X[0] + result[0].X.back()) / 2 - result[0].X[0]) * SCALE_W;
+    int centerY = HEIGHT - ((result[0].t + result.back().t) / 2 - result[0].t) * SCALE_H;
+
+    SDL_Window* window = SDL_CreateWindow("ДУЧП", 0, 0, WIDTH, HEIGHT , 0);
+    Uint32* pixels = (Uint32*) SDL_GetWindowSurface(window)->pixels;
+
+    while (true) {
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if(event.type == SDL_QUIT) {
+                SDL_Quit();
+                return 0;
+            }
+        }
+
+        //белый фон
+        for (int i = 0; i < HEIGHT; ++i) {
+            for (int j = 0; j < WIDTH; ++j) {
+                pixels[i * WIDTH + j] = 0xFFFFFF;
+            }
+        }
+
+        //оси координат
+        for (int j = 0; j < HEIGHT; ++j) {
+            pixels[j * WIDTH + centerX] = 0x000000;
+        }
+        for (int j = 0; j < WIDTH; ++j) {
+            pixels[centerY * WIDTH + j] = 0x000000;
+        }
+
+        //стрелки
+        for (int i = 0; i < 40; ++i) {
+            pixels[(centerY + i) * WIDTH + WIDTH - i] = 0x000000;
+            pixels[(centerY - i) * WIDTH + WIDTH - i] = 0x000000;
+        }
+
+        //стрелки
+        for (int i = 0; i < 40; ++i) {
+            pixels[i * WIDTH + WIDTH - centerX + i] = 0x000000;
+            pixels[i * WIDTH + WIDTH - centerX - i] = 0x000000;
+        }
+
+        //буква X (снизу под стрелкой OX, отступ 10 пикселей)
+        int xPos = WIDTH - 80;
+        int yPos = centerY + 80;
+        for (int i = -20; i <= 20; i++) {
+            if(xPos + i >= 0 && xPos + i < WIDTH && yPos + i >= 0 && yPos + i < HEIGHT)
+                pixels[(yPos + i) * WIDTH + (xPos + i)] = 0x000000;
+            if(xPos + i >= 0 && xPos + i < WIDTH && yPos - i >= 0 && yPos - i < HEIGHT)
+                pixels[(yPos - i) * WIDTH + (xPos + i)] = 0x000000;
+        }
+
+        //сетка
+        for (int i = centerX+SCALE_W; i < WIDTH; i+= SCALE_W) {
+            for (int j = 0; j < HEIGHT; ++j) {
+                pixels[j * WIDTH + i] = 0xAAAAAA;
+            }
+        }
+        for (int i = centerX-SCALE_W; i >= 0; i-= SCALE_W) {
+            for (int j = 0; j < HEIGHT; ++j) {
+                pixels[j * WIDTH + i] = 0xAAAAAA;
+            }
+        }
+        for (int i = centerY+SCALE_H; i < HEIGHT; i+= SCALE_H) {
+            for (int j = 0; j < WIDTH; ++j) {
+                pixels[i * WIDTH + j] = 0xAAAAAA;
+            }
+        }
+        for (int i = centerY-SCALE_H; i >= 0; i-= SCALE_H) {
+            for (int j = 0; j < WIDTH; ++j) {
+                pixels[i * WIDTH + j] = 0xAAAAAA;
+            }
+        }
+
+        //отрисовка функций (по значениям)
+        for (int i = 0; i < result.size()-1; ++i) {
+            for (int j = 0; j < result[i].X.size()-1; ++j) {
+                //интерполяция квадрата справа всерху от точки (включительно)
+                int xCur = (result[i].X[j] - result[i].X[0]) * SCALE_W;
+                int yCur = HEIGHT - (result[i].t - result[0].t) * SCALE_H;
+                int xNext = (result[i+1].X[j] - result[i].X[0]) * SCALE_W;
+                int yNext = HEIGHT - (result[i+1].t - result[0].t) * SCALE_H;
+                long double uSR = result[i].U[j+1];
+                long double uSL = result[i].U[j];
+                long double uER = result[i+1].U[j+1];
+                long double uEL = result[i+1].U[j];
+
+                for (int x = xCur; x <= xNext; ++x) {
+                    for (int y = yCur; y >= yNext; --y) {
+                        //линейная интерполяция
+                        long double curUInter = (uSR-uSL)/(xNext-xCur)*x+uSL;
+                        long double nextUInter = (uER-uEL)/(xNext-xCur)*x+uEL;
+                        if (xNext == xCur) {
+                            curUInter = uSL;
+                            nextUInter = uEL;
+                        }
+                        long double curUTIter = (nextUInter-curUInter)/(yNext-yCur)*y+curUInter;
+                        if (yNext == yCur)
+                            curUTIter = curUInter;
+
+
+                        int uVal = (curUTIter) * SCALE_U;
+                        if(x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT){
+                            pixels[y * WIDTH + x] =
+                                (255  << 24) |
+                                (uVal << 16) |
+                                (uVal << 8 ) |
+                                (uVal      );
+                        }
+                    }
+                }
+            }
+        }
+
+        SDL_UpdateWindowSurface(window);
+    }
+
+    return 0;
 }
 
 int main(int argc, char** argv) {
@@ -169,6 +303,6 @@ int main(int argc, char** argv) {
 
     vector<vect_t> result = explicitSchema(fi, f, g1, g2, 1, 0, 2, 0, 2, 1000);
 
-    return draw2D(result);
-    // return draw3D(result);
+    // return draw2D(result);
+    return draw3D(result);
 }
