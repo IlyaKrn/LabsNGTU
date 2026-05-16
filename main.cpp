@@ -160,7 +160,7 @@ int draw3D(vector<vect_t> result) {
         }
     }
     long double SCALE_H = ((long double)HEIGHT) / (result.back().t - result[0].t);
-    long double SCALE_U = 255.0/ (umax - umin);
+    long double SCALE_U = (255.0*sqrt(2)-1) / (umax - umin);
 
     // Пиксельные координаты центра мировых координат
     int centerX = ((result[0].X[0] + result[0].X.back()) / 2 - result[0].X[0]) * SCALE_W;
@@ -238,41 +238,21 @@ int draw3D(vector<vect_t> result) {
         }
 
         //отрисовка функций (по значениям)
-        for (int i = 0; i < result.size()-1; ++i) {
-            for (int j = 0; j < result[i].X.size()-1; ++j) {
-                //интерполяция квадрата справа всерху от точки (включительно)
-                int xCur = (result[i].X[j] - result[i].X[0]) * SCALE_W;
-                int yCur = HEIGHT - (result[i].t - result[0].t) * SCALE_H;
-                int xNext = (result[i+1].X[j] - result[i].X[0]) * SCALE_W;
-                int yNext = HEIGHT - (result[i+1].t - result[0].t) * SCALE_H;
-                long double uSR = result[i].U[j+1];
-                long double uSL = result[i].U[j];
-                long double uER = result[i+1].U[j+1];
-                long double uEL = result[i+1].U[j];
+        for (int i = 0; i < result.size(); ++i) {
+            for (int j = 0; j < result[i].X.size(); ++j) {
+                int x = (result[i].X[j] - result[i].X[0]) * SCALE_W;
+                int y = HEIGHT - (result[i].t - result[0].t) * SCALE_H;
 
-                for (int x = xCur; x <= xNext; ++x) {
-                    for (int y = yCur; y >= yNext; --y) {
-                        //линейная интерполяция
-                        long double curUInter = (uSR-uSL)/(xNext-xCur)*x+uSL;
-                        long double nextUInter = (uER-uEL)/(xNext-xCur)*x+uEL;
-                        if (xNext == xCur) {
-                            curUInter = uSL;
-                            nextUInter = uEL;
-                        }
-                        long double curUTIter = (nextUInter-curUInter)/(yNext-yCur)*y+curUInter;
-                        if (yNext == yCur)
-                            curUTIter = curUInter;
+                long double u = (result[i].U[j] - umin) * SCALE_U;
+                long double uValR = (u/sqrt(2));
+                long double uValB = (255 - uValR);
 
-
-                        int uVal = (curUTIter) * SCALE_U;
-                        if(x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT){
-                            pixels[y * WIDTH + x] =
-                                (255  << 24) |
-                                (uVal << 16) |
-                                (uVal << 8 ) |
-                                (uVal      );
-                        }
-                    }
+                if(x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT){
+                    pixels[y * WIDTH + x] =
+                (255        << 24) |
+                ((int)uValR << 16) |
+                (0          << 8 ) |
+                ((int)uValB      );
                 }
             }
         }
