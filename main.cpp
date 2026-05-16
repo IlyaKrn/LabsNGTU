@@ -249,10 +249,35 @@ int draw3D(vector<vect_t> result) {
 
                 if(x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT){
                     pixels[y * WIDTH + x] =
-                (255        << 24) |
-                ((int)uValR << 16) |
-                (0          << 8 ) |
-                ((int)uValB      );
+                        (255        << 24) |
+                        ((int)uValR << 16) |
+                        (0          << 8 ) |
+                        ((int)uValB      );
+                }
+
+                //интерполируем по x
+                if (j < result[i].X.size()-1) {
+                    for (int l = x+1; l < (result[i].X[j+1] - result[i].X[0]) * SCALE_W; ++l) {
+                        int xC = result[i].X[j];
+                        int xN = result[i].X[j+1];
+                        int uC = result[i].U[j];
+                        int uN = result[i].U[j+1];
+
+                        long double xCur = (result[i].X.back()-result[i].X[0]) * WIDTH / l;
+                        long double u1 = xCur*(uN-uC)/(xN-xC)+uC;
+
+                        u1 = (result[i].U[j+1] - umin) * SCALE_U;
+                        long double uValR1 = (u1/sqrt(2));
+                        long double uValB1 = (255 - uValR1);
+
+                        if(l >= 0 && l < WIDTH && y >= 0 && y < HEIGHT){
+                            pixels[y * WIDTH + l] =
+                                (255         << 24) |
+                                ((int)uValR1 << 16) |
+                                (0           << 8 ) |
+                                ((int)uValB1      );
+                        }
+                    }
                 }
             }
         }
