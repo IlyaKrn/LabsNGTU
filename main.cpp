@@ -288,6 +288,10 @@ int draw3D(vector<vect_t> result) {
     return 0;
 }
 
+int drawErr(vector<vect_t> result) {
+
+}
+
 int main(int argc, char** argv) {
 
     auto fi = [](long double x){
@@ -309,5 +313,6 @@ int main(int argc, char** argv) {
     vector<vect_t> result = explicitSchema(fi, f, g1, g2, 1, 0, 2, 0, 2, 1000);
 
     // return draw2D(result);
+    // return drawErr(result);
     return draw3D(result);
 }
