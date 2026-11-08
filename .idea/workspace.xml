@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d2953069-01a3-4c45-b027-6e7b8dee4137" name="Changes" comment="" />
+    <list default="true" id="d518d557-69ab-4d8d-a251-21b419b259e2" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,78 +15,10 @@
       <ProjectState />
     </projectState>
   </component>
-  <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="lab1_sem2" />
-      </map>
-    </option>
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="NextEditCompletionFeaturesState">
-    <decayedCancelled>
-      <entry key="MS100" value="1.004580491429907" />
-      <entry key="MS500" value="1.8838623135390136" />
-      <entry key="S2" value="4.451272292342317" />
-      <entry key="S5" value="5.773234986911777" />
-      <entry key="S10" value="6.34461703180842" />
-      <entry key="S30" value="6.771372022762915" />
-      <entry key="S60" value="6.884358893917008" />
-      <entry key="M2" value="6.94184328298977" />
-      <entry key="M5" value="6.976656065405815" />
-      <entry key="M10" value="6.988314443731005" />
-      <entry key="M15" value="6.9922066058402" />
-      <entry key="M30" value="6.996101790376585" />
-      <entry key="H1" value="6.998050516886073" />
-      <entry key="H2" value="6.999025163846681" />
-      <entry key="H4" value="6.99951255827165" />
-      <entry key="D1" value="6.999918756426763" />
-      <entry key="W1" value="6.999988393694795" />
-    </decayedCancelled>
-    <decayedSelected>
-      <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="0.0" />
-      <entry key="S2" value="0.0" />
-      <entry key="S5" value="0.0" />
-      <entry key="S10" value="0.0" />
-      <entry key="S30" value="0.0" />
-      <entry key="S60" value="0.0" />
-      <entry key="M2" value="0.0" />
-      <entry key="M5" value="0.0" />
-      <entry key="M10" value="0.0" />
-      <entry key="M15" value="0.0" />
-      <entry key="M30" value="0.0" />
-      <entry key="H1" value="0.0" />
-      <entry key="H2" value="0.0" />
-      <entry key="H4" value="0.0" />
-      <entry key="D1" value="0.0" />
-      <entry key="W1" value="0.0" />
-    </decayedSelected>
-    <decayedShown>
-      <entry key="MS100" value="0.9503103311348435" />
-      <entry key="MS500" value="1.8576873719390934" />
-      <entry key="S2" value="4.427785976436079" />
-      <entry key="S5" value="5.759357704310277" />
-      <entry key="S10" value="6.3366373774302085" />
-      <entry key="S30" value="6.768444882739286" />
-      <entry key="S60" value="6.882859405160196" />
-      <entry key="M2" value="6.9410843595795" />
-      <entry key="M5" value="6.97635026707719" />
-      <entry key="M10" value="6.988161170885868" />
-      <entry key="M15" value="6.992104340740547" />
-      <entry key="M30" value="6.996050616184562" />
-      <entry key="H1" value="6.998024919371865" />
-      <entry key="H2" value="6.999012362484071" />
-      <entry key="H4" value="6.99950615693885" />
-      <entry key="D1" value="6.999917689447468" />
-      <entry key="W1" value="6.9999882412669665" />
-    </decayedShown>
-  </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 3,
-  &quot;fromUser&quot;: false
-}</component>
-  <component name="ProjectId" id="3LprBPhz4naPgKegI118R5zCvxe" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="3LpuwpGOetSumVc5uYoaQIXZcOX" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -95,13 +27,8 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "moiseev-4kurs-1",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/ilyakrn/IdeaProjects/LabsNGTU",
-    "nodejs_package_manager_path": "npm",
     "onboarding.tips.debug.path": "/home/ilyakrn/IdeaProjects/LabsNGTU/src/main/java/org/example/Main.java"
   }
 }]]></component>
@@ -114,38 +41,26 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="d2953069-01a3-4c45-b027-6e7b8dee4137" name="Changes" comment="" />
-      <created>1794161715342</created>
+      <changelist id="d518d557-69ab-4d8d-a251-21b419b259e2" name="Changes" comment="" />
+      <created>1794163571489</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1794161715342</updated>
+      <updated>1794163571489</updated>
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="moiseev-4kurs-1" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </State>
-          </value>
-        </entry>
-      </map>
-    </option>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/Main.java</url>
+          <line>13</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
