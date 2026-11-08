@@ -4,9 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d518d557-69ab-4d8d-a251-21b419b259e2" name="Changes" comment="init">
+    <list default="true" id="d518d557-69ab-4d8d-a251-21b419b259e2" name="Changes" comment="lab2">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/Bicycle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/BicycleDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/9.8.0/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.8.0/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/9.8.0/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.8.0/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/9.8.0/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.8.0/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -19,7 +24,19 @@
       <ProjectState />
     </projectState>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="moiseev-4kurs-2" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -36,61 +53,61 @@
 }</component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0000000000079785" />
-      <entry key="S5" value="1.0000363723644046" />
-      <entry key="S10" value="1.0060438298426644" />
-      <entry key="S30" value="1.2386260577964183" />
-      <entry key="S60" value="2.0995785463592282" />
-      <entry key="M2" value="4.672996158926981" />
-      <entry key="M5" value="11.000378699720612" />
-      <entry key="M10" value="16.98296307457509" />
-      <entry key="M15" value="20.369453145882314" />
-      <entry key="M30" value="25.104325100589225" />
-      <entry key="H1" value="28.212214865027786" />
-      <entry key="H2" value="30.010131121912078" />
-      <entry key="H4" value="30.979523591429068" />
-      <entry key="D1" value="31.8262326527634" />
-      <entry key="W1" value="31.97508388009939" />
+      <entry key="MS100" value="1.5547847400211838" />
+      <entry key="MS500" value="1.9224383826791094" />
+      <entry key="S2" value="2.6876905701693534" />
+      <entry key="S5" value="3.3144479038252634" />
+      <entry key="S10" value="3.623097245941696" />
+      <entry key="S30" value="3.9797196002505197" />
+      <entry key="S60" value="4.522604389151652" />
+      <entry key="M2" value="6.09479528317577" />
+      <entry key="M5" value="11.808645102338543" />
+      <entry key="M10" value="18.606982803178198" />
+      <entry key="M15" value="22.755787685319806" />
+      <entry key="M30" value="28.80094414491781" />
+      <entry key="H1" value="32.895053863184486" />
+      <entry key="H2" value="35.303292742422855" />
+      <entry key="H4" value="36.61303858906627" />
+      <entry key="D1" value="37.76324462712049" />
+      <entry key="W1" value="37.96603762354142" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
       <entry key="MS500" value="0.0" />
-      <entry key="S2" value="5.60016630765416E-88" />
-      <entry key="S5" value="2.370819875454357E-35" />
-      <entry key="S10" value="8.396506942928904E-18" />
-      <entry key="S30" value="4.223727703328051E-6" />
-      <entry key="S60" value="0.0035771913403878134" />
-      <entry key="M2" value="0.10940308027157537" />
-      <entry key="M5" value="0.9971841966948194" />
-      <entry key="M10" value="2.3021076799655713" />
-      <entry key="M15" value="3.114634286681691" />
-      <entry key="M30" value="4.281878679881065" />
-      <entry key="H1" value="5.055558108853476" />
-      <entry key="H2" value="5.503870449138562" />
-      <entry key="H4" value="5.745599561903388" />
-      <entry key="D1" value="5.956687569763568" />
-      <entry key="W1" value="5.993789729931204" />
+      <entry key="S2" value="6.8489417361094575E-124" />
+      <entry key="S5" value="1.0229810254011318E-49" />
+      <entry key="S10" value="5.515478054106949E-25" />
+      <entry key="S30" value="1.7042138168350226E-8" />
+      <entry key="S60" value="2.2722507511244733E-4" />
+      <entry key="M2" value="0.027573163261164386" />
+      <entry key="M5" value="0.5745901863041305" />
+      <entry key="M10" value="1.7474994276392177" />
+      <entry key="M15" value="2.5917990863871085" />
+      <entry key="M30" value="3.9059933023547924" />
+      <entry key="H1" value="4.828560470219037" />
+      <entry key="H2" value="5.378887820079407" />
+      <entry key="H4" value="5.679989026692994" />
+      <entry key="D1" value="5.945296415040519" />
+      <entry key="W1" value="5.992150942581442" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.55864356903611" />
-      <entry key="MS500" value="0.8900757332524964" />
-      <entry key="S2" value="0.9713074955488017" />
-      <entry key="S5" value="0.9884575136817754" />
-      <entry key="S10" value="1.0001104883574925" />
-      <entry key="S30" value="1.2349366002798985" />
-      <entry key="S60" value="2.093788726138433" />
-      <entry key="M2" value="4.760088697765083" />
-      <entry key="M5" value="11.968926468351098" />
-      <entry key="M10" value="19.26166522983008" />
-      <entry key="M15" value="23.465215955143602" />
-      <entry key="M30" value="29.37456848824882" />
-      <entry key="H1" value="33.2612555818224" />
-      <entry key="H2" value="35.51054382680876" />
-      <entry key="H4" value="36.723341079154295" />
-      <entry key="D1" value="37.782615506503106" />
-      <entry key="W1" value="37.96882988624638" />
+      <entry key="MS100" value="1.4666949149929411" />
+      <entry key="MS500" value="1.89870201234728" />
+      <entry key="S2" value="2.678220527366907" />
+      <entry key="S5" value="3.309490430713969" />
+      <entry key="S10" value="3.6203304475769387" />
+      <entry key="S30" value="3.978678001260023" />
+      <entry key="S60" value="4.521657902802854" />
+      <entry key="M2" value="6.116410917452457" />
+      <entry key="M5" value="12.366580933848903" />
+      <entry key="M10" value="20.33663405672473" />
+      <entry key="M15" value="25.331827789827173" />
+      <entry key="M30" value="32.69629529967287" />
+      <entry key="H1" value="37.71737529268758" />
+      <entry key="H2" value="40.678794156419684" />
+      <entry key="H4" value="42.291262291333915" />
+      <entry key="D1" value="43.70823630744074" />
+      <entry key="W1" value="43.95814476834323" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -108,7 +125,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "moiseev-4kurs-1",
+    "git-widget-placeholder": "moiseev-4kurs-3.1",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -162,7 +179,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="moiseev-4kurs-3.1" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -170,6 +199,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init" />
-    <option name="LAST_COMMIT_MESSAGE" value="init" />
+    <MESSAGE value="lab2" />
+    <option name="LAST_COMMIT_MESSAGE" value="lab2" />
   </component>
 </project>
