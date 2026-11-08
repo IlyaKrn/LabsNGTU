@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d518d557-69ab-4d8d-a251-21b419b259e2" name="Changes" comment="" />
+    <list default="true" id="d518d557-69ab-4d8d-a251-21b419b259e2" name="Changes" comment="init">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Main.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,9 +19,83 @@
       <ProjectState />
     </projectState>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;IlyaKrn&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/IlyaKrn/LabsNGTU.git&quot;,
+    &quot;accountId&quot;: &quot;19f7f79d-9dae-46d5-aace-2293af9b8346&quot;
+  }
+}</component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0000000000079785" />
+      <entry key="S5" value="1.0000363723644046" />
+      <entry key="S10" value="1.0060438298426644" />
+      <entry key="S30" value="1.2386260577964183" />
+      <entry key="S60" value="2.0995785463592282" />
+      <entry key="M2" value="4.672996158926981" />
+      <entry key="M5" value="11.000378699720612" />
+      <entry key="M10" value="16.98296307457509" />
+      <entry key="M15" value="20.369453145882314" />
+      <entry key="M30" value="25.104325100589225" />
+      <entry key="H1" value="28.212214865027786" />
+      <entry key="H2" value="30.010131121912078" />
+      <entry key="H4" value="30.979523591429068" />
+      <entry key="D1" value="31.8262326527634" />
+      <entry key="W1" value="31.97508388009939" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="5.60016630765416E-88" />
+      <entry key="S5" value="2.370819875454357E-35" />
+      <entry key="S10" value="8.396506942928904E-18" />
+      <entry key="S30" value="4.223727703328051E-6" />
+      <entry key="S60" value="0.0035771913403878134" />
+      <entry key="M2" value="0.10940308027157537" />
+      <entry key="M5" value="0.9971841966948194" />
+      <entry key="M10" value="2.3021076799655713" />
+      <entry key="M15" value="3.114634286681691" />
+      <entry key="M30" value="4.281878679881065" />
+      <entry key="H1" value="5.055558108853476" />
+      <entry key="H2" value="5.503870449138562" />
+      <entry key="H4" value="5.745599561903388" />
+      <entry key="D1" value="5.956687569763568" />
+      <entry key="W1" value="5.993789729931204" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.55864356903611" />
+      <entry key="MS500" value="0.8900757332524964" />
+      <entry key="S2" value="0.9713074955488017" />
+      <entry key="S5" value="0.9884575136817754" />
+      <entry key="S10" value="1.0001104883574925" />
+      <entry key="S30" value="1.2349366002798985" />
+      <entry key="S60" value="2.093788726138433" />
+      <entry key="M2" value="4.760088697765083" />
+      <entry key="M5" value="11.968926468351098" />
+      <entry key="M10" value="19.26166522983008" />
+      <entry key="M15" value="23.465215955143602" />
+      <entry key="M30" value="29.37456848824882" />
+      <entry key="H1" value="33.2612555818224" />
+      <entry key="H2" value="35.51054382680876" />
+      <entry key="H4" value="36.723341079154295" />
+      <entry key="D1" value="37.782615506503106" />
+      <entry key="W1" value="37.96882988624638" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="3LpuwpGOetSumVc5uYoaQIXZcOX" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -25,13 +103,40 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Gradle.LabsNGTU [:org.example.Main.main()].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "moiseev-4kurs-1",
     "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "onboarding.tips.debug.path": "/home/ilyakrn/IdeaProjects/LabsNGTU/src/main/java/org/example/Main.java"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.Main" />
+      <module name="LabsNGTU.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -52,15 +157,19 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/org/example/Main.java</url>
-          <line>13</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="init" />
+    <option name="LAST_COMMIT_MESSAGE" value="init" />
   </component>
 </project>
